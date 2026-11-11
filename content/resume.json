@@ -1,0 +1,308 @@
+{
+  "basics": {
+    "name": "Cian McCaul",
+    "label": "Computer Science student at DCU",
+    "headline": "I build software that runs real businesses.",
+    "summary": "I digitised **BodyMed Healthcare**, a clinic in Clontarf. Patients book and pay online, and staff run the clinic from one hub I built.",
+    "email": "cian.mccaul@outlook.com",
+    "url": "https://cianmccaul.vercel.app",
+    "location": { "city": "Dublin", "area": "Clontarf", "country": "IE" },
+    "profiles": [
+      { "network": "GitHub", "username": "cianmccaul", "url": "https://github.com/cianmccaul" },
+      { "network": "LinkedIn", "username": "Cian McCaul", "url": "https://www.linkedin.com/in/cian-mccaul-7a9b01397" }
+    ],
+    "bio": [
+      "I’m Cian and I live in Dublin. I spent my early years in Fall River, Nova Scotia, before my family moved to Clontarf in 2015. Starting again in a new country taught me to adapt quickly, and I still like being thrown into something new.",
+      "What I enjoy most is working with businesses and making their day easier. At BodyMed I’ve gone from admin work to building the systems the clinic runs on."
+    ]
+  },
+
+  "logistics": {
+    "targetRole": "Software engineering intern",
+    "programme": { "name": "DCU INTRA placement", "startDate": "2028-01", "endDate": "2028-08" },
+    "availableFrom": "2028-01",
+    "availableUntil": "2028-09",
+    "relocate": { "open": true, "regions": ["Anywhere"] },
+    "workAuthorization": [{ "region": "EU/EEA", "status": "Irish citizen", "label": "EU citizen (Irish)" }]
+  },
+
+  "metrics": [
+    {
+      "id": "platform-scope",
+      "status": "ready",
+      "value": "8",
+      "unit": "modules",
+      "label": "in one clinic platform, live with real patients since October 2026",
+      "source": { "label": "book.bodymed.ie", "url": "https://book.bodymed.ie" }
+    },
+    {
+      "id": "triage-tests",
+      "status": "ready",
+      "value": "37",
+      "unit": "tests",
+      "label": "guard the email triage sorter, including its red-flag safety check",
+      "source": { "label": "email-triage-demo", "url": "https://github.com/cianmccaul/email-triage-demo#tests" }
+    },
+    {
+      "id": "monitor-interval",
+      "status": "ready",
+      "value": "15",
+      "unit": "min",
+      "label": "between Jarvis health checks on every site I look after",
+      "source": { "label": "site-monitor", "url": "https://github.com/cianmccaul/site-monitor#what-it-does" }
+    },
+    {
+      "id": "online-bookings",
+      "status": "todo",
+      "value": "TODO",
+      "unit": "%",
+      "label": "of BodyMed bookings now made online",
+      "how": "Online vs phone bookings in Cliniko over one full month. Needs the clinic owner’s approval; share as a percentage, not a count."
+    },
+    {
+      "id": "triage-accuracy",
+      "status": "todo",
+      "value": "TODO",
+      "unit": "%",
+      "label": "of emails sorted the way staff would have sorted them",
+      "how": "Run the AI sorter over a labelled set of at least 50 emails and report matches, with the rule-based sorter as the baseline."
+    },
+    {
+      "id": "monitor-incidents",
+      "status": "todo",
+      "value": "TODO",
+      "unit": "",
+      "label": "outages Jarvis caught and explained before a customer reported them",
+      "how": "Count from incidents.json since the first run, with the date range."
+    }
+  ],
+
+  "work": [
+    {
+      "company": "BodyMed Healthcare",
+      "location": "Clontarf, Dublin",
+      "position": "Systems and operations",
+      "startDate": "2024-08",
+      "endDate": null,
+      "summary": "Started on admin and grew into running the clinic’s digital side: automating the front desk, moving the clinic onto online booking and payments, and building a central hub the whole team works from.",
+      "highlights": [
+        "TODO: one result in XYZ form (accomplished X, as measured by Y, by doing Z), for example reception time saved per booking.",
+        "TODO: who you work with day to day (owner, reception, therapists) and one example of working through a disagreement or trade-off."
+      ],
+      "stack": ["Next.js", "TypeScript", "Stripe Connect", "Cliniko API"],
+      "caseStudy": "clinic-platform",
+      "approvedForPublic": false
+    },
+    {
+      "company": "SAP",
+      "location": "Citywest, Dublin",
+      "position": "Work experience",
+      "startDate": "2022",
+      "endDate": "2023",
+      "context": "Transition Year",
+      "summary": "Completed SAP’s work experience programme and learned tools and skills used by their staff.",
+      "highlights": [],
+      "stack": []
+    },
+    {
+      "company": "Progress Systems",
+      "location": "Dublin",
+      "position": "Work experience",
+      "startDate": "2022",
+      "endDate": "2023",
+      "context": "Transition Year",
+      "summary": "Two weeks in the office: sat in on management meetings, helped with admin and saw how a software business runs day to day.",
+      "highlights": [],
+      "stack": []
+    },
+    {
+      "company": "St Paul’s College",
+      "location": "Raheny, Dublin",
+      "position": "School IT team",
+      "startDate": "2022",
+      "endDate": "2023",
+      "context": "Transition Year",
+      "summary": "Updated and maintained the school’s laptops every week, and taught older people to use their phones and tablets through the Age Action programme.",
+      "highlights": [],
+      "stack": []
+    }
+  ],
+
+  "suites": [
+    {
+      "id": "clinic",
+      "name": "The clinic suite",
+      "summary": "Three tools built for BodyMed Healthcare. The public demos run as a fictional clinic, Northbank Physio, with made-up patients and data."
+    }
+  ],
+
+  "projects": [
+    {
+      "slug": "clinic-platform",
+      "name": "Clinic platform",
+      "suite": "clinic",
+      "featured": true,
+      "caseStudy": true,
+      "tagline": "Online booking, payments and a staff hub for a real clinic.",
+      "description": "Patients could only book by phone or email, late cancellations and no-shows cost therapists money, and reception tracked payments by hand. I built one system on top of the clinic’s diary (Cliniko) and payments (Stripe). Patients book and pay in a couple of minutes, reception handles refunds, fees and phone bookings from one dashboard, and each therapist is paid straight into their own Stripe account.",
+      "outcome": "TODO: one measured result, for example the share of bookings now made online.",
+      "fact": "Live at book.bodymed.ie since October 2026, taking real bookings and payments every day.",
+      "role": "Sole developer",
+      "client": "BodyMed Healthcare, Clontarf",
+      "liveSince": "2026-10",
+      "stack": ["Next.js", "TypeScript", "Stripe Connect", "Cliniko API", "Redis", "Zod", "Twilio", "Vercel", "GitHub Actions"],
+      "repo": "https://github.com/cianmccaul/clinic-platform-demo",
+      "demo": "https://cian-clinic-demo.vercel.app",
+      "live": "https://book.bodymed.ie",
+      "flow": [
+        { "title": "Patient picks a time", "detail": "Treatment, therapist and slot, on any phone." },
+        { "title": "Slot is held", "detail": "Re-checked against the diary and held for 30 minutes." },
+        { "title": "Pays securely", "detail": "Stripe Checkout, with the card saved for late cancellations." },
+        { "title": "Booked in the diary", "detail": "Appointment created in Cliniko, confirmation emailed." },
+        { "title": "Reception sees it", "detail": "On the dashboard, with payment, notes and actions." }
+      ],
+      "failure": "Slot taken while they paid? They keep the payment and pick another time. Diary down? A full refund, automatically, and the clinic gets an alert. A reconciliation check runs every morning.",
+      "modules": [
+        { "title": "Booking and payments", "detail": "Saved cards; returning patients sign in with an email code." },
+        { "title": "Manage my booking", "detail": "Cancel or reschedule within the 24-hour policy." },
+        { "title": "Reception dashboard", "detail": "Refunds, no-show fees, phone bookings and pay links." },
+        { "title": "Therapists paid directly", "detail": "Stripe Connect pays each therapist’s own account." },
+        { "title": "Invoicing", "detail": "A PDF invoice for every payment, emailed to the patient." },
+        { "title": "Staff hub and help centre", "detail": "Passkey sign-in, timesheets, tasks and guides." },
+        { "title": "Gift vouchers", "detail": "Bought online, sent as PDFs, redeemed at booking." },
+        { "title": "Waitlist", "detail": "Open slots offered to waiting patients by text." }
+      ]
+    },
+    {
+      "slug": "email-triage",
+      "name": "AI email triage",
+      "suite": "clinic",
+      "featured": true,
+      "caseStudy": true,
+      "tagline": "Sorts the clinic inbox, drafts replies and learns from staff edits.",
+      "description": "Sorts clinic email by topic and urgency, drafts replies from the clinic’s own handbook, and learns from the changes staff make before they press send. A red-flag check runs on every email and overrules the AI when a symptom needs a doctor.",
+      "outcome": "TODO: one measured result, for example how often the sorter agrees with staff.",
+      "fact": "37 tests, including one that checks every sample email lands in its expected folder.",
+      "role": "Sole developer",
+      "stack": ["Next.js", "TypeScript", "Llama 3.3 via Groq", "Zod", "Vitest"],
+      "repo": "https://github.com/cianmccaul/email-triage-demo",
+      "demo": "https://cian-email-triage.vercel.app",
+      "image": "email-triage.png",
+      "imageAlt": "An email in the triage demo titled Pins and needles getting worse. One panel explains why it was sorted into Priority, and a safety check says the draft reply tells the patient to contact their GP or emergency department first."
+    },
+    {
+      "slug": "clinic-chatbot",
+      "name": "Clinic chatbot",
+      "suite": "clinic",
+      "featured": true,
+      "caseStudy": false,
+      "tagline": "Answers common questions and points patients to the right physio.",
+      "description": "A chat widget for a physio clinic. It answers common questions, suggests the right physio for back, knee, shoulder or sports injuries, and hands anything else to staff. The replies are plain rules, not AI, so the clinic decides exactly what patients are told.",
+      "fact": "Rule-based on purpose: every answer is predictable, so nothing goes off-script on health advice.",
+      "role": "Sole developer",
+      "stack": ["Python", "Flask", "JavaScript", "pytest"],
+      "repo": "https://github.com/cianmccaul/physio-chatbot",
+      "demo": "https://physio-chatbot.vercel.app",
+      "image": "clinic-chatbot.png",
+      "imageAlt": "The chatbot demo on a fictional clinic’s site. Asked about a back injury, it suggests a physiotherapist and offers a link to book."
+    },
+    {
+      "slug": "jarvis",
+      "name": "Jarvis site monitor",
+      "featured": true,
+      "caseStudy": true,
+      "tagline": "Explains outages in plain English and proposes guarded fixes.",
+      "description": "Checks the sites I look after every 15 minutes. When one goes down it explains the outage in plain English with AI and, if the fix is small and safe, opens a pull request I can approve from my phone.",
+      "outcome": "TODO: one measured result, for example outages caught before a customer reported them.",
+      "fact": "Every AI-proposed fix passes five guard rails enforced in code, not in a prompt.",
+      "role": "Sole developer",
+      "stack": ["Node.js", "GitHub Actions", "Groq", "Playwright", "Vercel"],
+      "repo": "https://github.com/cianmccaul/site-monitor",
+      "guardRails": [
+        { "title": "Never touches main", "detail": "It only ever opens a pull request." },
+        { "title": "One file only", "detail": "A fix that touches more is rejected." },
+        { "title": "Under 15 changed lines", "detail": "Anything bigger is flagged for manual review." },
+        { "title": "Scoped token", "detail": "Access to the monitored sites’ repos only. It can’t modify itself." },
+        { "title": "Fails closed", "detail": "If anything is ambiguous: no pull request, just a note in the email." }
+      ]
+    },
+    {
+      "slug": "designroom",
+      "name": "CM Studio DesignRoom",
+      "featured": false,
+      "caseStudy": false,
+      "tagline": "A showroom where clients pick design components and send a brief.",
+      "description": "A showroom where clients browse design components, see a live preview of their picks and send a brief with a mood board. Briefs are stored in Supabase behind row-level security and reviewed on an admin page.",
+      "stack": ["HTML", "CSS", "JavaScript", "Supabase"],
+      "repo": "https://github.com/cianmccaul/cm-studio-designroom",
+      "live": "https://cm-studio-designroom.vercel.app"
+    },
+    {
+      "slug": "house-prices",
+      "name": "House prices in Ireland",
+      "featured": false,
+      "caseStudy": false,
+      "tagline": "CSO house-price data, 2011 to 2024, region by region.",
+      "description": "My Leaving Certificate Computer Science project. It analyses CSO house-price data from 2011 to 2024 by region: mean, median and mode, the overall change, the best and worst years, and graphs to compare regions.",
+      "stack": ["Python", "Flask", "pandas", "matplotlib"],
+      "repo": "https://github.com/cianmccaul/Irish-house-prices",
+      "live": "https://irish-house-prices.vercel.app"
+    },
+    {
+      "slug": "deme-housepainting",
+      "name": "DEME House Painting",
+      "featured": false,
+      "caseStudy": false,
+      "tagline": "Business website for a real client.",
+      "description": "The business website for DEME House Painting, a real client: a before-and-after gallery, a short video of a finished job and a contact form that emails the business.",
+      "stack": ["HTML", "CSS", "JavaScript", "Resend"],
+      "repo": "https://github.com/cianmccaul/deme-housepainting",
+      "live": "https://demehousepainting.com"
+    }
+  ],
+
+  "education": [
+    {
+      "institution": "Dublin City University",
+      "shortName": "DCU",
+      "area": "BSc in Computer Science",
+      "startDate": "2025-09",
+      "endDate": "2029",
+      "durationYears": 4,
+      "notes": ["TODO: first-year result or notable modules, if you want them shown."]
+    },
+    {
+      "institution": "The Institute of Education",
+      "area": "Leaving Certificate",
+      "startDate": "2023",
+      "endDate": "2025",
+      "notes": []
+    },
+    {
+      "institution": "St Paul’s College, Raheny",
+      "area": "Junior Cycle and Transition Year",
+      "startDate": "2019",
+      "endDate": "2023",
+      "notes": []
+    }
+  ],
+
+  "awards": [
+    {
+      "title": "FIRST LEGO League hackathon",
+      "awarder": "Dublin City University",
+      "date": "2026-11",
+      "summary": "Took part in the FIRST LEGO League hackathon hosted at DCU."
+    }
+  ],
+
+  "interests": [
+    { "name": "Football", "summary": "Eight years with Clontarf FC. Coached kids at Howth Road National School." },
+    { "name": "Volunteering", "summary": "Marshal at St Anne’s Junior Parkrun. Ran the first-year breakfast club." },
+    { "name": "Gym", "summary": "Strength training most weeks." },
+    { "name": "Photography", "summary": "Took the class photos for every year group in school." },
+    { "name": "On stage", "summary": "Was in the school production of Grease in 2023." }
+  ],
+
+  "testimonials": []
+}
