@@ -13,15 +13,15 @@ export const lastUpdated: Date = (() => {
   }
 })();
 
-/**
- * Primary navigation. Only pages that exist are listed: About and CV join when
- * their routes are built.
- */
+/** Primary navigation: the three places a recruiter needs. */
 export const nav = [
-  { label: 'Work', href: '/#work' },
-  { label: 'Experience', href: '/#experience' },
-  { label: 'Contact', href: '/#contact' },
+  { label: 'Work', href: '/#work', match: '/work/' },
+  { label: 'About', href: '/about/', match: '/about/' },
+  { label: 'CV', href: '/cv/', match: '/cv/' },
 ] as const;
+
+/** The generated one-page CV. Built by scripts/build-cv-pdf.mjs. */
+export const cvPdf = (name: string) => `/${name.replace(/\s+/g, '-')}-CV.pdf`;
 
 /** Small inline formatting for strings in resume.json: **bold** only. */
 export const inline = (text: string): string =>

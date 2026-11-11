@@ -1,0 +1,178 @@
+---
+/**
+ * How the site is built. The swatches and motion values below are read from
+ * the same tokens the site uses, and the numbers come from content/quality.json.
+ */
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionRail from '../components/SectionRail.astro';
+import ExternalLink from '../components/ExternalLink.astro';
+import quality from '../../content/quality.json';
+import { breadcrumbs } from '../lib/seo';
+
+const stack = [
+  { part: 'Framework', choice: 'Astro, static output', why: 'Every page is plain HTML built ahead of time. There is no server to maintain and no client-side framework to download.' },
+  { part: 'Content', choice: 'One JSON file and three MDX files', why: 'The home page, CV, PDF, structured data and social images are all generated from content/resume.json, so they can’t disagree.' },
+  { part: 'Styling', choice: 'Tailwind CSS 4 on custom tokens', why: 'Tailwind’s defaults are switched off. A size, gap or colour that isn’t in the token file doesn’t exist as a class.' },
+  { part: 'CV', choice: 'Playwright prints the CV page to PDF', why: 'The PDF is the web page’s print stylesheet, checked on every build to be exactly one page of extractable text.' },
+  { part: 'Images', choice: 'AVIF and WebP at build time', why: 'Screenshots are captured from the public demos by a script and resized for each screen.' },
+  { part: 'Social images', choice: 'Satori, at build time', why: 'One per page, drawn from the same data.' },
+  { part: 'Hosting', choice: 'Static files on a CDN', why: 'The output is a folder. It can move between hosts in minutes.' },
+];
+
+// Class names are written out in full so Tailwind can see them.
+const neutrals = ['bg-n1', 'bg-n2', 'bg-n3', 'bg-n4', 'bg-n5', 'bg-n6', 'bg-n7', 'bg-n8', 'bg-n9', 'bg-n10', 'bg-n11', 'bg-n12'];
+const roles = [
+  { name: 'Canvas', swatch: 'bg-canvas', use: 'The page' },
+  { name: 'Surface', swatch: 'bg-surface', use: 'Cards' },
+  { name: 'Well', swatch: 'bg-well', use: 'Insets and code' },
+  { name: 'Ink', swatch: 'bg-ink', use: 'Text' },
+  { name: 'Muted', swatch: 'bg-muted', use: 'Secondary text' },
+  { name: 'Accent', swatch: 'bg-accent', use: 'Links, focus, the primary action' },
+];
+const motion = [
+  { token: 'Micro', value: '120 ms', use: 'Hover and press' },
+  { token: 'Fast', value: '180 ms', use: 'Toasts, small reveals' },
+  { token: 'Base', value: '240 ms', use: 'Moves on screen' },
+  { token: 'Slow', value: '300 ms', use: 'The ceiling for any interface motion' },
+];
+const kb = (bytes: number) => (bytes < 1024 ? `${bytes} bytes` : `${Math.round(bytes / 1024)} KB`);
+const numbers = [
+  { value: String(quality.lighthouse.performance), label: 'Lighthouse performance' },
+  { value: String(quality.lighthouse.accessibility), label: 'Lighthouse accessibility' },
+  { value: String(quality.lighthouse.bestPractices), label: 'Lighthouse best practices' },
+  { value: String(quality.lighthouse.seo), label: 'Lighthouse SEO' },
+  { value: `${quality.lcpSeconds} s`, label: 'Largest Contentful Paint, slowest page' },
+  { value: String(quality.cls), label: 'Cumulative Layout Shift' },
+  { value: kb(quality.homeJsBytes), label: 'JavaScript on the home page' },
+  { value: kb(quality.fontBytes), label: 'Fonts, one file' },
+];
+const measured = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(quality.measured));
+---
+
+<Base
+  title="Colophon"
+  description="How this site is built: the stack, type, colour and motion, and the numbers it is held to."
+  og="colophon"
+  schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'Colophon', path: '/colophon/' }])]}
+>
+  <PageHeader
+    title="Colophon"
+    lede="How this site is built. The portfolio is a work sample too, so this page shows its working."
+  />
+
+  <SectionRail id="stack" title="Built with">
+    <ul>
+      {
+        stack.map((row) => (
+          <li class="grid gap-x-24 gap-y-4 border-t border-line py-24 lg:grid-cols-9">
+            <p class="text-small text-muted lg:col-span-2 lg:pt-4">{row.part}</p>
+            <div class="lg:col-span-7">
+              <h3 class="text-h3">{row.choice}</h3>
+              <p class="mt-4 max-w-prose text-muted">{row.why}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-8">
+      <ExternalLink href="https://github.com/cianmccaul/portfolio" action>The source is public</ExternalLink>
+    </p>
+  </SectionRail>
+
+  <SectionRail id="type" title="Type">
+    <p class="text-display" aria-hidden="true">Aa</p>
+    <p class="mt-24 max-w-prose">
+      One family: <strong>Inter</strong>, by Rasmus Andersson, under the SIL Open Font License. It is self-hosted as a
+      single variable file, cut down to Latin characters and the weights 400 to 600, with the optical-size axis kept so
+      large headings use the display cut.
+    </p>
+    <p class="mt-16 max-w-prose text-muted">
+      Round quotes and commas are switched on everywhere. Running text also uses a tailed lowercase l, so I, l and 1
+      can’t be confused. Numbers in tables and dates are tabular. Sizes follow a 1.25 scale that grows with the screen.
+    </p>
+  </SectionRail>
+
+  <SectionRail id="colour" title="Colour">
+    <p class="max-w-prose">
+      A 12-step cool neutral and one accent, defined in OKLCH and tuned separately for light and dark. The accent means
+      one thing: this goes somewhere, or this has focus.
+    </p>
+    <ul class="mt-24 grid grid-cols-6 overflow-hidden rounded-sm border border-line sm:grid-cols-12" aria-label="The neutral scale, lightest to darkest in light mode">
+      {neutrals.map((step, i) => <li class:list={['h-64', step]}><span class="sr-only">Neutral {i + 1}</span></li>)}
+    </ul>
+    <ul class="mt-24 grid gap-x-24 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        roles.map((role) => (
+          <li class="flex items-center gap-12">
+            <span class:list={['size-40 shrink-0 rounded-sm border border-line', role.swatch]} />
+            <span>
+              <span class="block font-medium">{role.name}</span>
+              <span class="block text-small text-muted">{role.use}</span>
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </SectionRail>
+
+  <SectionRail id="motion" title="Motion">
+    <p class="max-w-prose">
+      Motion is short and only used for feedback and continuity. Nothing fades in on scroll. With reduced motion switched
+      on in your system settings, the two shortest durations drop to zero and the rest become quick cross-fades.
+    </p>
+    <dl class="mt-24">
+      {
+        motion.map((row) => (
+          <div class="grid grid-cols-2 gap-x-24 border-t border-line py-16 lg:grid-cols-9">
+            <dt class="font-medium lg:col-span-2">{row.token}</dt>
+            <dd class="text-muted tabular-nums lg:col-span-2">{row.value}</dd>
+            <dd class="col-span-2 text-muted lg:col-span-5">{row.use}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </SectionRail>
+
+  <SectionRail id="quality" title="Numbers">
+    <ul class="grid grid-cols-2 gap-x-24 lg:grid-cols-4">
+      {
+        numbers.map((n) => (
+          <li class="border-t border-line py-16">
+            <p class="text-h2 tabular-nums">{n.value}</p>
+            <p class="mt-4 text-small text-muted">{n.label}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-16 max-w-prose text-small text-muted">
+      Measured on <time datetime={quality.measured}>{measured}</time>. {quality.conditions}
+    </p>
+  </SectionRail>
+
+  <SectionRail id="accessibility" title="Accessibility">
+    <div class="grid max-w-prose gap-16">
+      <p>
+        The site aims for WCAG 2.2 AA. An automated axe-core check runs on {quality.axe.routes} pages, each in
+        {quality.axe.configurations} combinations of theme, screen width and reduced motion, and currently reports
+        {quality.axe.violations === 0 ? 'no violations' : `${quality.axe.violations} violations`}.
+      </p>
+      <p class="text-muted">
+        Every page has one main heading, a skip link and visible focus rings. Touch targets are at least 44 pixels. Text
+        is at least 4.5:1 against its background in both themes. The pages work with JavaScript switched off.
+      </p>
+      <p class="text-muted">Automated checks don’t catch everything. If something doesn’t work for you, please email me.</p>
+    </div>
+  </SectionRail>
+
+  <SectionRail id="credits" title="Credits">
+    <ul class="grid max-w-prose gap-8">
+      <li><ExternalLink href="https://rsms.me/inter/">Inter</ExternalLink>, the typeface, by Rasmus Andersson.</li>
+      <li><ExternalLink href="https://lucide.dev">Lucide</ExternalLink>, the icon geometry, under the ISC licence.</li>
+      <li>
+        <ExternalLink href="https://astro.build">Astro</ExternalLink> and
+        <ExternalLink href="https://tailwindcss.com">Tailwind CSS</ExternalLink>, which build it.
+      </li>
+    </ul>
+  </SectionRail>
+</Base>

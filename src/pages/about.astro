@@ -1,0 +1,70 @@
+---
+/**
+ * The longer story. The H1 is the full name, so a search for it lands here.
+ */
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import SectionRail from '../components/SectionRail.astro';
+import Todo from '../components/Todo.astro';
+import Icon from '../components/Icon.astro';
+import portrait from '../assets/cian.jpg';
+import { resume } from '../lib/resume';
+import { profilePage, breadcrumbs } from '../lib/seo';
+
+const { basics } = resume;
+const beyond = resume.interests.filter((interest) => interest.featured);
+---
+
+<Base
+  title="About"
+  description={`About ${basics.name}: ${basics.label}, living in ${basics.location.city}.`}
+  og="about"
+  schema={[profilePage(), breadcrumbs([{ name: 'Home', path: '/' }, { name: 'About', path: '/about/' }])]}
+>
+  <div class="mx-auto grid max-w-page gap-x-24 gap-y-32 px-gutter pt-64 lg:grid-cols-12 lg:pt-96">
+    <div class="lg:col-span-3">
+      <Image
+        src={portrait}
+        alt={`${basics.name} in a navy suit outside O’Reilly Hall, UCD`}
+        width={240}
+        height={240}
+        loading="eager"
+        class="size-128 rounded-md object-cover lg:size-160"
+      />
+      <Todo
+        block
+        text="A high-resolution portrait, 4:5. This one is 240 px square, so it is shown small."
+        class="mt-16"
+      />
+    </div>
+    <div class="lg:col-span-9">
+      <h1 class="text-h1">{basics.name}</h1>
+      <p class="mt-12 text-body-lg text-muted">{basics.label}</p>
+      <div class="mt-32 grid max-w-prose gap-16 text-body-lg">
+        {basics.bio.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <Todo
+        block
+        text="The bio is about 80 words. The target is 150 to 250, in your own words: what you want to work on next, and why."
+        class="mt-16 max-w-prose"
+      />
+      <div class="mt-32 flex flex-wrap gap-12">
+        <a class="btn btn-primary" href="/cv/">View CV</a>
+        <a class="btn btn-secondary" href="/#work">Selected work<Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </div>
+
+  <SectionRail id="beyond" title="Beyond the code">
+    <ul>
+      {
+        beyond.map((interest) => (
+          <li class="grid gap-x-24 gap-y-4 border-t border-line py-24 lg:grid-cols-9">
+            <h3 class="text-h3 lg:col-span-3">{interest.name}</h3>
+            <p class="max-w-prose lg:col-span-6">{interest.summary}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </SectionRail>
+</Base>

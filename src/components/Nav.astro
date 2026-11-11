@@ -11,7 +11,7 @@ import { resume } from '../lib/resume';
 const path = Astro.url.pathname;
 ---
 
-<header class="pointer-events-none sticky top-16 z-40 px-gutter">
+<header class="pointer-events-none sticky top-16 z-40 px-gutter print:hidden">
   <nav
     aria-label="Main"
     class="pointer-events-auto mx-auto flex w-fit items-center rounded-lg border border-line bg-surface p-4 shadow-e2"
@@ -30,7 +30,8 @@ const path = Astro.url.pathname;
           <li>
             <a
               href={item.href}
-              class="flex h-tap items-center rounded-pill px-12 text-small font-medium text-ink transition-colors duration-(--dur-micro) hover:bg-well sm:px-16"
+              aria-current={path.startsWith(item.match) ? 'page' : undefined}
+              class="flex h-tap items-center rounded-pill px-16 text-small font-medium text-ink transition-colors duration-(--dur-micro) hover:bg-well aria-[current]:bg-well"
             >
               {item.label}
             </a>

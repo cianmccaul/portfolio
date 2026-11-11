@@ -1,0 +1,14 @@
+---
+/** The title block shared by the inner pages. */
+interface Props {
+  title: string;
+  lede?: string;
+}
+const { title, lede } = Astro.props;
+---
+
+<header class="mx-auto max-w-page px-gutter pt-64 lg:pt-96">
+  <h1 class="text-h1">{title}</h1>
+  {lede && <p class="mt-12 max-w-prose text-body-lg text-muted">{lede}</p>}
+  <slot />
+</header>
