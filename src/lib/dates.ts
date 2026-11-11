@@ -17,12 +17,17 @@ const EN_DASH = '–';
 interface Parts {
   year: number;
   month?: number; // 1–12
+  day?: number;
 }
 
 export function parse(date: PartialDate): Parts {
-  const match = /^(\d{4})(?:-(\d{2}))?(?:-\d{2})?$/.exec(date);
+  const match = /^(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?$/.exec(date);
   if (!match) throw new Error(`Bad date "${date}": use YYYY, YYYY-MM or YYYY-MM-DD`);
-  return { year: Number(match[1]), month: match[2] ? Number(match[2]) : undefined };
+  return {
+    year: Number(match[1]),
+    month: match[2] ? Number(match[2]) : undefined,
+    day: match[3] ? Number(match[3]) : undefined,
+  };
 }
 
 /** Months since year 0, taking the earliest month a partial date could mean. */
@@ -39,12 +44,16 @@ export function status(start: PartialDate, end: PartialDate | null | undefined, 
   return 'current';
 }
 
-/** "Aug 2024", or "2024" when only the year is known. */
+/** "Aug 2024", "30 Oct 2026", or "2024" when only the year is known. */
 export function formatDate(date: PartialDate, style: 'short' | 'long' = 'short'): string {
-  const { year, month } = parse(date);
+  const { year, month, day } = parse(date);
   if (!month) return String(year);
-  return `${(style === 'long' ? MONTHS_LONG : MONTHS)[month - 1]}${NBSP}${year}`;
+  const name = (style === 'long' ? MONTHS_LONG : MONTHS)[month - 1];
+  return day ? `${day}${NBSP}${name}${NBSP}${year}` : `${name}${NBSP}${year}`;
 }
+
+/** Lower-cases only the first letter, for a label that continues a sentence. */
+export const lowerFirst = (text: string): string => text.charAt(0).toLowerCase() + text.slice(1);
 
 /**
  * "Aug 2024 – Present", "Jan–Sep 2028", "2022–23", "2023–2025".

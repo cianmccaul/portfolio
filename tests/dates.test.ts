@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { availabilityLabel, byRecency, formatDate, formatRange, graduationLabel, status, yearOfStudy, yearOfStudyLabel } from '../src/lib/dates';
+import { availabilityLabel, byRecency, formatDate, formatRange, graduationLabel, lowerFirst, status, yearOfStudy, yearOfStudyLabel } from '../src/lib/dates';
 
 const at = (iso: string) => new Date(`${iso}T12:00:00`);
 const plain = (s: string | null) => s?.replace(/ /g, ' ');
@@ -40,6 +40,10 @@ describe('formatRange', () => {
   it('can drop months so a list of mixed precision lines up', () => {
     expect(formatRange('2025-09', '2029', now, 'year')).toBe('2025–2029');
   });
+  it('shows the day when it is known', () => {
+    expect(plain(formatDate('2026-10-30', 'long'))).toBe('30 October 2026');
+    expect(plain(formatDate('2026-10-30'))).toBe('30 Oct 2026');
+  });
   it('rejects malformed dates', () => {
     expect(() => formatDate('Aug 2024')).toThrow();
   });
@@ -64,6 +68,9 @@ describe('year of study', () => {
 });
 
 describe('labels that change with time', () => {
+  it('keeps month abbreviations capitalised mid-sentence', () => {
+    expect(plain(lowerFirst(graduationLabel('2029-04', at('2026-11-11'))))).toBe('graduating Apr 2029');
+  });
   it('switches from Graduating to Graduated', () => {
     expect(plain(graduationLabel('2029', at('2026-11-11')))).toBe('Graduating 2029');
     expect(plain(graduationLabel('2029', at('2030-01-01')))).toBe('Graduated 2029');
