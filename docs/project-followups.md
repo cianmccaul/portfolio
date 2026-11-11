@@ -73,10 +73,13 @@ A recruiter is unlikely to open GitHub, but an engineer on the interview loop wi
 - [ ] The published figures cover only the first 10 days after launch on 30 October 2026, against a matched window before it. No-shows, late cancellations, fees and total appointments were left out because the sample was too small.
 - [ ] In early January 2027, with about 8 weeks of data, re-run the same matched-window comparison for no-shows and late cancellations. Publish only what the owner approves, as percentages.
 
-## 8. Smaller items
+## 8. Clinic platform demo: update to the dropdown booking flow
+
+- [ ] The live BodyMed patient booking site has used dropdowns for treatment and practitioner since 12 November 2026. `clinic-platform-demo` still shows the older card-based selection. Update the demo to match, so the case study, its screenshots and the demo agree. Then re-run `scripts/capture-work.mjs` here, and re-capture the four `clinic-booking-*` and `clinic-step-*` screenshots, which also show cards.
+
+## 9. Smaller items
 
 - [ ] **Email triage demo:** if the deployed demo has a Groq key, confirm `/api/triage` and `/api/learn` are rate-limited and the key has a spend cap. Without a key it falls back to rules, which is safe.
-- [ ] **Jarvis demo.** A public interactive demo is being built separately. When it has a URL, add it as `demo` on the `jarvis` project in `resume.json`; the card and case study pick up a “Demo” link automatically.
 - [ ] **The demos still use the purple colour wash** the portfolio has dropped (it shows in the email triage demo). Worth removing there too for consistency.
 - [ ] **Links I couldn't reach from my network. Please check by hand:**
   - `https://demehousepainting.com` (the connection failed; `deme-housepainting.vercel.app` works)

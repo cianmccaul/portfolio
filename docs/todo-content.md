@@ -17,7 +17,7 @@ One conversation covers all of this.
   - the therapists are self-employed, and payments go to their own Stripe accounts;
   - staff sign in with passkeys;
   - the clinic previously took online bookings through Jane, with no payment at booking;
-  - the story of the therapists' feedback that led to the dropdowns.
+  - the story of the therapists' feedback that led to the dropdowns on the patient booking site.
 - [ ] **The launch figures.** Set `approvals.bodymedMetrics` to `true` once the owner agrees. That one switch publishes all of these at once:
   - the proof strip's first two figures: 14.5% of appointments paid in advance (up from 0%), and 90% of new online bookings (43 of 48) through the new system, with online volume steady (46 → 48). They push "37 tests" and "15 min" out of the strip; "142 tests" stays;
   - the BodyMed highlight on the home page ("Moved payment from the end of the appointment to booking time…");
@@ -26,6 +26,11 @@ One conversation covers all of this.
   - the two CV lines ("Built a pay-at-booking system… 0% to 14.5%" and "Moved 90% of the clinic's new online bookings…"). The CV has been checked with them in: one page, 92% full.
 - [ ] **Not to be published** (the sample is too small): changes in total appointments, no-shows, late cancellations or fees. See `docs/project-followups.md` for the re-run in January 2027.
 - [ ] **A quote**, if the owner is willing: one or two sentences, with name and role, and their permission. It goes in `testimonials` with `"permission": true` and appears on the home page and in the case study.
+
+## To confirm yourself
+
+- [ ] **First Class Honours.** The site and CV now say "First Class Honours in first year (2025–26)". Check it against your transcript.
+- [ ] **The therapists' reaction to the dropdowns.** The dropdown version of the patient booking site went live on 12 November 2026. Once you know how the therapists found it, add a sentence to the BodyMed highlight in `resume.json` and to the dropdown decision in the clinic case study, then delete both TODOs.
 
 ## Testimonials
 
@@ -37,8 +42,7 @@ One conversation covers all of this.
 
 ## Optional
 
-- [ ] **DCU results.** A first-year result or notable modules (`education[0].notes`), if you want them shown. Leaving Certificate points likewise.
-- [ ] **Jarvis demo link.** When the public demo has a URL, add it as `demo` on the `jarvis` project. The card and case study then show a "Demo" link.
+- [ ] **Leaving Certificate points**, if you want them shown.
 - [ ] **A fourth Jarvis image.** `src/assets/work/jarvis-ai-insight.png` is in the repo but not used: the case study already has three screenshots, and a fourth crowded it.
 
 ## Before launch, not blocking the build
@@ -51,8 +55,7 @@ One conversation covers all of this.
 
 Wording I tidied or chose. Correct anything that's off.
 
-- [ ] **Dropdowns.** The public demo's patient booking pages choose treatment and practitioner with cards, not dropdowns. I've kept your wording ("the first booking flow") and not said which flow the dropdowns are in. If it's the staff booking flow, say so and I'll make it specific.
 - [ ] **Bio.** Now 185 words. The new last paragraph is from your notes; the second paragraph now ends with the lesson from the therapists' feedback.
-- [ ] **CV wording** is shorter than the site in places, to keep one page: the BodyMed description, the dropdown bullet ("Rebuilt booking selection as simple dropdowns…"), the second Rugbytots bullet ("Work with parents…") and the three Transition Year lines.
+- [ ] **CV wording** is shorter than the site in places, to keep one page: the BodyMed description, the dropdown bullet, the second Rugbytots bullet ("Work with parents…") and the three Transition Year lines.
 - [ ] **Rugbytots on the CV** is one entry: "Head Coach (previously Assistant Coach)", Nov 2023 – Present. The site shows both titles with their own dates.
 - [ ] **Graduation** shows as "Graduating Apr 2029". Education still reads "2025–2029", years only, to match the rows below it.
