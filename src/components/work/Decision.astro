@@ -1,0 +1,18 @@
+---
+/** One design decision: what was chosen, what was rejected, and why. */
+interface Props {
+  title: string;
+  rejected: string;
+}
+const { title, rejected } = Astro.props;
+---
+
+<div class="not-prose grid gap-x-24 gap-y-8 border-t border-line py-24 lg:grid-cols-9">
+  <div class="lg:col-span-3">
+    <h3 class="text-h3">{title}</h3>
+    <p class="mt-4 text-small text-muted"><span class="font-medium">Instead of:</span> {rejected}</p>
+  </div>
+  <div class="max-w-prose lg:col-span-6">
+    <slot />
+  </div>
+</div>

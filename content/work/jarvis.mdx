@@ -1,0 +1,108 @@
+---
+order: 3
+description: A site monitor that explains outages in plain English and opens small fix pull requests, with the safety rules enforced in code.
+tldr:
+  problem: I look after a few websites. I wanted to know when one went down before a customer did, understand why without digging through logs, and fix small problems from my phone.
+  approach: Every 15 minutes Jarvis checks each site. When one goes down it asks an AI model what the symptoms most likely mean, emails me a plain-English explanation and, if the fix is small and safe, opens a pull request I can approve with one tap.
+  result: Every AI-proposed fix has to pass five guard rails enforced in code, and a person confirms every merge.
+  resultTodo: One measured result, for example outages caught before a customer reported them.
+team: Solo
+timelineTodo: When you built it, and how long it has been running.
+---
+
+## Context
+
+Jarvis runs on GitHub Actions. A workflow requests each site in `sites.json` every 15 minutes and records whether it’s up, the status code and the response time.
+
+Around that check sit four more pieces:
+
+- **Explanations.** When a site goes down, the symptoms go to an LLM through Groq. A three- to four-sentence explanation with suggested next steps goes into the alert email and the incident log.
+- **Fix pull requests.** If the fix looks small and safe, Jarvis proposes it as a pull request.
+- **A weekly report.** Every Monday, per site: a Google PageSpeed audit, a security-headers check, a Playwright smoke test in a real browser, and a visual comparison against last week’s screenshot to catch layouts that break quietly.
+- **A dashboard.** A small web app, installable on an iPhone home screen, with live status, incident history, past reports and a chat to talk through any incident.
+
+The [public repository](https://github.com/cianmccaul/site-monitor) has its schedules turned off. The live instance runs from a private repo.
+
+## Decisions
+
+<Decision title="Safety rules in code" rejected="Writing the rules into the prompt and hoping">
+  The model can propose a fix. Whether that fix is allowed is decided by code that runs after the model has answered, so a persuasive answer can’t talk its way past the limits.
+</Decision>
+
+<Decision title="Find the file without the model first" rejected="Asking the model to guess straight away">
+  A failing `/api/health` maps to `api/health.js` and a short list of other likely paths. Jarvis tries those, and only asks the model to guess when none exists. A guess that isn’t a single file path is thrown away.
+</Decision>
+
+<Decision title="Fixes as find-and-replace snippets" rejected="Full-file rewrites">
+  The model returns an old snippet and a new one. Every unrelated line, comment and the trailing newline stay untouched. The old snippet has to appear in the file exactly once, or the fix is rejected.
+</Decision>
+
+<Decision title="Alert on a change of state" rejected="Emailing on every failed check">
+  Jarvis only alerts when a site goes from up to down or down to up, so a long outage means one email, not a hundred.
+</Decision>
+
+<Decision title="A confirmation page before merging" rejected="A link that merges when it’s opened">
+  Email scanners follow links automatically. The link in the alert email is signed, expires after 7 days and opens a confirmation page. Nothing merges until I tap “Confirm merge”.
+</Decision>
+
+<Decision title="State in JSON files in the repo" rejected="A database">
+  The workflow commits `status.json` and `incidents.json` back to the repository. That also keeps a full audit trail of every status change.
+</Decision>
+
+## Hardest problem
+
+Letting a model change code on a live site is only acceptable if the worst case is boring. So the fix layer is a row of gates, and every gate fails closed: if anything is ambiguous, there is no pull request, just a note in the email.
+
+<Pipeline
+  caption="From outage to pull request. Any gate that fails ends in a note, never a commit."
+  steps={[
+    { title: 'Is fixing set up for this site?', detail: 'A token scoped only to the monitored sites’ repos. It can’t modify Jarvis itself.', exit: { when: 'Not configured', then: 'Explain the outage. No fix attempted.' } },
+    { title: 'Find the one file', detail: 'Deterministic paths from the failing URL first; the model’s guess only if none match.', exit: { when: 'No single file', then: 'No pull request.' } },
+    { title: 'Ask for a snippet', detail: 'One old snippet, one new snippet, in a fixed format.', exit: { when: 'No confident fix, or wrong format', then: 'No pull request.' } },
+    { title: 'Match exactly once', detail: 'The old snippet must appear in the file once and only once.', exit: { when: 'Missing or repeated', then: 'Fix rejected.' } },
+    { title: 'Count the changed lines', detail: 'The limit is 15.', exit: { when: 'Over the limit', then: 'Flagged for manual review.' } },
+    { title: 'Open a pull request', detail: 'On a new branch. Never a push to main.' },
+    { title: 'A person confirms the merge', detail: 'From the dashboard, or the signed link’s confirmation page.' },
+  ]}
+/>
+
+The last two automated gates are a few lines each:
+
+<Excerpt file="scripts/proposeFix.js" repo="site-monitor">
+
+```js
+  const occurrences = originalContent.split(oldStr).length - 1;
+  if (occurrences !== 1) {
+    return { attempted: false, reason: 'fix rejected: snippet not uniquely found' };
+  }
+
+  const proposedContent = originalContent.replace(oldStr, newStr);
+
+  if (proposedContent === originalContent) {
+    return { attempted: false, reason: 'Proposed content was identical to the original — nothing to fix.' };
+  }
+
+  // Step 4: the hard safety gate. Refuse anything too large, no exceptions.
+  const changedLines = countChangedLines(originalContent, proposedContent);
+  if (changedLines > MAX_CHANGED_LINES) {
+    return {
+      attempted: false,
+      reason: `Proposed fix changes ~${changedLines} lines — over the ${MAX_CHANGED_LINES}-line auto-fix limit. Flagged for manual review instead of opening a PR.`,
+    };
+  }
+```
+
+</Excerpt>
+
+## Results
+
+- Jarvis checks every site **every 15 minutes** and sends a health report **every Monday**.
+- **Five guard rails** sit between the model and a pull request, and a person confirms every merge.
+
+<Todo block text="A measured result from the live instance, with its date range: for example outages caught and explained before a customer reported them, or fix pull requests opened and merged." />
+
+<Todo block text="A screenshot of an alert email, a fix pull request or the dashboard. Jarvis has no public demo, so this page has no image yet." />
+
+## Reflection
+
+<Todo block text="In your own words: what you would do differently if you started again." />

@@ -1,12 +1,21 @@
 ---
-/** Demo, live and code links for a project. Code always goes to the exact repo. */
+/**
+ * Where a project leads: its case study if it has one, then the live site,
+ * demo and code. Code always goes to the exact repository.
+ */
 import ExternalLink from './ExternalLink.astro';
+import Icon from './Icon.astro';
 import type { Project } from '../lib/resume';
 interface Props {
   project: Project;
+  /** Off on the case study itself. */
+  caseStudyLink?: boolean;
+  /** Right-align the links from the lg breakpoint. */
+  end?: boolean;
   class?: string;
 }
-const { project, class: className } = Astro.props;
+const { project, caseStudyLink = true, end = false, class: className } = Astro.props;
+const showCaseStudy = caseStudyLink && project.caseStudy;
 // A real domain is worth showing; a hosting subdomain is just "Live site".
 const liveLabel = (url: string) => {
   const host = new URL(url).host;
@@ -14,28 +23,38 @@ const liveLabel = (url: string) => {
 };
 ---
 
-<ul class:list={['flex flex-wrap gap-x-24', className]}>
+<div class={className}>
   {
-    project.live && (
-      <li>
-        <ExternalLink href={project.live} action>
-          {liveLabel(project.live)}
-        </ExternalLink>
-      </li>
+    showCaseStudy && (
+      <a href={`/work/${project.slug}/`} class="btn btn-secondary">
+        Read the case study<span class="sr-only">: {project.name}</span>
+        <Icon name="arrow-right" />
+      </a>
     )
   }
-  {
-    project.demo && (
-      <li>
-        <ExternalLink href={project.demo} action>
-          Demo<span class="sr-only"> of {project.name}</span>
-        </ExternalLink>
-      </li>
-    )
-  }
-  <li>
-    <ExternalLink href={project.repo} action>
-      Code<span class="sr-only"> for {project.name}</span>
-    </ExternalLink>
-  </li>
-</ul>
+  <ul class:list={['flex flex-wrap gap-x-24', showCaseStudy && 'mt-8', end && 'lg:justify-end']}>
+    {
+      project.live && (
+        <li>
+          <ExternalLink href={project.live} action>
+            {liveLabel(project.live)}
+          </ExternalLink>
+        </li>
+      )
+    }
+    {
+      project.demo && (
+        <li>
+          <ExternalLink href={project.demo} action>
+            Demo<span class="sr-only"> of {project.name}</span>
+          </ExternalLink>
+        </li>
+      )
+    }
+    <li>
+      <ExternalLink href={project.repo} action>
+        Code<span class="sr-only"> for {project.name}</span>
+      </ExternalLink>
+    </li>
+  </ul>
+</div>

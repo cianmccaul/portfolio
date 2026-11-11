@@ -221,6 +221,80 @@
     letter-spacing: var(--text-caption--letter-spacing);
   }
 
+  /* ── Prose ─────────────────────────────────────────────────────────────
+     Long-form writing from MDX: case studies. Measure is capped at 65ch;
+     figures and decision rows opt out with .not-prose and use the full
+     column. */
+  .prose > * + * {
+    margin-top: var(--spacing-16);
+  }
+  .prose > p,
+  .prose > ul,
+  .prose > ol {
+    max-width: var(--container-prose);
+  }
+  .prose > h2 {
+    margin-top: var(--spacing-section);
+    font-size: var(--text-h2);
+    font-weight: var(--text-h2--font-weight);
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+  }
+  .prose > h2:first-child {
+    margin-top: 0;
+  }
+  .prose > h2 + * {
+    margin-top: var(--spacing-24);
+  }
+  .prose > ul {
+    padding-left: var(--spacing-20);
+    list-style: disc;
+  }
+  .prose > ul > li + li {
+    margin-top: var(--spacing-8);
+  }
+  .prose > ul > li::marker {
+    color: var(--color-muted);
+  }
+  /* Links in running text stay underlined: colour alone isn't enough. */
+  .prose :where(p, li) a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+  .prose :not(pre) > code {
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-xs);
+    background-color: var(--color-well);
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  /* ── Code excerpts ─────────────────────────────────────────────────────
+     Shiki's CSS-variables theme, mapped onto three tones from the palette:
+     ink, muted for comments and punctuation, accent for keywords. */
+  .astro-code {
+    --code-foreground: var(--color-ink);
+    --code-background: var(--color-well);
+    --code-token-comment: var(--color-muted);
+    --code-token-punctuation: var(--color-muted);
+    --code-token-keyword: var(--color-accent);
+    --code-token-constant: var(--color-ink);
+    --code-token-string: var(--color-ink);
+    --code-token-string-expression: var(--color-ink);
+    --code-token-function: var(--color-ink);
+    --code-token-parameter: var(--color-ink);
+    --code-token-link: var(--color-accent);
+    padding: var(--spacing-16);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    line-height: 1.6;
+    font-feature-settings: normal;
+    tab-size: 2;
+  }
+
   /* Screenshots sit slightly dimmer on dark surfaces. */
   .media img {
     filter: brightness(var(--image-brightness));
@@ -231,5 +305,26 @@
   .chip,
   .btn {
     border-color: CanvasText;
+  }
+}
+
+/* ── Print ─────────────────────────────────────────────────────────────────
+   Black on white, no chrome, and links in running text spelled out. The CV
+   page adds its own page size and type sizes on top of this. */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    background-color: #fff;
+  }
+  .prose :where(p, li) a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    color: var(--color-muted);
+    font-size: 0.9em;
+  }
+  .astro-code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 }

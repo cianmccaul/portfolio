@@ -1,0 +1,21 @@
+---
+/** A real code excerpt from one of the public repositories, linked to its file. */
+import ExternalLink from '../ExternalLink.astro';
+interface Props {
+  file: string;
+  repo: string;
+  note?: string;
+}
+const { file, repo, note } = Astro.props;
+const href = `https://github.com/cianmccaul/${repo}/blob/HEAD/${file}`;
+---
+
+<figure class="not-prose my-32">
+  <slot />
+  <figcaption class="mt-8 flex flex-wrap items-baseline gap-x-16 text-small text-muted">
+    <ExternalLink href={href} action>
+      <code class="font-mono">{repo}/{file}</code>
+    </ExternalLink>
+    {note && <span>{note}</span>}
+  </figcaption>
+</figure>

@@ -1,0 +1,43 @@
+---
+/**
+ * "On this page" for a case study. A sticky rail on wide screens, a wrapped
+ * row above the content on small ones. Where the browser supports
+ * scroll-target-group (Chromium today), the current section is marked with no
+ * JavaScript; elsewhere the links simply work.
+ */
+interface Props {
+  items: { id: string; label: string }[];
+}
+const { items } = Astro.props;
+---
+
+<nav aria-label="On this page" class="toc lg:sticky lg:top-96">
+  <ul class="flex flex-wrap gap-x-16 lg:flex-col">
+    {
+      items.map((item) => (
+        <li>
+          <a href={`#${item.id}`} class="flex min-h-tap items-center text-small font-medium text-muted lg:min-h-32">
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .toc ul {
+    scroll-target-group: auto;
+  }
+  .toc a {
+    transition: color var(--dur-micro) ease;
+  }
+  .toc a:target-current {
+    color: var(--color-ink);
+  }
+  @media (hover: hover) {
+    .toc a:hover {
+      color: var(--color-ink);
+    }
+  }
+</style>

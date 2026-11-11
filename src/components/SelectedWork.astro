@@ -105,7 +105,7 @@ const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
                 {item.fact && <p class="mt-16 text-small">{item.fact}</p>}
                 {isTodo(item.outcome) && <Todo block text={item.outcome!} class="mt-12" />}
                 <p class="mt-16 text-caption text-muted">{tags(item.stack)}</p>
-                <WorkLinks project={item} class="mt-auto pt-8" />
+                <WorkLinks project={item} class="mt-auto pt-16" />
               </div>
             </article>
           );
@@ -123,7 +123,7 @@ const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
         <p class="mt-16">{jarvis.description}</p>
         {isTodo(jarvis.outcome) && <Todo block text={jarvis.outcome!} class="mt-16" />}
         <p class="mt-16 text-caption text-muted">{tags(jarvis.stack)}</p>
-        <WorkLinks project={jarvis} class="mt-auto pt-8" />
+        <WorkLinks project={jarvis} class="mt-auto pt-16" />
       </div>
       {
         jarvis.guardRails && (

@@ -109,6 +109,8 @@
   --container-page: 1200px;
   --container-prose: 65ch;
   --container-card: 460px; /* the links page */
+  --container-card-wide: 640px; /* the dashboard preview on its case study */
+  --container-sheet: 800px; /* the CV, a sheet of paper on screen */
   --container-display: 11.5em; /* breaks the hero line into two even lines */
 
   /* ── Colour ─────────────────────────────────────────────────────────── */

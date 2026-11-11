@@ -15,12 +15,12 @@ const { text, block = false, class: className } = Astro.props;
 {
   showTodos &&
     (block ? (
-      <p class:list={['flex items-start gap-8 rounded-sm border border-dashed border-warn bg-warn-soft p-12 text-small text-warn', className]}>
+      <p class:list={['flex items-start gap-8 rounded-sm border border-dashed border-warn bg-warn-soft p-12 text-small text-warn print:hidden', className]}>
         <span class="font-semibold">TODO</span>
         <span>{todoText(text)}</span>
       </p>
     ) : (
-      <span class:list={['todo', className]} title={todoText(text)}>
+      <span class:list={['todo print:hidden', className]} title={todoText(text)}>
         TODO
       </span>
     ))

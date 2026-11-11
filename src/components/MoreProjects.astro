@@ -17,7 +17,7 @@ const projects = resume.projects.filter((p) => !p.featured);
             <p class="mt-4 max-w-prose text-muted">{item.description}</p>
             <p class="mt-12 text-caption text-muted">{item.stack.join(' · ')}</p>
           </div>
-          <WorkLinks project={item} class="mt-4 lg:col-span-3 lg:mt-0 lg:justify-end lg:self-start" />
+          <WorkLinks project={item} end class="mt-4 lg:col-span-3 lg:mt-0 lg:self-start" />
         </li>
       ))
     }

@@ -1,0 +1,57 @@
+---
+/**
+ * A sequence where each step can have a way out. All three case studies are
+ * about failing safely, so they share this one diagram: the main path runs
+ * down the left, and each exit says when it's taken and where it ends.
+ * It is an ordered list with real text, so it reflows and reads aloud.
+ */
+import Icon from '../Icon.astro';
+interface Props {
+  caption: string;
+  steps: { title: string; detail: string; exit?: { when: string; then: string } }[];
+}
+const { caption, steps } = Astro.props;
+---
+
+<figure class="pipeline not-prose my-32">
+  <ol>
+    {
+      steps.map((step, i) => (
+        <li class="relative grid gap-x-24 gap-y-8 pb-24 pl-48 last:pb-0 lg:grid-cols-9">
+          <span
+            class="absolute top-0 left-0 grid size-32 place-items-center rounded-pill border border-line-strong bg-canvas text-caption text-muted tabular-nums"
+            aria-hidden="true"
+          >
+            {i + 1}
+          </span>
+          <div class="pt-4 lg:col-span-5">
+            <p class="font-semibold">{step.title}</p>
+            <p class="mt-2 text-small text-muted">{step.detail}</p>
+          </div>
+          {step.exit && (
+            <p class="flex items-start gap-8 self-start rounded-sm bg-well p-12 text-small lg:col-span-4">
+              <Icon name="corner-down-right" class="mt-2 text-muted" />
+              <span>
+                <span class="font-semibold">{step.exit.when}.</span> <span class="text-muted">{step.exit.then}</span>
+              </span>
+            </p>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+  <figcaption class="mt-16 text-small text-muted">{caption}</figcaption>
+</figure>
+
+<style>
+  /* The line joining one step to the next. */
+  li:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    top: var(--spacing-32);
+    bottom: 0;
+    left: calc(var(--spacing-16) - 0.5px);
+    width: 1px;
+    background-color: var(--color-line-strong);
+  }
+</style>
