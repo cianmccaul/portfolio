@@ -166,15 +166,21 @@ const projects = resume.projects.filter((p) => p.caseStudy);
           resume.education.map((school) => (
             <div class="cv-entry">
               <div class="cv-row">
+                {/* Results sit on the same line as the degree, to keep the CV to a page. */}
                 <h3>
-                  {school.area}, <span>{school.institution}</span>
+                  {school.area},{' '}
+                  <span>
+                    {school.institution}
+                    {school.notes
+                      .filter((n) => !isTodo(n))
+                      .map((note) => ` · ${note.replace(/\.$/, '')}`)}
+                  </span>
                 </h3>
                 <p class="cv-date">
                   {formatRange(school.startDate, school.endDate, now, 'year')}
                   {status(school.startDate, school.endDate, now) === 'current' && ' (expected)'}
                 </p>
               </div>
-              {school.notes.filter((n) => !isTodo(n)).map((note) => <p>{note}</p>)}
             </div>
           ))
         }
