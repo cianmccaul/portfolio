@@ -127,9 +127,10 @@
           "cv": false
         },
         {
-          "text": "Therapists found the first booking flow too complicated, so I rebuilt treatment and practitioner selection as simple dropdowns based on their feedback. They found it much easier to use, and I learned that the people who use a system every day know the job better than I do.",
-          "cv": "Rebuilt booking selection as simple dropdowns after therapists found the first flow too complicated."
-        }
+          "text": "Therapists found the first version of the live patient booking site too complicated, so I rebuilt treatment and practitioner selection as simple dropdowns based on their feedback; the dropdown version went live on 12 November 2026. I learned that the people who use a system every day know the job better than I do.",
+          "cv": "Rebuilt the live booking site’s treatment and practitioner selection as simple dropdowns after therapist feedback."
+        },
+        "TODO: confirm how the therapists found the dropdown version after it went live on 12 November 2026 (for example, “They found it much easier to use”), and add it to this highlight and the clinic case study."
       ],
       "stack": [
         "Next.js",
@@ -390,6 +391,7 @@
         "Vercel"
       ],
       "repo": "https://github.com/cianmccaul/site-monitor",
+      "demo": "https://jarvis-demo-sooty.vercel.app",
       "guardRails": [
         {
           "title": "Never touches main",
@@ -409,7 +411,7 @@
         },
         {
           "title": "Fails closed",
-          "detail": "If anything is ambiguous: no pull request, just a note in the email."
+          "detail": "If anything is ambiguous, no pull request is opened and the reason is recorded."
         }
       ],
       "image": "jarvis-dashboard-approve.png",
@@ -474,7 +476,8 @@
       "endDate": "2029-04",
       "durationYears": 4,
       "notes": [
-        "TODO: first-year result or notable modules, if you want them shown."
+        "First Class Honours in first year (2025–26).",
+        "TODO: confirm First Class Honours in first year (2025–26) against your transcript."
       ]
     },
     {

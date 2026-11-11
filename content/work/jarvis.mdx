@@ -24,6 +24,8 @@ Around that check sit four more pieces:
 
 The live instance runs from a private repo. The [public repository](https://github.com/cianmccaul/site-monitor) is a copy with its schedules turned off.
 
+The [interactive demo](https://jarvis-demo-sooty.vercel.app) is simulated, with fictional sites. When it proposes a fix, it runs the real guard-rail rules from `proposeFix.js` against fictional files.
+
 ## Decisions
 
 <Decision title="Safety rules in code" rejected="Writing the rules into the prompt and hoping">
@@ -52,10 +54,10 @@ The live instance runs from a private repo. The [public repository](https://gith
 
 ## Hardest problem
 
-Letting a model change code on a live site is only acceptable if the worst case is boring. So the fix layer is a row of gates, and every gate fails closed: if anything is ambiguous, there is no pull request, just a note in the email.
+Letting a model change code on a live site is only acceptable if the worst case is boring. So the fix layer is a row of gates, and every gate fails closed: if anything is ambiguous, no pull request is opened and the reason is recorded.
 
 <Pipeline
-  caption="From outage to pull request. Any gate that fails ends in a note, never a commit."
+  caption="From outage to pull request. Any gate that fails stops there, with the reason recorded, never a commit."
   steps={[
     { title: 'Is fixing set up for this site?', detail: 'A token scoped only to the monitored sites’ repos. It can’t modify Jarvis itself.', exit: { when: 'Not configured', then: 'Explain the outage. No fix attempted.' } },
     { title: 'Find the one file', detail: 'Deterministic paths from the failing URL first; the model’s guess only if none match.', exit: { when: 'No single file', then: 'No pull request.' } },
