@@ -57,8 +57,8 @@
     font-family: var(--font-sans);
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
-    /* Inter, configured: round quotes and commas (ss03) and a tailed
-       lowercase l (cv05) so "Illinois"-style runs stay legible. */
+    /* Inter, configured: round quotes and commas (ss03), and in running text
+       a tailed lowercase l (cv05) so I, l and 1 can't be confused. */
     font-feature-settings: 'ss03', 'cv05';
     font-optical-sizing: auto;
     -webkit-font-smoothing: antialiased;
@@ -71,6 +71,18 @@
   h3,
   h4 {
     text-wrap: balance;
+  }
+
+  /* Headings and display type keep the plain l: at size, the tail is noise. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  .text-display,
+  .text-h1,
+  .text-h2 {
+    font-feature-settings: 'ss03';
   }
   p,
   li,
