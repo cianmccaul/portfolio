@@ -2,15 +2,16 @@
 order: 3
 description: A site monitor that explains outages in plain English and opens small fix pull requests, with the safety rules enforced in code.
 tldr:
-  problem: I look after a few websites. I wanted to know when one went down before a customer did, understand why without digging through logs, and fix small problems from my phone.
+  problem: I had several sites live and needed to make sure none was left unattended. I wanted to know when one went down before a customer did, understand why without digging through logs, and fix small problems from my phone.
   approach: Every 15 minutes Jarvis checks each site. When one goes down it asks an AI model what the symptoms most likely mean, emails me a plain-English explanation and, if the fix is small and safe, opens a pull request I can approve with one tap.
-  result: Every AI-proposed fix has to pass five guard rails enforced in code, and a person confirms every merge.
-  resultTodo: One measured result, for example outages caught before a customer reported them.
+  result: In deliberate test outages on a sandbox site, Jarvis caught and explained both failures and opened one-line fix pull requests, which I merged after review. Every fix has to pass five guard rails enforced in code.
 team: Solo
-timelineTodo: When you built it, and how long it has been running.
+timeline: Built July 2026; running every 15 minutes since
 ---
 
 ## Context
+
+I had several sites live and needed to make sure none was left unattended. I built Jarvis in July 2026, and it has run continuously since.
 
 Jarvis runs on GitHub Actions. A workflow requests each site in `sites.json` every 15 minutes and records whether it’s up, the status code and the response time.
 
@@ -21,7 +22,7 @@ Around that check sit four more pieces:
 - **A weekly report.** Every Monday, per site: a Google PageSpeed audit, a security-headers check, a Playwright smoke test in a real browser, and a visual comparison against last week’s screenshot to catch layouts that break quietly.
 - **A dashboard.** A small web app, installable on an iPhone home screen, with live status, incident history, past reports and a chat to talk through any incident.
 
-The [public repository](https://github.com/cianmccaul/site-monitor) has its schedules turned off. The live instance runs from a private repo.
+The live instance runs from a private repo. The [public repository](https://github.com/cianmccaul/site-monitor) is a copy with its schedules turned off.
 
 ## Decisions
 
@@ -99,10 +100,25 @@ The last two automated gates are a few lines each:
 - Jarvis checks every site **every 15 minutes** and sends a health report **every Monday**.
 - **Five guard rails** sit between the model and a pull request, and a person confirms every merge.
 
-<Todo block text="A measured result from the live instance, with its date range: for example outages caught and explained before a customer reported them, or fix pull requests opened and merged." />
+To test it end to end, on 11 and 12 September 2026 I broke a sandbox site, Halide, on purpose, twice:
 
-<Todo block text="A screenshot of an alert email, a fix pull request or the dashboard. Jarvis has no public demo, so this page has no image yet." />
+- **A deleted health file.** The health check returned 404.
+- **A missing `await`** that crashed the health check. It returned 500.
+
+Jarvis caught each failure, explained it in plain English, and opened fix pull requests #1 and #2. Each was a one-line change in one file, and I merged both after review.
+
+<Shot
+  file="jarvis-alert-email.png"
+  alt="An alert email from Jarvis. Halide failed its health check with status 500. Under What Jarvis thinks happened, a plain-English explanation of a crash early in the request, then a link to the fix pull request and links to approve and merge it or discuss the incident."
+  caption="The alert from a deliberate test outage on a sandbox site, 12 September 2026."
+/>
+
+<Shot
+  file="jarvis-fix-pr-2.png"
+  alt="Pull request number 2 on GitHub, titled Jarvis auto-fix: Halide down, marked Merged. Its description gives the detected issue and says one file changed, api/health.js, about one line."
+  caption="The fix Jarvis opened: one file, one line (a missing await), merged after review."
+/>
 
 ## Reflection
 
-<Todo block text="In your own words: what you would do differently if you started again." />
+I built it to run for free on Groq. That kept costs at zero, but the explanations and fixes are limited by the model. I’d now spend a little on a stronger one.

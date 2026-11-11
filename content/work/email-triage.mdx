@@ -1,18 +1,19 @@
 ---
 order: 2
-description: An inbox assistant for a clinic that sorts email, drafts replies and learns from staff, with a safety check the AI can’t overrule.
+description: A prototype inbox assistant for a clinic that sorts email, drafts replies and learns from staff, with a safety check the AI can’t overrule.
 tldr:
-  problem: A clinic’s reception inbox mixes new injuries, questions for therapists, admin and spam, and a few of those emails describe symptoms that need a doctor, not a physio appointment.
-  approach: I built an assistant that sorts each email into Priority, Therapists, Admin or Spam, explains why, drafts a reply from the clinic’s own handbook and learns from the edits staff make. An AI model does the sorting, built-in rules are the fallback, and a safety check runs on every email.
-  result: 37 tests, including one that checks every sample and test email lands in its expected folder.
-  resultTodo: One measured result, for example how often the sorter agrees with staff.
+  problem: Some emails were slipping through the gaps in the clinic’s shared inbox, which mixes new injuries, questions for therapists, admin and spam. A few of those emails describe symptoms that need a doctor, not a physio appointment.
+  approach: I built a prototype that sorts each email into Priority, Therapists, Admin or Spam, explains why, drafts a reply from the clinic’s own handbook and learns from the edits staff make. An AI model does the sorting, built-in rules are the fallback, and a safety check runs on every email.
+  result: Sorted all 12 labelled test emails into the right folder on repeated runs, including every urgent-symptom email and the cases built to trick a keyword filter. A working prototype, tested on sample emails; it never went into daily use.
 team: Solo
-timelineTodo: When you built it, and for how long.
+timeline: 3 weeks, March 2026
 ---
 
 ## Context
 
-I built this for a physiotherapy clinic in Dublin. The version the clinic used pulled email from Outlook and stored it in Supabase.
+Some emails were slipping through the gaps in the clinic’s shared inbox, so I built a tool to sort and prioritise them. I built it over three weeks in March 2026, for a physiotherapy clinic in Dublin. The version I built for the clinic pulled email from Outlook and stored it in Supabase.
+
+It is a working prototype, tested on sample emails. It was never adopted for daily use.
 
 The [public demo](https://cian-email-triage.vercel.app) keeps the sorting, safety and learning logic and replaces the mailbox with sample and test emails, so anyone can run it without access to real patient data. The clinic in the demo, Northbank Physio, is fictional, and every patient and email is made up.
 
@@ -20,8 +21,6 @@ Two constraints shaped it:
 
 - **It’s a health setting.** New numbness or weakness, chest pain, bladder or bowel changes, or not being able to bear weight need a GP or an emergency department. Offering those patients a physio slot would be the wrong answer.
 - **Staff stay in charge.** The assistant drafts; a person reads, edits and sends.
-
-<Todo block text="How the clinic handled its inbox before this, and what prompted you to build it." />
 
 ## Decisions
 
@@ -105,12 +104,12 @@ export async function triageEmail(
 
 ## Results
 
-- **37 tests** cover the sorter, the safety check, parsing of the model’s answer and learning from edits.
+- **Sorted all 12 labelled test emails into the right folder on repeated runs**, including every urgent-symptom email and the cases built to trick a keyword filter.
+- **37 tests pass**, covering the sorter, the safety check, parsing of the model’s answer and learning from edits.
 - One test checks that **every test email and sample email lands in its expected folder**, so a change to the sorter that breaks a case fails straight away.
 - The demo runs with **no API keys**: without one, the rule-based sorter does the work.
-
-<Todo block text="A measured result, for example: of N real or labelled emails, the AI sorter matched staff on X%, against Y% for the rules alone." />
+- It is a prototype: it has been tested on sample emails, not used day to day.
 
 ## Reflection
 
-<Todo block text="In your own words: what you would do differently if you started again." />
+It worked on test emails but never went into daily use. Next time I’d agree with reception how they’d use it and run a small pilot before building.

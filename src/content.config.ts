@@ -19,6 +19,8 @@ const work = defineCollection({
       result: z.string(),
       /** What the result line is still missing. Shown in draft builds only. */
       resultTodo: z.string().optional(),
+      /** A result that is written but waiting for a sign-off (see approvals in resume.json). */
+      resultPending: z.object({ text: z.string(), approval: z.enum(['bodymedMetrics']) }).optional(),
     }),
     team: z.string(),
     timeline: z.string().optional(),
