@@ -1,0 +1,129 @@
+---
+/**
+ * The page behind the QR code on the business card. Its URL
+ * (/links/index.html) is printed, so this file must not move.
+ */
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import portrait from '../../assets/cian.jpg';
+import { profile, project, resume } from '../../lib/resume';
+import { formatRange, status } from '../../lib/dates';
+import { now } from '../../lib/site';
+
+const { basics, logistics } = resume;
+const linkedin = profile('LinkedIn');
+const github = profile('GitHub');
+const clinic = project('clinic-platform');
+
+const window = status(logistics.availableFrom, logistics.availableUntil, now);
+const available =
+  window === 'upcoming'
+    ? `Open to internships · ${formatRange(logistics.availableFrom, logistics.availableUntil, now)}`
+    : window === 'current'
+      ? 'Open to internships now'
+      : null;
+
+const links = [
+  { href: '/', icon: 'layout', title: 'Portfolio', detail: 'My work, experience and education', primary: true },
+  linkedin && { href: linkedin.url, icon: 'linkedin', title: 'LinkedIn', detail: 'Connect with me' },
+  { href: `mailto:${basics.email}`, icon: 'mail', title: 'Email', detail: basics.email },
+  github && { href: github.url, icon: 'github', title: 'GitHub', detail: 'Code for my projects' },
+  clinic.live && {
+    href: clinic.live,
+    icon: 'calendar-check',
+    title: 'Clinic booking system',
+    detail: 'The live booking site I built for BodyMed',
+  },
+].filter((link) => !!link) as { href: string; icon: 'layout'; title: string; detail: string; primary?: boolean }[];
+
+// A vCard built at build time, so "Save my contact" works without JavaScript.
+const vcard = [
+  'BEGIN:VCARD',
+  'VERSION:3.0',
+  `N:${basics.name.split(' ').reverse().join(';')};;;`,
+  `FN:${basics.name}`,
+  `TITLE:${basics.label}`,
+  `EMAIL;TYPE=INTERNET:${basics.email}`,
+  `URL:${basics.url}`,
+  linkedin && `X-SOCIALPROFILE;TYPE=linkedin:${linkedin.url}`,
+  `ADR;TYPE=HOME:;;;${basics.location.city};;;Ireland`,
+  'END:VCARD',
+]
+  .filter(Boolean)
+  .join('\r\n');
+---
+
+<Base
+  title={`${basics.name} · Links`}
+  description={`Portfolio, LinkedIn, GitHub and email for ${basics.name}.`}
+  chrome={false}
+>
+  <div class="mx-auto max-w-card px-gutter py-40">
+    <div class="rounded-lg border border-line bg-surface p-16 shadow-e2">
+      <div class="px-8 pt-16 pb-24 text-center">
+        <Image
+          src={portrait}
+          alt={basics.name}
+          width={96}
+          height={96}
+          densities={[1, 2]}
+          loading="eager"
+          class="mx-auto size-96 rounded-md object-cover"
+        />
+        <h1 class="mt-16 text-h2">{basics.name}</h1>
+        <p class="mx-auto mt-8 max-w-prose text-muted">{basics.label}. {basics.headline}</p>
+        {
+          available && (
+            <p class="mt-16">
+              <span class="chip">{available}</span>
+            </p>
+          )
+        }
+      </div>
+
+      <ul class="grid gap-8">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class:list={[
+                  'flex min-h-64 items-center gap-12 rounded-sm p-8 pr-16 transition-colors duration-(--dur-micro)',
+                  link.primary ? 'bg-accent text-accent-ink hover:bg-accent-strong' : 'bg-well hover:bg-well-strong',
+                ]}
+              >
+                <span
+                  class:list={[
+                    'grid size-tap shrink-0 place-items-center rounded-xs',
+                    link.primary ? 'bg-accent-ink text-accent' : 'border border-line bg-surface text-accent',
+                  ]}
+                >
+                  <Icon name={link.icon} size={20} />
+                </span>
+                <span class="min-w-0">
+                  <span class="block font-semibold">{link.title}</span>
+                  <span class:list={['block text-small break-words', !link.primary && 'text-muted']}>{link.detail}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-16 grid grid-cols-2 gap-8">
+        <a
+          class="btn btn-secondary"
+          href={`data:text/vcard;charset=utf-8,${encodeURIComponent(vcard)}`}
+          download={`${basics.name.replace(/\s+/g, '-')}.vcf`}
+        >
+          Save my contact
+        </a>
+        <button type="button" class="btn btn-secondary" data-copy={basics.email} data-copied="Email copied">
+          Copy email
+        </button>
+      </div>
+    </div>
+    <p class="mt-24 text-center text-small text-muted">{basics.name} · {basics.location.city}</p>
+  </div>
+</Base>
