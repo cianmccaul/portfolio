@@ -73,6 +73,8 @@ const schema = z.object({
       description: z.string(),
       outcome: z.string().optional(),
       fact: z.string().optional(),
+      // Factual bullets for the CV and case-study header.
+      highlights: z.array(z.string()).optional(),
       role: z.string().optional(),
       client: z.string().optional(),
       liveSince: partialDate.optional(),
@@ -103,7 +105,8 @@ const schema = z.object({
   ),
 
   awards: z.array(z.object({ title: z.string(), awarder: z.string(), date: partialDate, summary: z.string() })),
-  interests: z.array(z.object({ name: z.string(), summary: z.string() })),
+  skills: z.array(z.object({ name: z.string(), keywords: z.array(z.string()).min(1) })),
+  interests: z.array(z.object({ name: z.string(), summary: z.string(), featured: z.boolean().optional() })),
   testimonials: z.array(
     z.object({ quote: z.string(), name: z.string(), role: z.string(), company: z.string(), permission: z.literal(true) }),
   ),
