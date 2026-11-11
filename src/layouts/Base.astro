@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import fontUrl from '../assets/fonts/InterVariable-latin.woff2?url';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Toast from '../components/Toast.astro';
+import { resume } from '../lib/resume';
+
+interface Props {
+  title: string;
+  description: string;
+  /** The links page is a standalone card: no nav or footer. */
+  chrome?: boolean;
+}
+
+const { title, description, chrome = true } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? resume.basics.url);
+---
+
+<!doctype html>
+<html lang="en-IE">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfcfd" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0d0f" />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="btn btn-primary absolute top-8 left-8 z-50 -translate-y-96 focus-visible:translate-y-0"
+    >
+      Skip to content
+    </a>
+    {chrome && <Nav />}
+    <main id="main" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    {chrome && <Footer />}
+    <Toast />
+  </body>
+</html>

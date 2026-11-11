@@ -1,0 +1,57 @@
+---
+/**
+ * Contact and footer in one: the email, large, with a copy button; the two
+ * profiles recruiters use; and when the site last changed (from git).
+ */
+import ExternalLink from './ExternalLink.astro';
+import Icon from './Icon.astro';
+import { resume } from '../lib/resume';
+import { formatDate, status } from '../lib/dates';
+import { lastUpdated, now } from '../lib/site';
+
+const { basics, logistics } = resume;
+const window = status(logistics.availableFrom, logistics.availableUntil, now);
+const role = logistics.targetRole.toLowerCase().replace(/intern$/, 'internships');
+const open =
+  window === 'upcoming'
+    ? `Open to ${role} from ${formatDate(logistics.availableFrom, 'long')}.`
+    : window === 'current'
+      ? `Open to ${role} now.`
+      : null;
+const updated = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long', year: 'numeric' }).format(lastUpdated);
+---
+
+<footer id="contact" aria-labelledby="contact-title" class="mx-auto max-w-page px-gutter pt-section pb-48">
+  <div class="grid gap-x-24 gap-y-24 lg:grid-cols-12">
+    <h2 id="contact-title" class="text-h2 lg:col-span-3">Contact</h2>
+    <div class="lg:col-span-9">
+      {open && <p class="max-w-prose text-body-lg text-muted">{open}</p>}
+      <p class="mt-16 flex flex-wrap items-center gap-x-16 gap-y-12">
+        <a href={`mailto:${basics.email}`} class="inline-flex min-h-tap items-center text-h2 break-all underline decoration-line-strong decoration-1 underline-offset-8 transition-colors duration-(--dur-micro) hover:decoration-ink">
+          {basics.email}
+        </a>
+        <button type="button" class="btn btn-secondary" data-copy={basics.email} data-copied="Email copied">
+          <Icon name="copy" />Copy
+        </button>
+      </p>
+      <ul class="mt-16 flex flex-wrap gap-x-24">
+        {
+          basics.profiles.map((p) => (
+            <li>
+              <ExternalLink href={p.url} action>
+                {p.network}
+              </ExternalLink>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-64 flex flex-wrap justify-between gap-x-24 gap-y-4 border-t border-line pt-24 text-small text-muted">
+    <p>{basics.name} · {basics.location.city}</p>
+    <p>
+      Last updated <time datetime={lastUpdated.toISOString().slice(0, 10)}>{updated}</time>
+    </p>
+  </div>
+</footer>

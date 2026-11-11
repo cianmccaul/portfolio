@@ -1,0 +1,14 @@
+---
+import Icon from './Icon.astro';
+interface Props {
+  href: string;
+  /** Standalone links get a 44 px touch target. */
+  action?: boolean;
+  class?: string;
+}
+const { href, action = false, class: className } = Astro.props;
+---
+
+<a href={href} class:list={['link', action ? 'link-action' : 'inline-flex items-center gap-2', className]}>
+  <slot /><Icon name="arrow-up-right" size={16} />
+</a>

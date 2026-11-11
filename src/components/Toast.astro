@@ -1,0 +1,45 @@
+---
+/**
+ * Copy-to-clipboard with a confirmation. Any element with data-copy copies its
+ * value; the toast is a polite live region so screen readers hear it too.
+ * Without JavaScript the same controls are plain links to the contact section.
+ */
+---
+
+<div
+  id="toast"
+  role="status"
+  aria-live="polite"
+  class="pointer-events-none fixed inset-x-0 bottom-24 z-50 flex justify-center px-gutter"
+>
+  <p
+    class="translate-y-8 rounded-sm bg-ink px-16 py-12 text-small font-medium text-canvas opacity-0 shadow-e3 transition-[opacity,transform] duration-(--dur-fast) ease-out data-[open]:translate-y-0 data-[open]:opacity-100"
+  >
+  </p>
+</div>
+
+<script>
+  const message = document.querySelector<HTMLElement>('#toast p');
+  let timer: number | undefined;
+
+  function toast(text: string) {
+    if (!message) return;
+    message.textContent = text;
+    message.dataset.open = '';
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => delete message.dataset.open, 2400);
+  }
+
+  document.addEventListener('click', async (event) => {
+    const trigger = (event.target as Element | null)?.closest<HTMLElement>('[data-copy]');
+    if (!trigger) return;
+    event.preventDefault();
+    const value = trigger.dataset.copy ?? '';
+    try {
+      await navigator.clipboard.writeText(value);
+      toast(trigger.dataset.copied ?? 'Copied');
+    } catch {
+      toast(`Couldn’t copy. It’s ${value}`);
+    }
+  });
+</script>

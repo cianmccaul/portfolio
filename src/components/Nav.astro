@@ -1,0 +1,42 @@
+---
+/**
+ * Floating navigation. This is the solid tier: it has to look finished on its
+ * own, because the glass skin (phase 3) is optional and can be switched off.
+ * The header ignores pointer events so only the pill itself is interactive.
+ */
+import Monogram from './Monogram.astro';
+import { nav } from '../lib/site';
+import { resume } from '../lib/resume';
+
+const path = Astro.url.pathname;
+---
+
+<header class="pointer-events-none sticky top-16 z-40 px-gutter">
+  <nav
+    aria-label="Main"
+    class="pointer-events-auto mx-auto flex w-fit items-center rounded-lg border border-line bg-surface p-4 shadow-e2"
+  >
+    <a
+      href="/"
+      aria-label={`${resume.basics.name}, home`}
+      aria-current={path === '/' ? 'page' : undefined}
+      class="grid size-tap place-items-center rounded-pill"
+    >
+      <Monogram size={32} />
+    </a>
+    <ul class="flex items-center">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="flex h-tap items-center rounded-pill px-12 text-small font-medium text-ink transition-colors duration-(--dur-micro) hover:bg-well sm:px-16"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

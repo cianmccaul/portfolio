@@ -1,0 +1,27 @@
+---
+/**
+ * A visible marker for content that hasn't been written yet. Draft builds
+ * only: production leaves the line or section out instead.
+ */
+import { showTodos, todoText } from '../lib/resume';
+interface Props {
+  text: string;
+  block?: boolean;
+  class?: string;
+}
+const { text, block = false, class: className } = Astro.props;
+---
+
+{
+  showTodos &&
+    (block ? (
+      <p class:list={['flex items-start gap-8 rounded-sm border border-dashed border-warn bg-warn-soft p-12 text-small text-warn', className]}>
+        <span class="font-semibold">TODO</span>
+        <span>{todoText(text)}</span>
+      </p>
+    ) : (
+      <span class:list={['todo', className]} title={todoText(text)}>
+        TODO
+      </span>
+    ))
+}
