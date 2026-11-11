@@ -8,12 +8,13 @@ import Experience from '../components/Experience.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Education from '../components/Education.astro';
 import { resume } from '../lib/resume';
+import { profilePage } from '../lib/seo';
 
 const { basics } = resume;
 const description = `${basics.name}, ${basics.label}. ${basics.summary.replace(/\*\*/g, '')}`;
 ---
 
-<Base title={`${basics.name} · ${basics.label}`} description={description}>
+<Base title={`${basics.name} · ${basics.label}`} description={description} og="home" schema={[profilePage()]}>
   <Hero />
   <ProofStrip />
   <SelectedWork />

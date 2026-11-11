@@ -5,16 +5,27 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Toast from '../components/Toast.astro';
 import { resume } from '../lib/resume';
+import { absolute } from '../lib/seo';
 
 interface Props {
+  /** The page's own title. The site name is added after it. */
   title: string;
   description: string;
+  /** Name of the build-time Open Graph image in /og/. */
+  og?: string;
+  /** JSON-LD objects for this page. */
+  schema?: object[];
   /** The links page is a standalone card: no nav or footer. */
   chrome?: boolean;
+  noindex?: boolean;
 }
 
-const { title, description, chrome = true } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? resume.basics.url);
+const { title, description, og = 'home', schema = [], chrome = true, noindex = false } = Astro.props;
+const { name } = resume.basics;
+// The home page leads with the name; every other page ends with it.
+const fullTitle = title.startsWith(name) ? title : `${title} · ${name}`;
+const canonical = absolute(Astro.url.pathname);
+const image = absolute(`/og/${og}.png`);
 ---
 
 <!doctype html>
@@ -22,18 +33,35 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? resume.basics.url);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="preload" href={fontUrl} as="font" type="font/woff2" crossorigin />
+
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfcfd" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0d0f" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_IE" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {schema.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
   </head>
   <body>
     <a
       href="#main"
-      class="btn btn-primary absolute top-8 left-8 z-50 -translate-y-96 focus-visible:translate-y-0"
+      class="btn btn-primary absolute top-8 left-8 z-50 -translate-y-96 focus-visible:translate-y-0 print:hidden"
     >
       Skip to content
     </a>
