@@ -42,6 +42,14 @@ try {
   throw new Error('dist/cv/index.html not found. Run "npm run build" first.');
 }
 
+// Must match the @page margins in src/pages/cv.astro.
+const MARGIN_X_MM = 15;
+const MARGIN_Y_MM = 11;
+// Text metrics vary by a few percent between machines (this once fit on one
+// page locally and spilled onto two in CI), so some of the page must stay empty.
+const MAX_FILL = 0.96;
+
+let layout;
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage();
@@ -49,6 +57,18 @@ try {
   await page.goto(`${origin}/cv/`, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   await page.pdf({ path: output, format: 'A4', preferCSSPageSize: true, tagged: true });
+
+  // How full is the page? Text metrics differ slightly between machines, so a
+  // CV that only just fits here can spill onto a second page somewhere else.
+  // Lay it out at the printable width and compare its height with the page's.
+  const printable = { width: 210 - 2 * MARGIN_X_MM, height: 297 - 2 * MARGIN_Y_MM };
+  const px = (mm) => (mm / 25.4) * 96;
+  await page.setViewportSize({ width: Math.round(px(printable.width)), height: 1200 });
+  layout = await page.evaluate(() => ({
+    height: document.querySelector('.cv').getBoundingClientRect().height,
+    fonts: [...document.fonts].filter((face) => face.status === 'loaded').map((face) => face.family),
+  }));
+  layout.fill = layout.height / px(printable.height);
 } finally {
   await browser.close();
   server.close();
@@ -68,12 +88,21 @@ for (const expected of [resume.basics.name, resume.basics.email, 'Experience', '
   if (!text.includes(expected)) problems.push(`"${expected}" is missing from the extracted text.`);
 }
 if (/TODO/.test(text)) problems.push('A TODO leaked into the PDF.');
+if (!layout.fonts.some((family) => family.includes('Inter Variable'))) problems.push('Inter did not load, so the PDF is set in a fallback font.');
+if (layout.fill > MAX_FILL) {
+  problems.push(
+    `The CV fills ${Math.round(layout.fill * 100)}% of the page. Keep it under ${MAX_FILL * 100}% so it stays on one page everywhere: shorten a bullet or remove a line.`,
+  );
+}
 
 if (problems.length > 0) {
   console.error(`${fileName} failed its checks:\n- ${problems.join('\n- ')}`);
+  console.error(`(${pdf.numPages} page(s), ${Math.round(layout.fill * 100)}% full, fonts loaded: ${layout.fonts.join(', ') || 'none'})`);
   process.exit(1);
 }
 
 await copyFile(output, join(dist, fileName));
 const { size } = await stat(output);
-console.log(`${fileName}: 1 page, ${Math.round(size / 1024)} KB, ${text.trim().split(/\s+/).length} words of extractable text.`);
+console.log(
+  `${fileName}: 1 page (${Math.round(layout.fill * 100)}% full), ${Math.round(size / 1024)} KB, ${text.trim().split(/\s+/).length} words of extractable text.`,
+);
