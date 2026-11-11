@@ -50,7 +50,9 @@ const MARGIN_Y_MM = 11;
 const MAX_FILL = 0.96;
 
 let layout;
-const browser = await chromium.launch();
+// Without this, Linux font hinting settings change glyph widths from one
+// machine to the next, and with them where lines wrap.
+const browser = await chromium.launch({ args: ['--font-render-hinting=none'] });
 try {
   const page = await browser.newPage();
   await page.emulateMedia({ media: 'print' });
