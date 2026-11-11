@@ -1,0 +1,222 @@
+/*
+ * Design tokens — the core of the site (master report, section 9).
+ *
+ * Everything visual resolves to a value in this file. Tailwind's own defaults
+ * are switched off below, so a size, colour, gap or radius that isn't on the
+ * scale simply doesn't exist as a class.
+ *
+ * Colours are OKLCH and use light-dark(), so light and dark are defined side
+ * by side and follow `color-scheme` (system by default, or forced with
+ * <html data-theme="light|dark">).
+ */
+
+@theme {
+  /* ── Switch off Tailwind's defaults ─────────────────────────────────── */
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --font-weight-*: initial;
+  --tracking-*: initial;
+  --leading-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+  --blur-*: initial;
+  --ease-*: initial;
+  --animate-*: initial;
+  --container-*: initial;
+  --spacing: initial;
+
+  /* ── Type ───────────────────────────────────────────────────────────── */
+  /* One family. Inter Variable, self-hosted, with a metric-matched fallback
+     so the swap doesn't move anything. Mono is system-only and reserved for
+     code, metrics and <kbd>. */
+  --font-sans: 'Inter Variable', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* ~1.25 scale, fluid between 360 and 1280 px viewports.
+     size · line-height · tracking · weight, exactly as report 9.1. */
+  --text-display: clamp(2.5rem, 1.7174rem + 3.4783vw, 4.5rem); /* 40 → 72 */
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 600;
+
+  --text-h1: clamp(2rem, 1.6087rem + 1.7391vw, 3rem); /* 32 → 48 */
+  --text-h1--line-height: 1.08;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h1--font-weight: 600;
+
+  --text-h2: clamp(1.5rem, 1.3043rem + 0.8696vw, 2rem); /* 24 → 32 */
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.015em;
+  --text-h2--font-weight: 600;
+
+  --text-h3: clamp(1.1875rem, 1.1141rem + 0.3261vw, 1.375rem); /* 19 → 22 */
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 500;
+
+  --text-body-lg: clamp(1.125rem, 1.0761rem + 0.2174vw, 1.25rem); /* 18 → 20 */
+  --text-body-lg--line-height: 1.55;
+  --text-body-lg--letter-spacing: -0.005em;
+  --text-body-lg--font-weight: 400;
+
+  --text-body: clamp(1rem, 0.9755rem + 0.1087vw, 1.0625rem); /* 16 → 17 */
+  --text-body--line-height: 1.6;
+  --text-body--letter-spacing: 0em;
+  --text-body--font-weight: 400;
+
+  --text-small: 0.875rem; /* 14 */
+  --text-small--line-height: 1.5;
+  --text-small--letter-spacing: 0em;
+
+  --text-caption: clamp(0.75rem, 0.7255rem + 0.1087vw, 0.8125rem); /* 12 → 13 */
+  --text-caption--line-height: 1.4;
+  --text-caption--letter-spacing: 0.02em;
+  --text-caption--font-weight: 500;
+
+  /* ── Space ──────────────────────────────────────────────────────────── */
+  /* The 4/8 scale from report 9.2, named by pixel value: `gap-24` is 24 px.
+     Nothing off the scale compiles. */
+  --spacing-0: 0px;
+  --spacing-2: 2px;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+  --spacing-128: 128px;
+  --spacing-160: 160px;
+
+  --spacing-px: 1px;
+  --spacing-tap: 44px; /* minimum touch target */
+  --spacing-gutter: clamp(16px, 5vw, 48px); /* page margin */
+  --spacing-section: clamp(64px, 10vw, 160px); /* between sections */
+
+  --container-page: 1200px;
+  --container-prose: 65ch;
+  --container-card: 460px; /* the links page */
+  --container-display: 11.5em; /* breaks the hero line into two even lines */
+
+  /* ── Colour ─────────────────────────────────────────────────────────── */
+  /* 12-step cool neutral, hue 250. Steps follow the usual roles:
+     1–2 backgrounds, 3–5 component fills, 6–8 borders, 9–10 solids, 11–12 text. */
+  --color-n1: light-dark(oklch(0.99 0.002 250), oklch(0.16 0.005 250));
+  --color-n2: light-dark(oklch(0.975 0.003 250), oklch(0.2 0.006 250));
+  --color-n3: light-dark(oklch(0.955 0.004 250), oklch(0.235 0.007 250));
+  --color-n4: light-dark(oklch(0.935 0.005 250), oklch(0.265 0.008 250));
+  --color-n5: light-dark(oklch(0.91 0.006 250), oklch(0.295 0.009 250));
+  --color-n6: light-dark(oklch(0.88 0.007 250), oklch(0.33 0.01 250));
+  --color-n7: light-dark(oklch(0.83 0.008 250), oklch(0.39 0.011 250));
+  --color-n8: light-dark(oklch(0.74 0.01 250), oklch(0.48 0.012 250));
+  --color-n9: light-dark(oklch(0.6 0.012 250), oklch(0.58 0.012 250));
+  --color-n10: light-dark(oklch(0.55 0.012 250), oklch(0.64 0.012 250));
+  --color-n11: light-dark(oklch(0.45 0.01 250), oklch(0.74 0.01 250));
+  --color-n12: light-dark(oklch(0.2 0.01 250), oklch(0.96 0.003 250));
+
+  /* Roles. Components use these, never the raw steps. */
+  --color-canvas: var(--color-n1);
+  --color-surface: light-dark(oklch(1 0 0), oklch(0.2 0.006 250)); /* cards */
+  --color-well: light-dark(oklch(0.965 0.004 250), oklch(0.235 0.007 250)); /* insets, stages */
+  --color-well-strong: var(--color-n4); /* a well, hovered */
+  --color-line: var(--color-n5); /* hairlines */
+  --color-line-strong: var(--color-n7); /* control borders */
+  --color-ink: var(--color-n12);
+  --color-muted: var(--color-n11);
+
+  /* One accent: deep teal, hue 200. Used for the primary action, links,
+     focus and selection, nothing decorative. The report's oklch(0.6 0.12 200)
+     is 3.8:1 against white, so light mode sits at L 0.52 (5.2:1); dark mode
+     lifts and desaturates it. */
+  --color-accent: light-dark(oklch(0.52 0.085 200), oklch(0.76 0.09 200));
+  --color-accent-strong: light-dark(oklch(0.45 0.078 200), oklch(0.84 0.09 200)); /* hover, press */
+  --color-accent-ink: light-dark(oklch(1 0 0), oklch(0.16 0.005 250)); /* text on accent */
+
+  /* Status, for data only (the dashboard preview and draft TODO markers). */
+  --color-ok: light-dark(oklch(0.4 0.08 160), oklch(0.86 0.08 160));
+  --color-ok-soft: light-dark(oklch(0.95 0.035 160), oklch(0.3 0.04 160));
+  --color-warn: light-dark(oklch(0.42 0.09 70), oklch(0.87 0.09 85));
+  --color-warn-soft: light-dark(oklch(0.95 0.055 85), oklch(0.32 0.05 80));
+
+  /* ── Shape ──────────────────────────────────────────────────────────── */
+  /* Nested corners stay concentric: outer radius = inner radius + padding. */
+  --radius-xs: 6px; /* kbd, inputs */
+  --radius-sm: 12px; /* buttons, chips, media inside cards */
+  --radius-md: 20px; /* cards */
+  --radius-lg: 28px; /* nav, dialogs */
+  --radius-pill: 999px;
+
+  /* Elevation. Dark mode drops shadows and relies on hairlines and lighter
+     surfaces instead. */
+  --shadow-e1: 0 1px 2px light-dark(oklch(0 0 0 / 0.06), transparent);
+  --shadow-e2: 0 4px 16px -4px light-dark(oklch(0 0 0 / 0.12), transparent);
+  --shadow-e3: 0 16px 48px -12px light-dark(oklch(0 0 0 / 0.2), transparent);
+
+  /* ── Motion ─────────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1); /* enter and exit */
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); /* moves on screen */
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Browsers without light-dark() (Safari before 17.5) get the light theme
+   rather than no colours at all. This block repeats the light half of every
+   light-dark() value above: change them together. */
+@supports not (color: light-dark(white, black)) {
+  :root {
+    --color-n1: oklch(0.99 0.002 250);
+    --color-n2: oklch(0.975 0.003 250);
+    --color-n3: oklch(0.955 0.004 250);
+    --color-n4: oklch(0.935 0.005 250);
+    --color-n5: oklch(0.91 0.006 250);
+    --color-n6: oklch(0.88 0.007 250);
+    --color-n7: oklch(0.83 0.008 250);
+    --color-n8: oklch(0.74 0.01 250);
+    --color-n9: oklch(0.6 0.012 250);
+    --color-n10: oklch(0.55 0.012 250);
+    --color-n11: oklch(0.45 0.01 250);
+    --color-n12: oklch(0.2 0.01 250);
+    --color-surface: oklch(1 0 0);
+    --color-well: oklch(0.965 0.004 250);
+    --color-accent: oklch(0.52 0.085 200);
+    --color-accent-strong: oklch(0.45 0.078 200);
+    --color-accent-ink: oklch(1 0 0);
+    --color-ok: oklch(0.4 0.08 160);
+    --color-ok-soft: oklch(0.95 0.035 160);
+    --color-warn: oklch(0.42 0.09 70);
+    --color-warn-soft: oklch(0.95 0.055 85);
+    --shadow-e1: 0 1px 2px oklch(0 0 0 / 0.06);
+    --shadow-e2: 0 4px 16px -4px oklch(0 0 0 / 0.12);
+    --shadow-e3: 0 16px 48px -12px oklch(0 0 0 / 0.2);
+  }
+}
+
+/* Durations live outside @theme so reduced motion can retune them in one place.
+   300 ms is the ceiling for UI motion. */
+:root {
+  --dur-micro: 120ms;
+  --dur-fast: 180ms;
+  --dur-base: 240ms;
+  --dur-slow: 300ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-micro: 0ms;
+    --dur-fast: 0ms;
+    --dur-base: 120ms;
+    --dur-slow: 120ms;
+  }
+}
