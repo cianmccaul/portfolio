@@ -1,0 +1,41 @@
+---
+/**
+ * Content that is written and true but waiting for someone's sign-off (see
+ * `approvals` in resume.json). Draft builds show it with a marker; production
+ * leaves it out until the switch is true. It never prints, so it can't reach
+ * the PDF before approval.
+ *
+ *   <Pending approval="bodymedMetrics">…</Pending>        a block
+ *   <Pending approval="bodymedMetrics" inline>…</Pending> inside a sentence or list item
+ */
+import { isApproved, showTodos, type Approval } from '../lib/resume';
+interface Props {
+  approval: Approval;
+  inline?: boolean;
+  class?: string;
+}
+const { approval, inline = false, class: className } = Astro.props;
+const approved = isApproved(approval);
+const label = 'Pending approval';
+---
+
+{
+  approved ? (
+    <slot />
+  ) : (
+    showTodos &&
+    (inline ? (
+      <span class:list={['pending print:hidden', className]}>
+        <span class="todo mr-4 align-[0.1em]">{label}</span>
+        <slot />
+      </span>
+    ) : (
+      <div class:list={['rounded-sm border border-dashed border-warn p-12 print:hidden', className]}>
+        <p class="text-caption font-semibold text-warn">{label} · hidden in production until the owner signs off</p>
+        <div class="mt-8">
+          <slot />
+        </div>
+      </div>
+    ))
+  )
+}

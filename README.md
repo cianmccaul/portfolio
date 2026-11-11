@@ -9,8 +9,10 @@ A fully static site, generated from one data file. There is no server, no CMS an
 Every fact on the site lives in [`content/resume.json`](content/resume.json). The three case studies are the MDX files in [`content/work/`](content/work). Edit, commit and push; the site, the CV page, the PDF, the structured data and the social images all rebuild from the same source.
 
 - The data is checked against a schema at build time ([`src/lib/resume.ts`](src/lib/resume.ts)). A malformed date or a project without an exact repo link fails the build.
-- Wording that changes with time is computed from dates, never typed: "Present", "Year 2 of 4", "Graduating 2029", "Available Jan–Sep 2028" ([`src/lib/dates.ts`](src/lib/dates.ts)).
-- Anything not written yet is marked `TODO`. Draft builds show these in amber boxes; production leaves them out, and they never print. `npm run todos` lists them, and [`docs/todo-content.md`](docs/todo-content.md) explains each one.
+- Wording that changes with time is computed from dates, never typed: "Present", "Year 2 of 4", "Graduating Apr 2029", "Available Jan–Sep 2028" ([`src/lib/dates.ts`](src/lib/dates.ts)).
+- Anything not written yet is marked `TODO`. Draft builds show these in amber boxes; production leaves them out, and they never print.
+- Facts that need someone's sign-off are tagged with a switch in `approvals` in `resume.json`. Draft builds mark them "Pending approval"; production and the PDF leave them out until the switch is `true`.
+- `npm run todos` lists what is outstanding, and [`docs/todo-content.md`](docs/todo-content.md) explains each item.
 
 ## The CV
 

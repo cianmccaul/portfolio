@@ -1,21 +1,23 @@
 ---
 /**
- * Static proof: a few numbers, each linked to its evidence. No marquee.
- * Measured outcomes that don't exist yet are listed as TODOs in draft builds
- * and left out of production.
+ * Static proof: three numbers, each linked to its evidence. No marquee.
+ * Measured outcomes marked `lead` take the first places once they can be
+ * published; until then the verified facts fill the strip. Figures waiting
+ * for a sign-off are listed underneath in draft builds only.
  */
 import ExternalLink from './ExternalLink.astro';
-import { resume, showTodos } from '../lib/resume';
+import { pendingMetrics, publishedMetrics } from '../lib/resume';
 
-const ready = resume.metrics.filter((m) => m.status === 'ready').slice(0, 4);
-const todo = resume.metrics.filter((m) => m.status === 'todo');
+const published = publishedMetrics();
+const strip = [...published.filter((m) => m.lead), ...published.filter((m) => !m.lead)].slice(0, 3);
+const pending = pendingMetrics();
 ---
 
 {
-  ready.length > 0 && (
+  strip.length > 0 && (
     <section aria-label="Proof" class="mx-auto mt-64 max-w-page px-gutter lg:mt-96">
       <ul class="grid border-y border-line md:grid-cols-3">
-        {ready.map((metric) => (
+        {strip.map((metric) => (
           <li class="border-line py-24 not-first:border-t md:px-32 md:not-first:border-t-0 md:not-first:border-l md:first:pl-0 md:last:pr-0">
             <p class="flex items-baseline gap-8">
               <span class="text-h1 tabular-nums">{metric.value}</span>
@@ -31,16 +33,17 @@ const todo = resume.metrics.filter((m) => m.status === 'todo');
         ))}
       </ul>
 
-      {showTodos && todo.length > 0 && (
-        <div class="mt-16 rounded-sm border border-dashed border-warn bg-warn-soft p-16 text-small text-warn">
-          <p class="font-semibold">TODO · measured outcomes for this strip</p>
-          <ul class="mt-8 grid gap-8 md:grid-cols-3 md:gap-32">
-            {todo.map((metric) => (
+      {pending.length > 0 && (
+        <div class="mt-16 rounded-sm border border-dashed border-warn bg-warn-soft p-16 text-small text-warn print:hidden">
+          <p class="font-semibold">Pending approval · these lead the strip once the owner signs off</p>
+          <ul class="mt-8 grid gap-8 md:grid-cols-2 md:gap-32">
+            {pending.map((metric) => (
               <li>
                 <span class="font-semibold">
-                  {metric.unit === '%' ? '__%' : '__'} {metric.label}.
+                  {metric.value}
+                  {metric.unit === '%' ? '%' : ` ${metric.unit ?? ''}`}
                 </span>{' '}
-                {metric.how}
+                {metric.label}.{metric.note && <> {metric.note}</>}
               </li>
             ))}
           </ul>

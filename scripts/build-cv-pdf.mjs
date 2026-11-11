@@ -90,6 +90,7 @@ for (const expected of [resume.basics.name, resume.basics.email, 'Experience', '
   if (!text.includes(expected)) problems.push(`"${expected}" is missing from the extracted text.`);
 }
 if (/TODO/.test(text)) problems.push('A TODO leaked into the PDF.');
+if (/Pending approval/.test(text)) problems.push('A line waiting for approval leaked into the PDF.');
 if (!layout.fonts.some((family) => family.includes('Inter Variable'))) problems.push('Inter did not load, so the PDF is set in a fallback font.');
 if (layout.fill > MAX_FILL) {
   problems.push(
