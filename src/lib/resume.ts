@@ -53,7 +53,13 @@ const schema = z.object({
       endDate: partialDate.nullish(),
       context: z.string().optional(),
       summary: z.string(),
+      /** A shorter form, for the CV, where related roles share one entry. */
+      brief: z.string().optional(),
       highlights: z.array(z.string()),
+      /** Numbers behind the highlights. `approx` marks an estimate, not a measured figure. */
+      metrics: z
+        .array(z.object({ label: z.string(), value: z.string(), approx: z.boolean().optional(), note: z.string().optional() }))
+        .optional(),
       stack: z.array(z.string()),
       caseStudy: z.string().optional(),
       approvedForPublic: z.boolean().optional(),

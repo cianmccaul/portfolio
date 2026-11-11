@@ -38,6 +38,15 @@ const contacts = [
   ...[...basics.profiles].sort((a) => (a.network === 'LinkedIn' ? -1 : 1)).map((p) => ({ label: bare(p.url), href: p.url })),
 ];
 const roles = [...resume.work].sort(byRecency);
+// Roles that share a context (the three Transition Year placements) become one
+// entry on the CV, one line each, to keep it to a page.
+type Role = (typeof roles)[number];
+const entries: ({ role: Role } | { context: string; roles: Role[] })[] = [];
+for (const role of roles) {
+  const last = entries.at(-1);
+  if (role.context && last && 'context' in last && last.context === role.context) last.roles.push(role);
+  else entries.push(role.context ? { context: role.context, roles: [role] } : { role });
+}
 // One line on the CV; the About page has the detail.
 const interests = resume.interests
   .filter((i) => i.featured)
@@ -74,21 +83,39 @@ const projects = resume.projects.filter((p) => p.caseStudy);
       <section>
         <h2>Experience</h2>
         {
-          roles.map((role) => (
-            <div class="cv-entry">
-              <div class="cv-row">
-                <h3>
-                  {role.position}, <span>{role.company}{role.location && `, ${role.location}`}</span>
-                </h3>
-                <p class="cv-date">{formatRange(role.startDate, role.endDate, now)}</p>
+          entries.map((entry) =>
+            'role' in entry ? (
+              <div class="cv-entry">
+                <div class="cv-row">
+                  <h3>
+                    {entry.role.position}, <span>{entry.role.company}{entry.role.location && `, ${entry.role.location}`}</span>
+                  </h3>
+                  <p class="cv-date">{formatRange(entry.role.startDate, entry.role.endDate, now)}</p>
+                </div>
+                {/* Results where they exist; the plain description until then. */}
+                {entry.role.highlights.filter((h) => !isTodo(h)).length > 0 ? (
+                  <ul>{entry.role.highlights.filter((h) => !isTodo(h)).map((h) => <li>{h}</li>)}</ul>
+                ) : (
+                  <p>{entry.role.summary}</p>
+                )}
+                {entry.role.highlights.filter(isTodo).map((h) => <Todo block text={h} class="mt-8" />)}
               </div>
-              <p>{role.summary}</p>
-              {role.highlights.filter((h) => !isTodo(h)).length > 0 && (
-                <ul>{role.highlights.filter((h) => !isTodo(h)).map((h) => <li>{h}</li>)}</ul>
-              )}
-              {role.highlights.filter(isTodo).map((h) => <Todo block text={h} class="mt-8" />)}
-            </div>
-          ))
+            ) : (
+              <div class="cv-entry">
+                <div class="cv-row">
+                  <h3>{entry.context} placements</h3>
+                  <p class="cv-date">{formatRange(entry.roles[0]!.startDate, entry.roles[0]!.endDate, now)}</p>
+                </div>
+                <ul>
+                  {entry.roles.map((role) => (
+                    <li>
+                      {role.company}{role.location && `, ${role.location}`}: {role.brief ?? role.summary}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ),
+          )
         }
       </section>
 

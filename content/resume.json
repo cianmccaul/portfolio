@@ -25,7 +25,8 @@
     ],
     "bio": [
       "I’m Cian and I live in Dublin. I spent my early years in Fall River, Nova Scotia, before my family moved to Clontarf in 2015. Starting again in a new country taught me to adapt quickly, and I still like being thrown into something new.",
-      "What I enjoy most is working with businesses and making their day easier. At BodyMed I’ve gone from admin work to building the systems the clinic runs on."
+      "What I enjoy most is working with businesses and making their day easier. At BodyMed I’ve gone from admin work to building the systems the clinic runs on.",
+      "On Saturday mornings I’m head coach at Rugbytots, running four classes for young children. My favourite moment is a child finally scoring their first conversion."
     ]
   },
   "logistics": {
@@ -132,6 +133,31 @@
       "approvedForPublic": false
     },
     {
+      "company": "Rugbytots Ireland",
+      "position": "Head Coach",
+      "startDate": "2023-11",
+      "endDate": null,
+      "summary": "Run four classes every Saturday morning for young children, keeping energy and morale high while giving clear instructions to a whole group, so every child gets the most out of the class.",
+      "highlights": [
+        "Coach about 40 children a term across 4 Saturday classes, directing an assistant coach so every session runs smoothly.",
+        "Work directly with parents; around 80% of families re-enrol each term, with most who leave having outgrown the age range."
+      ],
+      "metrics": [
+        {
+          "label": "Children coached per term",
+          "value": "40",
+          "approx": true
+        },
+        {
+          "label": "Families re-enrolling each term",
+          "value": "80%",
+          "approx": true,
+          "note": "approx.: my own estimate. Most who don’t re-enrol have outgrown the age range."
+        }
+      ],
+      "stack": []
+    },
+    {
       "company": "SAP",
       "location": "Citywest, Dublin",
       "position": "Work experience",
@@ -139,6 +165,7 @@
       "endDate": "2023",
       "context": "Transition Year",
       "summary": "Completed SAP’s work experience programme and learned tools and skills used by their staff.",
+      "brief": "completed the work experience programme and learned tools and skills used by staff.",
       "highlights": [],
       "stack": []
     },
@@ -150,6 +177,7 @@
       "endDate": "2023",
       "context": "Transition Year",
       "summary": "Two weeks in the office: sat in on management meetings, helped with admin and saw how a software business runs day to day.",
+      "brief": "two weeks in the office, sitting in on management meetings and helping with admin.",
       "highlights": [],
       "stack": []
     },
@@ -161,6 +189,7 @@
       "endDate": "2023",
       "context": "Transition Year",
       "summary": "Updated and maintained the school’s laptops every week, and taught older people to use their phones and tablets through the Age Action programme.",
+      "brief": "on the school IT team, maintained the laptops weekly and taught older people to use phones and tablets through Age Action.",
       "highlights": [],
       "stack": []
     }
@@ -275,7 +304,7 @@
       "fact": "37 tests, including one that checks every sample email lands in its expected folder.",
       "highlights": [
         "Built an inbox assistant that sorts clinic email into four folders, drafts replies from the clinic’s handbook and learns from the edits staff make.",
-        "Added a red-flag safety check that overrules the AI when a symptom needs a doctor, a rule-based fallback and 37 tests."
+        "Added a red-flag safety check that overrules the AI when a symptom needs a doctor, a rules fallback and 37 tests."
       ],
       "role": "Sole developer",
       "stack": [
@@ -322,7 +351,7 @@
       "fact": "Every AI-proposed fix passes five guard rails enforced in code, not in a prompt.",
       "highlights": [
         "Built a monitor that checks sites every 15 minutes, explains outages with an LLM and opens small fix pull requests.",
-        "Enforced five guard rails in code (pull request only, one file, under 15 changed lines, scoped token, fail closed), with a human-confirmed merge."
+        "Enforced five guard rails in code: pull request only, one file, under 15 changed lines, scoped token, fail closed."
       ],
       "role": "Sole developer",
       "stack": [

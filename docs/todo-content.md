@@ -24,6 +24,11 @@ There are no measured results on the site yet. Write each one in XYZ form: accom
 - [ ] Who you work with day to day (owner, reception, therapists), and one example of working through a disagreement or trade-off. The employer checklist asks for both a team story and an ownership story.
 - [ ] **Written approval from the owner** for the public case study and any numbers. `approvedForPublic` is `false` until then. The case study will carry no revenue figures.
 
+### Rugbytots (`work[1]`)
+
+- [ ] **Location.** You didn't give one, so the entry has none. Add `"location"` if you want it shown.
+- [ ] **The 80% re-enrolment figure is your estimate.** It is stored with `"approx": true` and worded "around 80%" on the site and CV. If Rugbytots can share a real figure, replace it and drop the flag.
+
 ### Testimonials (`testimonials`)
 
 - [ ] One to three short quotes, each with name, role and company, and `"permission": true`. Good people to ask: the BodyMed owner, a therapist or receptionist who uses the hub, the DEME client. The section is hidden until at least one exists.
@@ -44,7 +49,7 @@ A note on Jarvis’s numbers: the `incidents.json` in the public repo holds 17 e
 
 ### About page
 
-- [ ] **Bio.** It is about 80 words. The target is 150 to 250: add what you want to work on next and why.
+- [ ] **Bio.** It is about 110 words. The target is 150 to 250: add what you want to work on next and why.
 - [ ] **Beyond the code** shows three of your five interests (football, volunteering, photography). Gym and the school production are still in `resume.json` with `"featured": false`. Swap them if you prefer.
 
 ### Portrait
