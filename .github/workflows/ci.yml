@@ -1,10 +1,9 @@
 # Builds the site, runs the checks and regenerates the CV PDF.
 #
 # The PDF is printed from the built /cv/ page, so it can never disagree with
-# the site. While the site is hosted on Vercel, which builds from git, the PDF
-# is committed to public/: on main this workflow commits a fresh copy whenever
-# resume.json changes it. When hosting moves to Cloudflare and deploys from
-# here, the PDF ships with the build and the commit step goes away.
+# the site. Vercel builds the site from git and can't run a browser, so the
+# PDF is committed to public/: on main this workflow commits a fresh copy
+# whenever the CV's text has changed, and Vercel then deploys it.
 name: CI
 
 on:

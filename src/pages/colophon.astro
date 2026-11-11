@@ -17,7 +17,7 @@ const stack = [
   { part: 'CV', choice: 'Playwright prints the CV page to PDF', why: 'The PDF is the web page’s print stylesheet, checked on every build to be exactly one page of extractable text.' },
   { part: 'Images', choice: 'AVIF and WebP at build time', why: 'Screenshots are captured from the public demos by a script and resized for each screen.' },
   { part: 'Social images', choice: 'Satori, at build time', why: 'One per page, drawn from the same data.' },
-  { part: 'Hosting', choice: 'Static files on a CDN', why: 'The output is a folder. It can move between hosts in minutes.' },
+  { part: 'Hosting', choice: 'Vercel, as static files', why: 'Every push builds the site from git. The output is a plain folder, so nothing ties it to one host.' },
 ];
 
 // Class names are written out in full so Tailwind can see them.

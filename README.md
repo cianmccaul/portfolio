@@ -47,7 +47,7 @@ npm run todos      # what content is still missing
 | Images | AVIF and WebP generated at build time; screenshots captured by [`scripts/capture-work.mjs`](scripts/capture-work.mjs) |
 | Social images | One per page, drawn with Satori at build time |
 | CV | The `/cv/` page, printed to PDF by Playwright and checked |
-| Hosting | Vercel for now; moving to Cloudflare with the custom domain |
+| Hosting | Vercel, as static files. A personal, non-commercial site, so the free Hobby plan fits |
 
 The design system is deliberately small: one type scale, one spacing scale, a 12-step neutral and a single teal accent, in light and dark. A gap, size or colour that is not in the token file does not exist as a class, so nothing off-system can creep in.
 

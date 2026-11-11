@@ -176,7 +176,7 @@ export const isTodo = (text: string | undefined | null): boolean => !!text && te
  */
 export const showTodos: boolean = process.env.SHOW_TODOS
   ? process.env.SHOW_TODOS !== 'false'
-  : process.env.VERCEL_ENV !== 'production' && process.env.CF_PAGES_BRANCH !== 'main';
+  : process.env.VERCEL_ENV !== 'production';
 
 /** Strips the "TODO:" prefix for display inside a TODO marker. */
 export const todoText = (text: string): string => text.replace(/^\s*TODO:?\s*/, '');
