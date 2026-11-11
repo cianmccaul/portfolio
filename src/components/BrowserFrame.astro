@@ -1,0 +1,44 @@
+---
+/**
+ * A screenshot in a plain browser frame: a neutral bar with three dots, no
+ * address. The image keeps its own proportions (never cropped) and is shown
+ * exactly as supplied: no dimming in dark mode, no recolouring. AVIF and
+ * WebP are generated at build time.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  /** Width the frame is shown at on wide screens, for `sizes`. */
+  maxWidth?: number;
+  eager?: boolean;
+  class?: string;
+}
+const { src, alt, caption, maxWidth = 1200, eager = false, class: className } = Astro.props;
+const widths = [480, 720, 960, 1280, 1600, 2000].filter((w) => w <= src.width);
+---
+
+<figure class:list={['not-prose', className]}>
+  <div class="overflow-hidden rounded-sm border border-line bg-surface shadow-e1">
+    <div class="flex h-24 items-center gap-4 border-b border-line bg-well px-12" aria-hidden="true">
+      <span class="size-8 rounded-pill bg-n7"></span>
+      <span class="size-8 rounded-pill bg-n7"></span>
+      <span class="size-8 rounded-pill bg-n7"></span>
+    </div>
+    <Picture
+      src={src}
+      alt={alt}
+      formats={['avif', 'webp']}
+      fallbackFormat="webp"
+      widths={widths.length ? widths : [src.width]}
+      sizes={`(min-width: ${maxWidth + 96}px) ${maxWidth}px, 92vw`}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : undefined}
+      class="block h-auto w-full"
+    />
+  </div>
+  {caption && <figcaption class="mt-8 text-small text-muted">{caption}</figcaption>}
+</figure>
