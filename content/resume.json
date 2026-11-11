@@ -25,9 +25,13 @@
     ],
     "bio": [
       "I’m Cian and I live in Dublin. I spent my early years in Fall River, Nova Scotia, before my family moved to Clontarf in 2015. Starting again in a new country taught me to adapt quickly, and I still like being thrown into something new.",
-      "What I enjoy most is working with businesses and making their day easier. At BodyMed I’ve gone from admin work to building the systems the clinic runs on.",
-      "On Saturday mornings I’m head coach at Rugbytots, running four classes for young children. My favourite moment is a child finally scoring their first conversion."
+      "What I enjoy most is building things that make people’s day easier. At BodyMed Healthcare I’ve gone from admin work to building the booking, payments and staff platform the clinic runs on, working with the owner, reception and the therapists. Their feedback changed what I built, and taught me that the people who use a system every day know the job better than I do.",
+      "On Saturday mornings I coach at Rugbytots, where I went from assistant coach to head coach, running four classes for young children. My favourite moment is a child finally scoring their first conversion.",
+      "Next, I want to keep building software that real people rely on, and to do it in a team of experienced engineers, where I can learn faster than I could on my own. That’s why I’m looking for a software engineering internship."
     ]
+  },
+  "approvals": {
+    "bodymedMetrics": false
   },
   "logistics": {
     "targetRole": "Software engineering intern",
@@ -54,14 +58,34 @@
   },
   "metrics": [
     {
-      "id": "platform-scope",
+      "id": "advance-payment",
       "status": "ready",
-      "value": "8",
-      "unit": "modules",
-      "label": "in one clinic platform, live with real patients since October 2026",
+      "approval": "bodymedMetrics",
+      "lead": true,
+      "value": "14.5",
+      "unit": "%",
+      "label": "of BodyMed appointments paid in advance in the first 10 days, up from 0%",
+      "note": "First 10 days after launch against a matched window before it."
+    },
+    {
+      "id": "online-share",
+      "status": "ready",
+      "approval": "bodymedMetrics",
+      "lead": true,
+      "value": "90",
+      "unit": "%",
+      "label": "of new online bookings (43 of 48) came through the new system in its first 10 days, with online volume steady (46 → 48)",
+      "note": "First 10 days after launch against a matched window before it."
+    },
+    {
+      "id": "clinic-tests",
+      "status": "ready",
+      "value": "142",
+      "unit": "tests",
+      "label": "pass across 21 test files in the clinic platform demo",
       "source": {
-        "label": "book.bodymed.ie",
-        "url": "https://book.bodymed.ie"
+        "label": "clinic-platform-demo",
+        "url": "https://github.com/cianmccaul/clinic-platform-demo#tests"
       }
     },
     {
@@ -85,30 +109,6 @@
         "label": "site-monitor",
         "url": "https://github.com/cianmccaul/site-monitor#what-it-does"
       }
-    },
-    {
-      "id": "online-bookings",
-      "status": "todo",
-      "value": "TODO",
-      "unit": "%",
-      "label": "of BodyMed bookings now made online",
-      "how": "Online vs phone bookings in Cliniko over one full month. Needs the clinic owner’s approval; share as a percentage, not a count."
-    },
-    {
-      "id": "triage-accuracy",
-      "status": "todo",
-      "value": "TODO",
-      "unit": "%",
-      "label": "of emails sorted the way staff would have sorted them",
-      "how": "Run the AI sorter over a labelled set of at least 50 emails and report matches, with the rule-based sorter as the baseline."
-    },
-    {
-      "id": "monitor-incidents",
-      "status": "todo",
-      "value": "TODO",
-      "unit": "",
-      "label": "outages Jarvis caught and explained before a customer reported them",
-      "how": "Count from incidents.json since the first run, with the date range."
     }
   ],
   "work": [
@@ -118,10 +118,18 @@
       "position": "Systems and operations",
       "startDate": "2024-08",
       "endDate": null,
-      "summary": "Started on admin and grew into running the clinic’s digital side: automating the front desk, moving the clinic onto online booking and payments, and building a central hub the whole team works from.",
+      "summary": "Started on admin and grew into running the clinic’s digital side: automating the front desk, replacing the old online booking with pay-at-booking on Cliniko and Stripe, and building a central hub the whole team works from. I work with the owner, reception and the therapists.",
+      "brief": "Grew from admin into running the clinic’s digital side, replacing its old online booking with pay-at-booking on Cliniko and Stripe. I work with the owner, reception and therapists.",
       "highlights": [
-        "TODO: one result in XYZ form (accomplished X, as measured by Y, by doing Z), for example reception time saved per booking.",
-        "TODO: who you work with day to day (owner, reception, therapists) and one example of working through a disagreement or trade-off."
+        {
+          "text": "Moved payment from the end of the appointment to booking time, taking advance payment from 0% to 14.5% in the first 10 days.",
+          "approval": "bodymedMetrics",
+          "cv": false
+        },
+        {
+          "text": "Therapists found the first booking flow too complicated, so I rebuilt treatment and practitioner selection as simple dropdowns based on their feedback. They found it much easier to use, and I learned that the people who use a system every day know the job better than I do.",
+          "cv": "Rebuilt booking selection as simple dropdowns after therapists found the first flow too complicated."
+        }
       ],
       "stack": [
         "Next.js",
@@ -129,18 +137,28 @@
         "Stripe Connect",
         "Cliniko API"
       ],
-      "caseStudy": "clinic-platform",
-      "approvedForPublic": false
+      "caseStudy": "clinic-platform"
     },
     {
       "company": "Rugbytots Ireland",
+      "location": "Clontarf, Dublin",
       "position": "Head Coach",
-      "startDate": "2023-11",
+      "startDate": "2026-01",
       "endDate": null,
+      "earlier": [
+        {
+          "position": "Assistant Coach",
+          "startDate": "2023-11",
+          "endDate": "2025-12"
+        }
+      ],
       "summary": "Run four classes every Saturday morning for young children, keeping energy and morale high while giving clear instructions to a whole group, so every child gets the most out of the class.",
       "highlights": [
         "Coach about 40 children a term across 4 Saturday classes, directing an assistant coach so sessions run smoothly.",
-        "Work directly with parents; around 80% of families re-enrol each term, and most who leave have outgrown the age range."
+        {
+          "text": "Work directly with parents; around 80% of families re-enrol each term, and most who leave have outgrown the age range.",
+          "cv": "Work with parents; around 80% of families re-enrol each term, and most who leave have outgrown the age range."
+        }
       ],
       "metrics": [
         {
@@ -164,20 +182,19 @@
       "startDate": "2022",
       "endDate": "2023",
       "context": "Transition Year",
-      "summary": "Completed SAP’s work experience programme and learned tools and skills used by their staff.",
-      "brief": "completed the work experience programme and learned tools and skills used by staff.",
+      "summary": "A two-week placement on SAP’s Transition Year programme, learning the tools and skills SAP staff use.",
+      "brief": "two-week placement, learning the tools and skills SAP staff use.",
       "highlights": [],
       "stack": []
     },
     {
-      "company": "Progress Systems",
-      "location": "Dublin",
+      "company": "Progress Systems Ltd",
       "position": "Work experience",
       "startDate": "2022",
       "endDate": "2023",
       "context": "Transition Year",
-      "summary": "Two weeks in the office: sat in on management meetings, helped with admin and saw how a software business runs day to day.",
-      "brief": "two weeks in the office, sitting in on management meetings and helping with admin.",
+      "summary": "A two-week placement: an interview-skills course, then time with each department of a company that builds software for Irish credit unions.",
+      "brief": "two-week placement with an interview-skills course and time in each department of a firm that builds software for Irish credit unions.",
       "highlights": [],
       "stack": []
     },
@@ -189,7 +206,7 @@
       "endDate": "2023",
       "context": "Transition Year",
       "summary": "Updated and maintained the school’s laptops every week, and taught older people to use their phones and tablets through the Age Action programme.",
-      "brief": "on the school IT team, maintained the laptops weekly and taught older people to use phones and tablets through Age Action.",
+      "brief": "school IT team, maintaining laptops weekly and teaching older people to use phones (Age Action).",
       "highlights": [],
       "stack": []
     }
@@ -209,17 +226,28 @@
       "featured": true,
       "caseStudy": true,
       "tagline": "Online booking, payments and a staff hub for a real clinic.",
-      "description": "Patients could only book by phone or email, late cancellations and no-shows cost therapists money, and reception tracked payments by hand. I built one system on top of the clinic’s diary (Cliniko) and payments (Stripe). Patients book and pay in a couple of minutes, reception handles refunds, fees and phone bookings from one dashboard, and each therapist is paid straight into their own Stripe account.",
-      "outcome": "TODO: one measured result, for example the share of bookings now made online.",
-      "fact": "Live at book.bodymed.ie since October 2026, taking real bookings and payments every day.",
+      "description": "The clinic already took bookings online through Jane, but nobody paid until the end of the appointment. Late cancellations and no-shows cost therapists money, and reception tracked payments by hand. I replaced it with one system on top of the clinic’s diary (Cliniko) and payments (Stripe): patients pay when they book, reception handles refunds, fees and phone bookings from one dashboard, and each therapist is paid straight into their own Stripe account.",
+      "outcome": {
+        "text": "In its first 10 days, appointments paid in advance rose from 0% to 14.5%.",
+        "approval": "bodymedMetrics"
+      },
+      "fact": "Live at book.bodymed.ie since 30 October 2026, taking real bookings and payments every day.",
       "highlights": [
-        "Built online booking, payments and a staff hub on top of the clinic’s diary (Cliniko) and Stripe Connect. Live since October 2026, taking real bookings and payments every day.",
+        {
+          "text": "Built a pay-at-booking system on Cliniko and Stripe for a physiotherapy clinic; in its first 10 days, appointments paid in advance rose from 0% to 14.5%.",
+          "approval": "bodymedMetrics",
+          "fallback": "Built a pay-at-booking system on Cliniko and Stripe for a physiotherapy clinic, live since 30 October 2026."
+        },
+        {
+          "text": "Moved 90% of the clinic’s new online bookings onto the new system within 10 days of launch, with no drop in online booking volume.",
+          "approval": "bodymedMetrics"
+        },
         "Designed a pay-then-book flow with slot holds, idempotent webhooks and automatic refunds, so a patient is never left paid but not booked, or booked twice.",
-        "Wrote a failure modes and effects analysis, a test plan, a runbook and architecture decision records before launch."
+        "Wrote a failure-mode analysis, test plan, runbook and decision records before launch; 142 tests pass."
       ],
       "role": "Sole developer",
       "client": "BodyMed Healthcare, Clontarf",
-      "liveSince": "2026-10",
+      "liveSince": "2026-10-30",
       "stack": [
         "Next.js",
         "TypeScript",
@@ -298,13 +326,13 @@
       "suite": "clinic",
       "featured": true,
       "caseStudy": true,
-      "tagline": "Sorts the clinic inbox, drafts replies and learns from staff edits.",
-      "description": "Sorts clinic email by topic and urgency, drafts replies from the clinic’s own handbook, and learns from the changes staff make before they press send. A red-flag check runs on every email and overrules the AI when a symptom needs a doctor.",
-      "outcome": "TODO: one measured result, for example how often the sorter agrees with staff.",
+      "tagline": "A prototype that sorts a clinic inbox, drafts replies and learns from staff edits.",
+      "description": "A working prototype, tested on sample emails, that sorts clinic email by topic and urgency, drafts replies from the clinic’s own handbook and learns from the changes staff make before they press send. A red-flag check runs on every email and overrules the AI when a symptom needs a doctor.",
+      "outcome": "Sorted all 12 labelled test emails into the right folder on repeated runs, including every urgent-symptom email and the cases built to trick a keyword filter.",
       "fact": "37 tests, including one that checks every sample email lands in its expected folder.",
       "highlights": [
-        "Built an inbox assistant that sorts clinic email into four folders, drafts replies from the clinic’s handbook and learns from the edits staff make.",
-        "Added a red-flag safety check that overrules the AI when a symptom needs a doctor, a rules fallback and 37 tests."
+        "Built a prototype that sorts clinic email into four folders, drafts replies and learns from staff edits.",
+        "Sorted all 12 labelled test emails correctly on repeated runs, backed by a red-flag safety check and 37 tests."
       ],
       "role": "Sole developer",
       "stack": [
@@ -347,7 +375,7 @@
       "caseStudy": true,
       "tagline": "Explains outages in plain English and proposes guarded fixes.",
       "description": "Checks the sites I look after every 15 minutes. When one goes down it explains the outage in plain English with AI and, if the fix is small and safe, opens a pull request I can approve from my phone.",
-      "outcome": "TODO: one measured result, for example outages caught before a customer reported them.",
+      "outcome": "In deliberate test outages on a sandbox site, Jarvis caught and explained both failures and opened one-line fix pull requests, which I merged after review.",
       "fact": "Every AI-proposed fix passes five guard rails enforced in code, not in a prompt.",
       "highlights": [
         "Built a monitor that checks sites every 15 minutes, explains outages with an LLM and opens small fix pull requests.",
@@ -383,7 +411,10 @@
           "title": "Fails closed",
           "detail": "If anything is ambiguous: no pull request, just a note in the email."
         }
-      ]
+      ],
+      "image": "jarvis-dashboard-approve.png",
+      "imageAlt": "The Jarvis dashboard in dark blue. A list of incidents for the monitored sites, and an Ask Jarvis panel explaining a 500 error in plain English, with buttons to review the pull request on GitHub or approve and merge it.",
+      "imageCaption": "The Jarvis dashboard: incidents, a plain-English diagnosis, and one-tap approve & merge."
     },
     {
       "slug": "designroom",
@@ -440,7 +471,7 @@
       "shortName": "DCU",
       "area": "BSc in Computer Science",
       "startDate": "2025-09",
-      "endDate": "2029",
+      "endDate": "2029-04",
       "durationYears": 4,
       "notes": [
         "TODO: first-year result or notable modules, if you want them shown."
@@ -513,7 +544,8 @@
       "title": "FIRST LEGO League hackathon",
       "awarder": "Dublin City University",
       "date": "2026-11",
-      "summary": "Took part in the FIRST LEGO League hackathon hosted at DCU."
+      "role": "Lead coder for my team",
+      "summary": "Took part in the FIRST LEGO League hackathon at DCU as lead coder for my team."
     }
   ],
   "interests": [

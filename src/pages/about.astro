@@ -43,11 +43,6 @@ const beyond = resume.interests.filter((interest) => interest.featured);
       <div class="mt-32 grid max-w-prose gap-16 text-body-lg">
         {basics.bio.map((paragraph) => <p>{paragraph}</p>)}
       </div>
-      <Todo
-        block
-        text="The bio is about 110 words. The target is 150 to 250, in your own words: what you want to work on next, and why."
-        class="mt-16 max-w-prose"
-      />
       <div class="mt-32 flex flex-wrap gap-12">
         <a class="btn btn-primary" href="/cv/">View CV</a>
         <a class="btn btn-secondary" href="/#work">Selected work<Icon name="arrow-right" /></a>

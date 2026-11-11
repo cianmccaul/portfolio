@@ -1,6 +1,6 @@
 /** Content shared by the three mockups, all read from resume.json. */
-import { currentDegree, project, resume } from '../../lib/resume';
-import { availabilityLabel, graduationLabel, yearOfStudy, yearOfStudyLabel } from '../../lib/dates';
+import { currentDegree, project, publishedMetrics, resume } from '../../lib/resume';
+import { availabilityLabel, graduationLabel, lowerFirst, yearOfStudy, yearOfStudyLabel } from '../../lib/dates';
 import { now } from '../../lib/site';
 
 const { basics, logistics } = resume;
@@ -22,12 +22,12 @@ export const chips = [
 export const specs = [
   { term: 'Looking for', value: logistics.targetRole },
   { term: 'Available', value: availabilityLabel(logistics.availableFrom, logistics.availableUntil, now)?.replace('Available ', '') },
-  { term: 'Studying', value: [study && currentDegree && yearOfStudyLabel(study, currentDegree.durationYears!), currentDegree && graduationLabel(currentDegree.endDate, now).toLowerCase()].filter(Boolean).join(', ') },
+  { term: 'Studying', value: [study && currentDegree && yearOfStudyLabel(study, currentDegree.durationYears!), currentDegree && lowerFirst(graduationLabel(currentDegree.endDate, now))].filter(Boolean).join(', ') },
   { term: 'Based in', value: `${basics.location.city} · will relocate` },
   { term: 'Work rights', value: logistics.workAuthorization.map((a) => a.label).join(', ') },
 ].filter((s) => s.value) as { term: string; value: string }[];
 
-export const figures = resume.metrics.filter((m) => m.status === 'ready');
+export const figures = publishedMetrics().slice(0, 3);
 export const platform = project('clinic-platform');
 export const triage = project('email-triage');
 export const chatbot = project('clinic-chatbot');

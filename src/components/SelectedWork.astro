@@ -9,8 +9,10 @@ import type { ImageMetadata } from 'astro';
 import DashboardPreview from './DashboardPreview.astro';
 import Steps from './Steps.astro';
 import Todo from './Todo.astro';
+import Pending from './Pending.astro';
+import BrowserFrame from './BrowserFrame.astro';
 import WorkLinks from './WorkLinks.astro';
-import { isTodo, project, resume } from '../lib/resume';
+import { isTodo, project, resume, type Line } from '../lib/resume';
 import { formatDate } from '../lib/dates';
 
 const images = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.png', { eager: true });
@@ -21,6 +23,9 @@ const platform = project('clinic-platform');
 const companions = resume.projects.filter((p) => p.suite === 'clinic' && p.slug !== platform.slug);
 const jarvis = project('jarvis');
 const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
+// An outcome is a TODO, a plain result, or a result waiting for approval.
+const outcomeText = (o: Line | undefined) => (typeof o === 'string' ? o : o?.text);
+const outcomeApproval = (o: Line | undefined) => (typeof o === 'string' ? undefined : o?.approval);
 ---
 
 <section id="work" aria-labelledby="work-title" class="mx-auto max-w-page px-gutter pt-section">
@@ -42,7 +47,11 @@ const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
           <h4 class="text-h2">{platform.name}</h4>
           <p class="mt-8 text-body-lg text-muted">{platform.tagline}</p>
           <p class="mt-16">{platform.fact}</p>
-          {isTodo(platform.outcome) && <Todo block text={platform.outcome!} class="mt-16" />}
+          {outcomeApproval(platform.outcome) && (
+            <Pending approval={outcomeApproval(platform.outcome)!} class="mt-16">
+              <p>{outcomeText(platform.outcome)}</p>
+            </Pending>
+          )}
           <dl class="mt-24 grid grid-cols-[auto_1fr] gap-x-24 gap-y-4 text-small">
             <dt class="text-muted">Role</dt>
             <dd>{platform.role}</dd>
@@ -102,8 +111,11 @@ const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
               <div class="flex grow flex-col p-16 sm:p-24">
                 <h4 class="text-h3 font-semibold">{item.name}</h4>
                 <p class="mt-4 text-muted">{item.tagline}</p>
-                {item.fact && <p class="mt-16 text-small">{item.fact}</p>}
-                {isTodo(item.outcome) && <Todo block text={item.outcome!} class="mt-12" />}
+                {outcomeText(item.outcome) && !isTodo(outcomeText(item.outcome)) && !outcomeApproval(item.outcome) && (
+                  <p class="mt-16">{outcomeText(item.outcome)}</p>
+                )}
+                {item.fact && <p class="mt-12 text-small text-muted">{item.fact}</p>}
+                {isTodo(outcomeText(item.outcome)) && <Todo block text={outcomeText(item.outcome)!} class="mt-12" />}
                 <p class="mt-16 text-caption text-muted">{tags(item.stack)}</p>
                 <WorkLinks project={item} class="mt-auto pt-16" />
               </div>
@@ -116,12 +128,24 @@ const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
 
   {/* Jarvis */}
   <article class="mt-24 rounded-md border border-line bg-surface p-8 shadow-e1">
+    {
+      image(jarvis.image) && (
+        <BrowserFrame
+          src={image(jarvis.image)!}
+          alt={jarvis.imageAlt ?? ''}
+          maxWidth={1184}
+          class="mb-8"
+        />
+      )
+    }
     <div class="grid lg:grid-cols-12">
       <div class="flex flex-col p-16 sm:p-24 lg:col-span-5 lg:p-32">
         <h3 class="text-h2">{jarvis.name}</h3>
         <p class="mt-8 text-body-lg text-muted">{jarvis.tagline}</p>
         <p class="mt-16">{jarvis.description}</p>
-        {isTodo(jarvis.outcome) && <Todo block text={jarvis.outcome!} class="mt-16" />}
+        {outcomeText(jarvis.outcome) && !isTodo(outcomeText(jarvis.outcome)) && (
+          <p class="mt-16">{outcomeText(jarvis.outcome)}</p>
+        )}
         <p class="mt-16 text-caption text-muted">{tags(jarvis.stack)}</p>
         <WorkLinks project={jarvis} class="mt-auto pt-16" />
       </div>

@@ -8,8 +8,8 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import Todo from '../components/Todo.astro';
-import { currentDegree, isTodo, resume } from '../lib/resume';
-import { availabilityLabel, byRecency, formatDate, formatRange, graduationLabel, status, yearOfStudy, yearOfStudyLabel } from '../lib/dates';
+import { currentDegree, isTodo, resume, roleSpan, shown, todos } from '../lib/resume';
+import { availabilityLabel, byRecency, formatDate, formatRange, graduationLabel, lowerFirst, status, yearOfStudy, yearOfStudyLabel } from '../lib/dates';
 import { breadcrumbs } from '../lib/seo';
 import { cvPdf, now } from '../lib/site';
 
@@ -25,7 +25,7 @@ const availability = availabilityLabel(logistics.availableFrom, logistics.availa
 const seeking = [
   [logistics.targetRole, availability && `${availability}${logistics.programme ? ` (${logistics.programme.name})` : ''}`],
   [
-    study && currentDegree && `${yearOfStudyLabel(study, currentDegree.durationYears!)}, ${graduationLabel(currentDegree.endDate, now).toLowerCase()}`,
+    study && currentDegree && `${yearOfStudyLabel(study, currentDegree.durationYears!)}, ${lowerFirst(graduationLabel(currentDegree.endDate, now))}`,
     ...logistics.workAuthorization.map((auth) => auth.label),
     logistics.relocate.open && 'Will relocate',
   ],
@@ -37,8 +37,8 @@ const contacts = [
   // LinkedIn first: it is where recruiters look.
   ...[...basics.profiles].sort((a) => (a.network === 'LinkedIn' ? -1 : 1)).map((p) => ({ label: bare(p.url), href: p.url })),
 ];
-const roles = [...resume.work].sort(byRecency);
-// Roles that share a context (the three Transition Year placements) become one
+const roles = [...resume.work].sort((a, b) => byRecency(roleSpan(a), roleSpan(b)));
+// Roles that share a context (the three Transition Year roles) become one
 // entry on the CV, one line each, to keep it to a page.
 type Role = (typeof roles)[number];
 const entries: ({ role: Role } | { context: string; roles: Role[] })[] = [];
@@ -57,7 +57,7 @@ const projects = resume.projects.filter((p) => p.caseStudy);
 
 <Base
   title="CV"
-  description={`${basics.name}’s CV: ${basics.label}. ${logistics.targetRole}, ${availability?.toLowerCase() ?? ''}.`}
+  description={`${basics.name}’s CV: ${basics.label}. ${logistics.targetRole}, ${availability ? lowerFirst(availability) : ''}.`}
   og="cv"
   schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'CV', path: '/cv/' }])]}
 >
@@ -85,31 +85,48 @@ const projects = resume.projects.filter((p) => p.caseStudy);
         {
           entries.map((entry) =>
             'role' in entry ? (
-              <div class="cv-entry">
-                <div class="cv-row">
-                  <h3>
-                    {entry.role.position}, <span>{entry.role.company}{entry.role.location && `, ${entry.role.location}`}</span>
-                  </h3>
-                  <p class="cv-date">{formatRange(entry.role.startDate, entry.role.endDate, now)}</p>
-                </div>
-                {/* Results where they exist; the plain description until then. */}
-                {entry.role.highlights.filter((h) => !isTodo(h)).length > 0 ? (
-                  <ul>{entry.role.highlights.filter((h) => !isTodo(h)).map((h) => <li>{h}</li>)}</ul>
-                ) : (
-                  <p>{entry.role.summary}</p>
-                )}
-                {entry.role.highlights.filter(isTodo).map((h) => <Todo block text={h} class="mt-8" />)}
-              </div>
+              (() => {
+                const role = entry.role;
+                const span = roleSpan(role);
+                const lines = shown(role.highlights, 'cv');
+                // Promotions read as one entry: "Head Coach (previously Assistant Coach)".
+                const title = role.earlier?.length
+                  ? `${role.position} (previously ${role.earlier.map((e) => e.position).join(', ')})`
+                  : role.position;
+                return (
+                  <div class="cv-entry">
+                    <div class="cv-row">
+                      <h3>
+                        {title}, <span>{role.company}{role.location && `, ${role.location}`}</span>
+                      </h3>
+                      <p class="cv-date">{formatRange(span.startDate, span.endDate, now)}</p>
+                    </div>
+                    {/* The description, unless there are enough results to stand on their own. */}
+                    {lines.filter((l) => !l.pending).length < 2 && <p>{role.brief ?? role.summary}</p>}
+                    {lines.length > 0 && (
+                      <ul>
+                        {lines.map((line) => (
+                          <li class:list={[line.pending && 'print:hidden']}>
+                            {line.pending && <span class="todo mr-4">Pending approval</span>}
+                            {line.text}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {todos(role.highlights).map((h) => <Todo block text={h} class="mt-8" />)}
+                  </div>
+                );
+              })()
             ) : (
               <div class="cv-entry">
                 <div class="cv-row">
-                  <h3>{entry.context} placements</h3>
+                  <h3>{entry.context}</h3>
                   <p class="cv-date">{formatRange(entry.roles[0]!.startDate, entry.roles[0]!.endDate, now)}</p>
                 </div>
                 <ul>
                   {entry.roles.map((role) => (
                     <li>
-                      {role.company}{role.location && `, ${role.location}`}: {role.brief ?? role.summary}
+                      {role.company}: {role.brief ?? role.summary}
                     </li>
                   ))}
                 </ul>
@@ -130,7 +147,14 @@ const projects = resume.projects.filter((p) => p.caseStudy);
                 </h3>
                 <p class="cv-date"><a href={item.repo}>{bare(item.repo)}</a></p>
               </div>
-              <ul>{(item.highlights ?? [item.description]).map((h) => <li>{h}</li>)}</ul>
+              <ul>
+                {(item.highlights ? shown(item.highlights, 'cv') : [{ text: item.description, pending: false }]).map((line) => (
+                  <li class:list={[line.pending && 'print:hidden']}>
+                    {line.pending && <span class="todo mr-4">Pending approval</span>}
+                    {line.text}
+                  </li>
+                ))}
+              </ul>
             </div>
           ))
         }
@@ -178,7 +202,7 @@ const projects = resume.projects.filter((p) => p.caseStudy);
               <div class="cv-entry">
                 <div class="cv-row">
                   <h3>
-                    {award.title}, <span>{award.awarder}</span>
+                    {award.title}, <span>{award.awarder}{award.role && ` · ${lowerFirst(award.role)}`}</span>
                   </h3>
                   <p class="cv-date">{formatDate(award.date)}</p>
                 </div>

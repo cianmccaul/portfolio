@@ -16,11 +16,12 @@ const path = Astro.url.pathname;
     aria-label="Main"
     class="pointer-events-auto mx-auto flex w-fit items-center rounded-lg border border-line bg-surface p-4 shadow-e2"
   >
+    {/* Always goes home. On the home page it carries the same active pill as the other items. */}
     <a
       href="/"
       aria-label={`${resume.basics.name}, home`}
-      aria-current={path === '/' ? 'page' : undefined}
-      class="grid size-tap place-items-center rounded-pill"
+      aria-current={path === '/' || path === '/index.html' ? 'page' : undefined}
+      class="grid size-tap place-items-center rounded-pill transition-colors duration-(--dur-micro) hover:bg-well aria-[current]:bg-well"
     >
       <Monogram size={32} />
     </a>
