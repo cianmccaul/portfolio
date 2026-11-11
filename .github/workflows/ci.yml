@@ -1,0 +1,73 @@
+# Builds the site, runs the checks and regenerates the CV PDF.
+#
+# The PDF is printed from the built /cv/ page, so it can never disagree with
+# the site. While the site is hosted on Vercel, which builds from git, the PDF
+# is committed to public/: on main this workflow commits a fresh copy whenever
+# resume.json changes it. When hosting moves to Cloudflare and deploys from
+# here, the PDF ships with the build and the commit step goes away.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # "Last updated" reads the last commit date
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type-check
+        run: npm run check
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Generate and check the CV PDF
+        run: npm run cv
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cv
+          path: public/*-CV.pdf
+
+      # PDF bytes change on every run (timestamps), so compare the text.
+      - name: Commit the PDF if the CV changed
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          sudo apt-get install -y poppler-utils > /dev/null
+          pdf=$(ls public/*-CV.pdf)
+          new=$(pdftotext -layout "$pdf" -)
+          old=$(git show "HEAD:$pdf" 2>/dev/null | pdftotext -layout - - 2>/dev/null || true)
+          if [ "$new" = "$old" ]; then
+            git checkout -- "$pdf"
+            echo "CV text unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$pdf"
+          git commit -m "Regenerate the CV PDF"
+          git push

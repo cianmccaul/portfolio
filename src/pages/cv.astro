@@ -1,0 +1,329 @@
+---
+/**
+ * The CV. This page is the source of the PDF: scripts/build-cv-pdf.mjs prints
+ * it with the print styles below, so what you see is what recruiters download.
+ * Single column, real text and standard headings, so applicant tracking
+ * systems parse it cleanly. Unwritten content (TODOs) never prints.
+ */
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Todo from '../components/Todo.astro';
+import { currentDegree, isTodo, resume } from '../lib/resume';
+import { availabilityLabel, byRecency, formatDate, formatRange, graduationLabel, status, yearOfStudy, yearOfStudyLabel } from '../lib/dates';
+import { breadcrumbs } from '../lib/seo';
+import { cvPdf, now } from '../lib/site';
+
+const { basics, logistics } = resume;
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+const pdf = cvPdf(basics.name);
+
+const study = currentDegree?.durationYears
+  ? yearOfStudy(currentDegree.startDate, currentDegree.endDate, currentDegree.durationYears, now)
+  : null;
+const availability = availabilityLabel(logistics.availableFrom, logistics.availableUntil, now);
+// Two deliberate lines, so nothing wraps mid-phrase: what and when, then who.
+const seeking = [
+  [logistics.targetRole, availability && `${availability}${logistics.programme ? ` (${logistics.programme.name})` : ''}`],
+  [
+    study && currentDegree && `${yearOfStudyLabel(study, currentDegree.durationYears!)}, ${graduationLabel(currentDegree.endDate, now).toLowerCase()}`,
+    ...logistics.workAuthorization.map((auth) => auth.label),
+    logistics.relocate.open && 'Will relocate',
+  ],
+].map((line) => line.filter(Boolean).join(' · '));
+
+const contacts = [
+  { label: basics.email, href: `mailto:${basics.email}` },
+  { label: bare(basics.url), href: basics.url },
+  // LinkedIn first: it is where recruiters look.
+  ...[...basics.profiles].sort((a) => (a.network === 'LinkedIn' ? -1 : 1)).map((p) => ({ label: bare(p.url), href: p.url })),
+];
+const roles = [...resume.work].sort(byRecency);
+const projects = resume.projects.filter((p) => p.caseStudy);
+---
+
+<Base
+  title="CV"
+  description={`${basics.name}’s CV: ${basics.label}. ${logistics.targetRole}, ${availability?.toLowerCase() ?? ''}.`}
+  og="cv"
+  schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'CV', path: '/cv/' }])]}
+>
+  <div class="mx-auto max-w-sheet px-gutter pt-64 lg:pt-96 print:max-w-none print:p-0">
+    <div class="flex flex-wrap items-center justify-between gap-12 print:hidden">
+      <p class="text-small text-muted">One page, A4. The PDF is generated from this page.</p>
+      <div class="flex gap-12">
+        <a class="btn btn-primary" href={pdf} download><Icon name="download" />Download PDF</a>
+        <button class="btn btn-secondary" type="button" id="print"><Icon name="printer" />Print</button>
+      </div>
+    </div>
+
+    <article class="cv mt-24 rounded-md border border-line bg-surface p-24 shadow-e1 sm:p-48 print:mt-0 print:rounded-none print:border-0 print:p-0 print:shadow-none">
+      <header>
+        <h1>{basics.name}</h1>
+        <p class="cv-label">{basics.label} · {basics.location.city}, Ireland</p>
+        <ul class="cv-contacts">
+          {contacts.map((c) => <li><a href={c.href}>{c.label}</a></li>)}
+        </ul>
+        {seeking.map((line) => <p class="cv-seeking">{line}</p>)}
+      </header>
+
+      <section>
+        <h2>Experience</h2>
+        {
+          roles.map((role) => (
+            <div class="cv-entry">
+              <div class="cv-row">
+                <h3>
+                  {role.position}, <span>{role.company}{role.location && `, ${role.location}`}</span>
+                </h3>
+                <p class="cv-date">{formatRange(role.startDate, role.endDate, now)}</p>
+              </div>
+              <p>{role.summary}</p>
+              {role.highlights.filter((h) => !isTodo(h)).length > 0 && (
+                <ul>{role.highlights.filter((h) => !isTodo(h)).map((h) => <li>{h}</li>)}</ul>
+              )}
+              {role.highlights.filter(isTodo).map((h) => <Todo block text={h} class="mt-8" />)}
+            </div>
+          ))
+        }
+      </section>
+
+      <section>
+        <h2>Projects</h2>
+        {
+          projects.map((item) => (
+            <div class="cv-entry">
+              <div class="cv-row">
+                <h3>
+                  {item.name} <span>· {item.stack.slice(0, 4).join(', ')}</span>
+                </h3>
+                <p class="cv-date"><a href={item.repo}>{bare(item.repo)}</a></p>
+              </div>
+              <ul>{(item.highlights ?? [item.description]).map((h) => <li>{h}</li>)}</ul>
+            </div>
+          ))
+        }
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        {
+          resume.education.map((school) => (
+            <div class="cv-entry">
+              <div class="cv-row">
+                <h3>
+                  {school.area}, <span>{school.institution}</span>
+                </h3>
+                <p class="cv-date">
+                  {formatRange(school.startDate, school.endDate, now, 'year')}
+                  {status(school.startDate, school.endDate, now) === 'current' && ' (expected)'}
+                </p>
+              </div>
+              {school.notes.filter((n) => !isTodo(n)).map((note) => <p>{note}</p>)}
+            </div>
+          ))
+        }
+      </section>
+
+      <section>
+        <h2>Skills</h2>
+        <dl class="cv-skills">
+          {
+            resume.skills.map((group) => (
+              <div>
+                <dt>{group.name}</dt>
+                <dd>{group.keywords.join(', ')}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      {
+        resume.awards.length > 0 && (
+          <section>
+            <h2>Awards and activities</h2>
+            {resume.awards.map((award) => (
+              <div class="cv-entry">
+                <div class="cv-row">
+                  <h3>
+                    {award.title}, <span>{award.awarder}</span>
+                  </h3>
+                  <p class="cv-date">{formatDate(award.date)}</p>
+                </div>
+              </div>
+            ))}
+            {resume.interests.filter((i) => i.featured).map((interest) => (
+              <div class="cv-entry cv-interest">
+                <p>
+                  <strong>{interest.name}.</strong> {interest.summary}
+                </p>
+              </div>
+            ))}
+          </section>
+        )
+      }
+    </article>
+  </div>
+</Base>
+
+<script>
+  document.getElementById('print')?.addEventListener('click', () => window.print());
+</script>
+
+<style>
+  /* On screen the CV is set a step smaller than the site, like the sheet of
+     paper it becomes. In print it switches to point sizes on A4. */
+  .cv {
+    font-size: var(--text-small);
+    line-height: 1.5;
+  }
+  .cv h1 {
+    font-size: var(--text-h1);
+    font-weight: 600;
+    line-height: var(--text-h1--line-height);
+    letter-spacing: var(--text-h1--letter-spacing);
+  }
+  .cv-label {
+    margin-top: var(--spacing-4);
+    color: var(--color-muted);
+    font-size: var(--text-body);
+  }
+  .cv-contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--spacing-16);
+    margin-top: var(--spacing-8);
+  }
+  .cv a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+  .cv-contacts a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--spacing-32);
+  }
+  /* Full-size targets where the pointer is a finger. */
+  @media (pointer: coarse) {
+    .cv-contacts a {
+      min-height: var(--spacing-tap);
+    }
+  }
+  .cv-seeking {
+    font-weight: 500;
+  }
+  .cv-interest {
+    margin-top: var(--spacing-4);
+  }
+  .cv section {
+    margin-top: var(--spacing-24);
+  }
+  .cv h2 {
+    padding-bottom: var(--spacing-4);
+    border-bottom: 1px solid var(--color-line-strong);
+    font-size: var(--text-small);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .cv-entry {
+    margin-top: var(--spacing-12);
+    break-inside: avoid;
+  }
+  .cv-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--spacing-16);
+  }
+  .cv h3 {
+    font-weight: 600;
+  }
+  .cv h3 span {
+    font-weight: 400;
+  }
+  .cv-date {
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .cv-entry > p,
+  .cv-entry > ul {
+    margin-top: var(--spacing-2);
+  }
+  .cv-entry ul {
+    padding-left: var(--spacing-16);
+    list-style: disc;
+  }
+  .cv-skills > div {
+    display: grid;
+    grid-template-columns: 13em 1fr;
+    gap: 0 var(--spacing-16);
+    margin-top: var(--spacing-4);
+  }
+  .cv-skills dt {
+    font-weight: 600;
+  }
+  @media (max-width: 640px) {
+    .cv-skills > div {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm 15mm;
+  }
+  @media print {
+    .cv {
+      color: #000;
+      font-size: 9pt;
+      line-height: 1.36;
+    }
+    .cv h1 {
+      font-size: 20pt;
+    }
+    .cv-contacts {
+      gap: 0 10pt;
+    }
+    .cv-label {
+      font-size: 10.5pt;
+      color: #333;
+    }
+    .cv a {
+      color: #000;
+      text-decoration: none;
+    }
+    .cv-contacts {
+      margin-top: 3pt;
+    }
+    .cv-contacts a {
+      min-height: 0;
+    }
+    .cv-contacts + .cv-seeking {
+      margin-top: 3pt;
+    }
+    .cv section {
+      margin-top: 9pt;
+    }
+    .cv h2 {
+      font-size: 9pt;
+      border-bottom-color: #999;
+      padding-bottom: 2pt;
+    }
+    .cv-entry {
+      margin-top: 4.5pt;
+    }
+    .cv-interest {
+      margin-top: 1.5pt;
+    }
+    .cv-date {
+      color: #333;
+    }
+    .cv-skills > div {
+      margin-top: 2pt;
+    }
+  }
+</style>
