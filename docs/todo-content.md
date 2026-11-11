@@ -1,77 +1,58 @@
 # Content to fill in
 
-Everything the site is still waiting on. Facts live in `content/resume.json`; the three case studies are the MDX files in `content/work/`. Fill a gap in, push, and the site, CV, PDF and metadata update together. Nothing on this list has been invented or estimated.
+What the site is still waiting on. Facts live in `content/resume.json`; the three case studies are the MDX files in `content/work/`. Change one, push, and the site, CV, PDF and metadata update together. Nothing on this list has been invented or estimated.
 
-Run `npm run todos` to list what is still marked TODO.
+Run `npm run todos` to list what is outstanding.
 
-Draft builds (local and Vercel previews) show every TODO in an amber dashed box. The production deployment never shows one: the line or section is left out until the content exists. TODOs never print, so they can’t reach the PDF.
+How unfinished content behaves:
 
-## Blocking launch
+- **TODOs** show in draft builds (local and Vercel previews) in an amber dashed box. Production leaves the line or section out. They never print, so they can't reach the PDF.
+- **Pending approval** is content that is written and true but needs a sign-off first. It is tagged with a switch in `approvals` in `resume.json`. Draft builds show it with a "Pending approval" marker; production and the PDF leave it out until the switch is `true`.
 
-### Measured outcomes (`metrics`, and `outcome` on each case-study project)
+## Waiting for the BodyMed owner
 
-There are no measured results on the site yet. Write each one in XYZ form: accomplished X, as measured by Y, by doing Z, with a baseline.
+One conversation covers all of this.
 
-- [ ] **Clinic platform: share of bookings made online.** Online vs phone bookings in Cliniko over one full month. Needs the owner's approval. Share it as a percentage, not a count.
-- [ ] **Clinic platform: reception time per booking**, before and after. Even "about 5 minutes on the phone, now about 1 to confirm" from reception is usable if they will stand behind it.
-- [ ] **Clinic platform: no-shows or late cancellations**, before and after the card-on-file policy.
-- [ ] **AI email triage: agreement with staff.** Run the AI sorter over a labelled set of at least 50 emails. Report matches, with the rule-based sorter as the baseline.
-- [ ] **Jarvis: outages caught and explained before a customer reported them.** Count from `incidents.json` since the first run, and give the date range.
+- [ ] **The clinic platform case study.** It names BodyMed. It has no revenue figures and no patient data, and everything in it is already in the public demo's README and `docs/architecture.md`, apart from the facts below. Show the owner the whole page, and these in particular:
+  - the therapists are self-employed, and payments go to their own Stripe accounts;
+  - staff sign in with passkeys;
+  - the clinic previously took online bookings through Jane, with no payment at booking;
+  - the story of the therapists' feedback that led to the dropdowns.
+- [ ] **The launch figures.** Set `approvals.bodymedMetrics` to `true` once the owner agrees. That one switch publishes all of these at once:
+  - the proof strip's first two figures: 14.5% of appointments paid in advance (up from 0%), and 90% of new online bookings (43 of 48) through the new system, with online volume steady (46 → 48). They push "37 tests" and "15 min" out of the strip; "142 tests" stays;
+  - the BodyMed highlight on the home page ("Moved payment from the end of the appointment to booking time…");
+  - the clinic platform's result line on its home card and in its case study's TL;DR;
+  - the clinic case study's Results block;
+  - the two CV lines ("Built a pay-at-booking system… 0% to 14.5%" and "Moved 90% of the clinic's new online bookings…"). The CV has been checked with them in: one page, 92% full.
+- [ ] **Not to be published** (the sample is too small): changes in total appointments, no-shows, late cancellations or fees. See `docs/project-followups.md` for the re-run in January 2027.
+- [ ] **A quote**, if the owner is willing: one or two sentences, with name and role, and their permission. It goes in `testimonials` with `"permission": true` and appears on the home page and in the case study.
 
-### BodyMed (`work[0]`)
+## Testimonials
 
-- [ ] One highlight in XYZ form.
-- [ ] Who you work with day to day (owner, reception, therapists), and one example of working through a disagreement or trade-off. The employer checklist asks for both a team story and an ownership story.
-- [ ] **Written approval from the owner** for the public case study and any numbers. `approvedForPublic` is `false` until then. The case study will carry no revenue figures.
+- [ ] One to three short quotes, each with name, role and company, used with permission. Besides the BodyMed owner: a therapist or receptionist who uses the hub, or the DEME client. The section is hidden until at least one exists.
 
-### Rugbytots (`work[1]`)
+## Portrait
 
-- [ ] **Location.** You didn't give one, so the entry has none. Add `"location"` if you want it shown.
-- [ ] **The 80% re-enrolment figure is your estimate.** It is stored with `"approx": true` and worded "around 80%" on the site and CV. If Rugbytots can share a real figure, replace it and drop the flag.
+- [ ] The high-resolution original, ideally re-shot (window light, plain wall, eye level). Needed at 4:5 for `/about` and 1:1 for the links page. The current file is 240 × 240 px, so it is shown small on About and only appears elsewhere on the links page.
 
-### Testimonials (`testimonials`)
+## Optional
 
-- [ ] One to three short quotes, each with name, role and company, and `"permission": true`. Good people to ask: the BodyMed owner, a therapist or receptionist who uses the hub, the DEME client. The section is hidden until at least one exists.
-
-### Case studies (`content/work/*.mdx`)
-
-Each one is written only from your READMEs, the code and `resume.json`. What they still need from you:
-
-- [ ] **Read all three for accuracy.** They are in your voice, built from your words, but you should recognise every sentence as true.
-- [ ] **“Hardest problem” for email triage and Jarvis.** Your clinic notes name the hardest problem outright (paid but not booked). For the other two I chose the section from what your READMEs spend most time on: emails where tone and content disagree, and letting a model change code safely. Swap them if something else was harder.
-- [ ] **Reflection, all three:** what you would do differently, in your own words. Clinic has one real lesson already (refund-at-once became keep-the-payment); the other two are empty.
-- [ ] **Timelines:** when you started each project and how long it took.
-- [ ] **Email triage context:** how the clinic handled its inbox before, and what prompted the tool.
-- [ ] **Jarvis image:** a screenshot of an alert email, a fix pull request or the dashboard. It has no public demo, so its page has no picture.
-- [ ] **Clinic platform approval.** The case study names BodyMed. It has no revenue figures and no patient data, and everything in it is already in the public demo’s README and `docs/architecture.md`. Three details are worth showing the owner before launch, because the public README describes an unnamed clinic and this page names it: that the therapists are self-employed, that payments go to their own Stripe accounts, and that staff sign in with passkeys.
-
-A note on Jarvis’s numbers: the `incidents.json` in the public repo holds 17 events from 11 and 12 September 2026, and they look like deliberate tests (a URL that doesn’t exist). A real “outages caught” figure has to come from the private instance.
-
-### About page
-
-- [ ] **Bio.** It is about 110 words. The target is 150 to 250: add what you want to work on next and why.
-- [ ] **Beyond the code** shows three of your five interests (football, volunteering, photography). Gym and the school production are still in `resume.json` with `"featured": false`. Swap them if you prefer.
-
-### Portrait
-
-- [ ] The high-resolution original, ideally re-shot (window light, plain wall, eye level). Needed at 4:5 for `/about` and 1:1 for the links page. The current file is 240 × 240 px, which is why it only appears on the links page.
-
-## Please confirm
-
-Facts I took from your public READMEs, or inferred. Correct anything that's off.
-
-- [ ] **"8 modules"**: counted from the "What's in it" list on your old site.
-- [ ] **"37 tests"** for email triage (its README). This number goes stale when you add tests.
-- [ ] **"Held for 30 minutes"**, **"every 15 minutes"** and the **five guard rails** (your READMEs).
-- [ ] **Graduation month.** Add it to `education[0].endDate` when you know it; until then the site says “graduating 2029”.
-- [ ] **"FIRST LEGO League"**: I used the organisation's own capitalisation rather than "First Lego League". If you won or placed, add it.
-- [ ] **Transition Year entries** are stored as 2022 to 2023 with no months. Add how long the SAP placement was if you remember.
+- [ ] **DCU results.** A first-year result or notable modules (`education[0].notes`), if you want them shown. Leaving Certificate points likewise.
+- [ ] **Jarvis demo link.** When the public demo has a URL, add it as `demo` on the `jarvis` project. The card and case study then show a "Demo" link.
+- [ ] **A fourth Jarvis image.** `src/assets/work/jarvis-ai-insight.png` is in the repo but not used: the case study already has three screenshots, and a fourth crowded it.
 
 ## Before launch, not blocking the build
 
 - [ ] **Domain.** The site is at `cianmccaul.vercel.app` until you buy one. Then change `site` in `astro.config.mjs` and `basics.url` in `resume.json`.
 - [ ] **Email.** Once the domain exists, set up Cloudflare Email Routing (`hello@…` to your inbox) and change `basics.email`. Until then the site shows the Outlook address.
-- [ ] **LinkedIn.** Make the name, headline and dates match the site exactly.
-- [ ] **Optional:** first-year result or notable modules at DCU (`education[0].notes`), and Leaving Certificate points.
-- [ ] **Skills on the CV** (`skills`) are taken from the “Built with” lists in your READMEs. Remove anything you wouldn’t be happy to be asked about in an interview.
-- [ ] **CV bullets** (`projects[].highlights`) are facts from your READMEs with no numbers in them. When a metric exists, lead the bullet with it.
+- [ ] **LinkedIn.** Make the name, headline, dates and the two Rugbytots titles match the site exactly.
+
+## Please confirm
+
+Wording I tidied or chose. Correct anything that's off.
+
+- [ ] **Dropdowns.** The public demo's patient booking pages choose treatment and practitioner with cards, not dropdowns. I've kept your wording ("the first booking flow") and not said which flow the dropdowns are in. If it's the staff booking flow, say so and I'll make it specific.
+- [ ] **Bio.** Now 185 words. The new last paragraph is from your notes; the second paragraph now ends with the lesson from the therapists' feedback.
+- [ ] **CV wording** is shorter than the site in places, to keep one page: the BodyMed description, the dropdown bullet ("Rebuilt booking selection as simple dropdowns…"), the second Rugbytots bullet ("Work with parents…") and the three Transition Year lines.
+- [ ] **Rugbytots on the CV** is one entry: "Head Coach (previously Assistant Coach)", Nov 2023 – Present. The site shows both titles with their own dates.
+- [ ] **Graduation** shows as "Graduating Apr 2029". Education still reads "2025–2029", years only, to match the rows below it.

@@ -64,10 +64,19 @@ A recruiter is unlikely to open GitHub, but an engineer on the interview loop wi
 - [ ] **Pin four to six repos** on your profile: the three case studies first.
 - [ ] `site-monitor` says `status.json` and `incidents.json` are real data from your sites. Check they name nothing a client would mind being public.
 
-## 6. Smaller items
+## 6. Email triage: “Send all 12” needs two clicks
+
+- [ ] In `email-triage-demo`, pressing **Send all 12** on the test bench only shows the results table on the second click. Find out why (likely the results render from state that is set after the first run finishes, or the queue isn’t awaited) and add a test that one click shows all 12 results. The portfolio describes this bench, so a recruiter may try it.
+
+## 7. BodyMed: re-run the before/after analysis in early January 2027
+
+- [ ] The published figures cover only the first 10 days after launch on 30 October 2026, against a matched window before it. No-shows, late cancellations, fees and total appointments were left out because the sample was too small.
+- [ ] In early January 2027, with about 8 weeks of data, re-run the same matched-window comparison for no-shows and late cancellations. Publish only what the owner approves, as percentages.
+
+## 8. Smaller items
 
 - [ ] **Email triage demo:** if the deployed demo has a Groq key, confirm `/api/triage` and `/api/learn` are rate-limited and the key has a spend cap. Without a key it falls back to rules, which is safe.
-- [ ] **Jarvis has nothing to show.** There is no public demo, so its card on the portfolio has no image. A screenshot of an alert email or a fix pull request, or a 4 to 8 second recording of the dashboard, would give the case study its visual.
+- [ ] **Jarvis demo.** A public interactive demo is being built separately. When it has a URL, add it as `demo` on the `jarvis` project in `resume.json`; the card and case study pick up a “Demo” link automatically.
 - [ ] **The demos still use the purple colour wash** the portfolio has dropped (it shows in the email triage demo). Worth removing there too for consistency.
 - [ ] **Links I couldn't reach from my network. Please check by hand:**
   - `https://demehousepainting.com` (the connection failed; `deme-housepainting.vercel.app` works)
