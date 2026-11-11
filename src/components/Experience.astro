@@ -1,0 +1,55 @@
+---
+/**
+ * Experience, newest first. Dates and "Present" are computed from resume.json.
+ * Hovering a row dims its siblings, so the eye stays on one role at a time.
+ */
+import SectionRail from './SectionRail.astro';
+import Todo from './Todo.astro';
+import { isTodo, resume } from '../lib/resume';
+import { byRecency, formatRange } from '../lib/dates';
+import { now } from '../lib/site';
+
+const roles = [...resume.work].sort(byRecency);
+---
+
+<SectionRail id="experience" title="Experience">
+  <ol class="rows">
+    {
+      roles.map((role) => (
+        <li class="grid gap-x-24 gap-y-4 border-t border-line py-24 lg:grid-cols-9">
+          <p class="text-small text-muted tabular-nums lg:col-span-2 lg:pt-4">
+            {formatRange(role.startDate, role.endDate, now)}
+          </p>
+          <div class="lg:col-span-7">
+            <h3 class="text-h3">{role.position}</h3>
+            <p class="text-muted">
+              {role.company}
+              {role.location && `, ${role.location}`}
+              {role.context && ` · ${role.context}`}
+            </p>
+            <p class="mt-12 max-w-prose">{role.summary}</p>
+            {role.highlights.filter((h) => !isTodo(h)).length > 0 && (
+              <ul class="mt-12 max-w-prose list-disc pl-20 marker:text-muted">
+                {role.highlights.filter((h) => !isTodo(h)).map((h) => <li>{h}</li>)}
+              </ul>
+            )}
+            {role.highlights.filter(isTodo).map((h) => (
+              <Todo block text={h} class="mt-12 max-w-prose" />
+            ))}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</SectionRail>
+
+<style>
+  .rows > li {
+    transition: opacity var(--dur-fast) ease;
+  }
+  @media (hover: hover) {
+    .rows:hover > li:not(:hover) {
+      opacity: 0.6;
+    }
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+/**
+ * First viewport: who this is, what they want and when, on a phone, in seconds.
+ * Name, one line, one sentence, one row of logistics, then the actions.
+ */
+import Icon from './Icon.astro';
+import { currentDegree, resume } from '../lib/resume';
+import { availabilityLabel, graduationLabel, yearOfStudy, yearOfStudyLabel } from '../lib/dates';
+import { inline, now } from '../lib/site';
+
+const { basics, logistics } = resume;
+
+const study = currentDegree?.durationYears
+  ? yearOfStudy(currentDegree.startDate, currentDegree.endDate, currentDegree.durationYears, now)
+  : null;
+
+// Short chips that pack two or three to a row at 360 px. Each has a spoken
+// label so "Jan–Sep 2028" is never read out without context.
+const chips = [
+  { term: 'Looking for', value: logistics.targetRole },
+  { term: 'Year of study', value: study && currentDegree && yearOfStudyLabel(study, currentDegree.durationYears!) },
+  { term: 'Availability', value: availabilityLabel(logistics.availableFrom, logistics.availableUntil, now) },
+  { term: 'Graduation', value: currentDegree && graduationLabel(currentDegree.endDate, now) },
+  { term: 'Based in', value: basics.location.city },
+  { term: 'Relocation', value: logistics.relocate.open && 'Will relocate' },
+  ...logistics.workAuthorization.map((auth) => ({ term: 'Work authorisation', value: auth.label })),
+].filter((chip): chip is { term: string; value: string } => !!chip.value);
+---
+
+<section aria-labelledby="hero-title" class="mx-auto max-w-page px-gutter pt-64 lg:pt-96">
+  <div class="flex flex-wrap items-baseline gap-x-12 text-h3">
+    <h1 id="hero-title" class="font-semibold">{basics.name}</h1>
+    <p class="text-muted">{basics.label}</p>
+  </div>
+
+  <p class="mt-16 max-w-display text-display">{basics.headline}</p>
+
+  <p class="mt-24 max-w-prose text-body-lg text-muted [&_strong]:text-ink" set:html={inline(basics.summary)} />
+
+  <ul class="mt-24 flex flex-wrap gap-8" aria-label="At a glance">
+    {
+      chips.map((chip) => (
+        <li class="chip">
+          <span class="sr-only">{chip.term}: </span>
+          {chip.value}
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="mt-32 flex flex-wrap gap-12">
+    <a class="btn btn-primary" href="#work">
+      Selected work<Icon name="arrow-down" />
+    </a>
+    <a class="btn btn-secondary" href="#contact" data-copy={basics.email} data-copied="Email copied">
+      <Icon name="copy" />Copy email
+    </a>
+  </div>
+</section>

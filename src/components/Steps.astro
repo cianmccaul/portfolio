@@ -1,0 +1,31 @@
+---
+/** A numbered sequence set on hairlines: the booking flow, the guard rails. */
+interface Props {
+  steps: { title: string; detail: string }[];
+  /** Columns from the lg breakpoint; stacked below it. */
+  columns?: 1 | 5;
+  class?: string;
+}
+const { steps, columns = 1, class: className } = Astro.props;
+---
+
+<ol class:list={['grid', columns === 5 ? 'gap-x-24 lg:grid-cols-5' : '', className]}>
+  {
+    steps.map((step, i) => (
+      <li
+        class:list={[
+          'flex gap-16 border-t border-line py-16',
+          columns === 5 && 'lg:flex-col lg:gap-8 lg:pb-0',
+        ]}
+      >
+        <span class="w-16 shrink-0 text-small font-medium text-muted tabular-nums" aria-hidden="true">
+          {i + 1}
+        </span>
+        <div>
+          <p class="text-small font-semibold">{step.title}</p>
+          <p class="mt-2 text-small text-muted">{step.detail}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>

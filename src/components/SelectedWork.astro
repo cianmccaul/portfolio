@@ -1,0 +1,138 @@
+---
+/**
+ * Selected work. The three clinic tools are presented as one suite; Jarvis
+ * stands on its own. Cards become links to case studies when those pages
+ * exist (phase 2); until then each card links out to its demo and exact repo.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import DashboardPreview from './DashboardPreview.astro';
+import Steps from './Steps.astro';
+import Todo from './Todo.astro';
+import WorkLinks from './WorkLinks.astro';
+import { isTodo, project, resume } from '../lib/resume';
+import { formatDate } from '../lib/dates';
+
+const images = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.png', { eager: true });
+const image = (file?: string) => (file ? images[`../assets/work/${file}`]?.default : undefined);
+
+const suite = resume.suites.find((s) => s.id === 'clinic')!;
+const platform = project('clinic-platform');
+const companions = resume.projects.filter((p) => p.suite === 'clinic' && p.slug !== platform.slug);
+const jarvis = project('jarvis');
+const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
+---
+
+<section id="work" aria-labelledby="work-title" class="mx-auto max-w-page px-gutter pt-section">
+  <h2 id="work-title" class="text-h2">Selected work</h2>
+
+  <div class="mt-32 lg:mt-48">
+    <div class="grid gap-x-24 gap-y-8 lg:grid-cols-12 lg:items-baseline">
+      <h3 class="text-h3 lg:col-span-3">{suite.name}</h3>
+      <p class="max-w-prose text-muted lg:col-span-9">{suite.summary}</p>
+    </div>
+
+    {/* Flagship */}
+    <article class="mt-24 rounded-md border border-line bg-surface p-8 shadow-e1">
+      <div class="grid lg:grid-cols-12">
+        <div class="grid place-items-center rounded-sm bg-well p-12 sm:p-32 lg:col-span-7">
+          <DashboardPreview />
+        </div>
+        <div class="flex flex-col p-16 sm:p-24 lg:col-span-5 lg:p-32">
+          <h4 class="text-h2">{platform.name}</h4>
+          <p class="mt-8 text-body-lg text-muted">{platform.tagline}</p>
+          <p class="mt-16">{platform.fact}</p>
+          {isTodo(platform.outcome) && <Todo block text={platform.outcome!} class="mt-16" />}
+          <dl class="mt-24 grid grid-cols-[auto_1fr] gap-x-24 gap-y-4 text-small">
+            <dt class="text-muted">Role</dt>
+            <dd>{platform.role}</dd>
+            <dt class="text-muted">Client</dt>
+            <dd>{platform.client}</dd>
+            {
+              platform.liveSince && (
+                <>
+                  <dt class="text-muted">Live since</dt>
+                  <dd>{formatDate(platform.liveSince, 'long')}</dd>
+                </>
+              )
+            }
+            <dt class="text-muted">Stack</dt>
+            <dd>{tags(platform.stack)}</dd>
+          </dl>
+          <WorkLinks project={platform} class="mt-auto pt-16" />
+        </div>
+      </div>
+
+      {
+        platform.flow && (
+          <div class="p-16 sm:p-24 lg:p-32">
+            <h5 class="text-small font-semibold">How a booking works</h5>
+            <Steps steps={platform.flow} columns={5} class="mt-12" />
+            {platform.failure && (
+              <p class="mt-16 rounded-sm bg-well p-16 text-small lg:mt-32">
+                <strong>If it fails.</strong> <span class="text-muted">{platform.failure}</span>
+              </p>
+            )}
+          </div>
+        )
+      }
+    </article>
+
+    {/* The other two tools in the suite */}
+    <div class="mt-24 grid gap-24 md:grid-cols-2">
+      {
+        companions.map((item) => {
+          const src = image(item.image);
+          return (
+            <article class="flex flex-col rounded-md border border-line bg-surface p-8 shadow-e1">
+              {src && (
+                <div class="media overflow-hidden rounded-sm border border-line bg-well">
+                  <Picture
+                    src={src}
+                    alt={item.imageAlt ?? ''}
+                    formats={['avif', 'webp']}
+                    fallbackFormat="webp"
+                    widths={[480, 720, 960, 1200]}
+                    sizes="(min-width: 1280px) 568px, (min-width: 768px) 46vw, 92vw"
+                    class="aspect-16/10 w-full object-cover object-top"
+                    loading="lazy"
+                  />
+                </div>
+              )}
+              <div class="flex grow flex-col p-16 sm:p-24">
+                <h4 class="text-h3 font-semibold">{item.name}</h4>
+                <p class="mt-4 text-muted">{item.tagline}</p>
+                {item.fact && <p class="mt-16 text-small">{item.fact}</p>}
+                {isTodo(item.outcome) && <Todo block text={item.outcome!} class="mt-12" />}
+                <p class="mt-16 text-caption text-muted">{tags(item.stack)}</p>
+                <WorkLinks project={item} class="mt-auto pt-8" />
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  {/* Jarvis */}
+  <article class="mt-24 rounded-md border border-line bg-surface p-8 shadow-e1">
+    <div class="grid lg:grid-cols-12">
+      <div class="flex flex-col p-16 sm:p-24 lg:col-span-5 lg:p-32">
+        <h3 class="text-h2">{jarvis.name}</h3>
+        <p class="mt-8 text-body-lg text-muted">{jarvis.tagline}</p>
+        <p class="mt-16">{jarvis.description}</p>
+        {isTodo(jarvis.outcome) && <Todo block text={jarvis.outcome!} class="mt-16" />}
+        <p class="mt-16 text-caption text-muted">{tags(jarvis.stack)}</p>
+        <WorkLinks project={jarvis} class="mt-auto pt-8" />
+      </div>
+      {
+        jarvis.guardRails && (
+          <div class="rounded-sm bg-well p-16 sm:p-24 lg:col-span-7 lg:p-32">
+            <h4 class="text-small font-semibold">{jarvis.fact}</h4>
+            <Steps steps={jarvis.guardRails} class="mt-12 [&>li:last-child]:pb-0" />
+          </div>
+        )
+      }
+    </div>
+  </article>
+</section>

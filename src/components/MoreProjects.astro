@@ -1,0 +1,25 @@
+---
+/** Smaller projects as rows, not cards: name, one line, stack, links. */
+import SectionRail from './SectionRail.astro';
+import WorkLinks from './WorkLinks.astro';
+import { resume } from '../lib/resume';
+
+const projects = resume.projects.filter((p) => !p.featured);
+---
+
+<SectionRail id="projects" title="More projects">
+  <ul>
+    {
+      projects.map((item) => (
+        <li class="grid gap-x-24 border-t border-line py-24 lg:grid-cols-9">
+          <div class="lg:col-span-6">
+            <h3 class="text-h3">{item.name}</h3>
+            <p class="mt-4 max-w-prose text-muted">{item.description}</p>
+            <p class="mt-12 text-caption text-muted">{item.stack.join(' · ')}</p>
+          </div>
+          <WorkLinks project={item} class="mt-4 lg:col-span-3 lg:mt-0 lg:justify-end lg:self-start" />
+        </li>
+      ))
+    }
+  </ul>
+</SectionRail>

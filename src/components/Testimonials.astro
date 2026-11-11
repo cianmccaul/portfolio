@@ -1,0 +1,38 @@
+---
+/**
+ * One to three short quotes from people who have worked with Cian. Rendered
+ * only when resume.json has quotes with permission recorded; draft builds show
+ * where the section will sit.
+ */
+import SectionRail from './SectionRail.astro';
+import Todo from './Todo.astro';
+import { resume, showTodos } from '../lib/resume';
+
+const quotes = resume.testimonials;
+---
+
+{
+  (quotes.length > 0 || showTodos) && (
+    <SectionRail id="testimonials" title="In their words">
+      {quotes.length > 0 ? (
+        <ul class="grid gap-48">
+          {quotes.map((t) => (
+            <li>
+              <figure>
+                <blockquote class="max-w-prose text-h3">“{t.quote}”</blockquote>
+                <figcaption class="mt-16 text-small text-muted">
+                  <span class="font-medium text-ink">{t.name}</span> · {t.role}, {t.company}
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <Todo
+          block
+          text="One to three short quotes from a manager, clinic owner or client, each with name, role and company, used with permission. This whole section stays hidden in production until at least one exists."
+        />
+      )}
+    </SectionRail>
+  )
+}

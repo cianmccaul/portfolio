@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import ProofStrip from '../components/ProofStrip.astro';
+import SelectedWork from '../components/SelectedWork.astro';
+import MoreProjects from '../components/MoreProjects.astro';
+import Experience from '../components/Experience.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Education from '../components/Education.astro';
+import { resume } from '../lib/resume';
+
+const { basics } = resume;
+const description = `${basics.name}, ${basics.label}. ${basics.summary.replace(/\*\*/g, '')}`;
+---
+
+<Base title={`${basics.name} · ${basics.label}`} description={description}>
+  <Hero />
+  <ProofStrip />
+  <SelectedWork />
+  <MoreProjects />
+  <Experience />
+  <Testimonials />
+  <Education />
+</Base>

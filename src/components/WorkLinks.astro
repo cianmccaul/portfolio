@@ -1,0 +1,41 @@
+---
+/** Demo, live and code links for a project. Code always goes to the exact repo. */
+import ExternalLink from './ExternalLink.astro';
+import type { Project } from '../lib/resume';
+interface Props {
+  project: Project;
+  class?: string;
+}
+const { project, class: className } = Astro.props;
+// A real domain is worth showing; a hosting subdomain is just "Live site".
+const liveLabel = (url: string) => {
+  const host = new URL(url).host;
+  return host.endsWith('.vercel.app') ? 'Live site' : host;
+};
+---
+
+<ul class:list={['flex flex-wrap gap-x-24', className]}>
+  {
+    project.live && (
+      <li>
+        <ExternalLink href={project.live} action>
+          {liveLabel(project.live)}
+        </ExternalLink>
+      </li>
+    )
+  }
+  {
+    project.demo && (
+      <li>
+        <ExternalLink href={project.demo} action>
+          Demo<span class="sr-only"> of {project.name}</span>
+        </ExternalLink>
+      </li>
+    )
+  }
+  <li>
+    <ExternalLink href={project.repo} action>
+      Code<span class="sr-only"> for {project.name}</span>
+    </ExternalLink>
+  </li>
+</ul>
