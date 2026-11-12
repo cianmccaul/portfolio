@@ -1,0 +1,125 @@
+---
+/**
+ * The case study's hero, on the night band: the name, one line, the three
+ * numbers, and where to try it. The Hub's home screen from the public demo
+ * sits across the band's lower edge, half on the dark and half on the page.
+ */
+import BrowserFrame from '../BrowserFrame.astro';
+import Icon from '../Icon.astro';
+import Todo from '../Todo.astro';
+import { hub, hubProject, moduleCount } from '../../lib/hub';
+import { workImage } from '../../lib/images';
+import { formatDate } from '../../lib/dates';
+
+const item = hubProject;
+const image = workImage(hub.hero.image);
+const small = [...hub.smallStats, `${moduleCount.live} modules live`];
+const host = (url: string) => new URL(url).host;
+---
+
+<header class="hero night" data-night>
+  <div class="night-glow" aria-hidden="true"></div>
+  <div class="mx-auto max-w-page px-gutter pt-32 lg:pt-48">
+    <nav aria-label="Breadcrumb" class="text-small font-medium text-muted lg:text-body">
+      <ol class="flex items-center gap-8">
+        <li><a href="/#work" class="link">Work</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page">Case study</li>
+      </ol>
+    </nav>
+    <h1 class="mt-8 text-hero lg:mt-12" style={`view-transition-name: title-${item.slug}`}>{item.name}</h1>
+    <p class="mt-20 max-w-prose text-h2 lg:mt-24">{item.tagline}</p>
+    {
+      item.liveSince && (
+        <p class="mt-12 text-body-lg text-muted">
+          Live since <time datetime={item.liveSince}>{formatDate(item.liveSince, 'long')}</time>.
+        </p>
+      )
+    }
+
+    <dl class="stats mt-32 border-y border-line lg:mt-48">
+      {
+        hub.stats.map((stat) => (
+          <div>
+            <dt class="mt-4 text-body-lg text-muted">{stat.unit}</dt>
+            <dd class="text-display tabular-nums">{stat.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="mt-12 text-small text-muted">{small.join(' · ')}</p>
+
+    <div class="mt-32 flex flex-wrap gap-12">
+      {
+        item.demo && (
+          <a class="btn btn-primary" href={item.demo}>
+            Try the demo<Icon name="arrow-up-right" />
+          </a>
+        )
+      }
+      {
+        item.live && (
+          <a class="btn btn-secondary" href={item.live}>
+            {host(item.live)}<Icon name="arrow-up-right" />
+          </a>
+        )
+      }
+      <a class="btn btn-secondary" href={item.repo}>
+        Code<span class="sr-only"> for the public demo</span><Icon name="arrow-up-right" />
+      </a>
+    </div>
+    <p class="mt-12 max-w-prose text-small text-muted">
+      The production code is private. The demo and its code are public, and run as a fictional clinic.
+    </p>
+    {hub.approvalTodo && <Todo block text={hub.approvalTodo} class="mt-16 max-w-prose" />}
+
+  </div>
+</header>
+{
+  image && (
+    <div class="shot mx-auto max-w-page px-gutter">
+      <BrowserFrame
+        src={image}
+        alt={hub.hero.alt}
+        caption={hub.hero.caption}
+        maxWidth={1104}
+        eager
+        transitionName={`work-${item.slug}`}
+      />
+    </div>
+  )
+}
+
+<style>
+  /* The screenshot straddles the band's lower edge: the band leaves room for
+     its top part, and the picture is pulled up into it. */
+  .hero {
+    --overlap: clamp(72px, 20vw, 260px);
+    margin-top: calc(var(--nav-h) * -1);
+    padding-top: var(--nav-h);
+    padding-bottom: calc(var(--overlap) + var(--spacing-48));
+  }
+  .shot {
+    position: relative;
+    margin-top: calc(clamp(72px, 20vw, 260px) * -1);
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .stats > div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding-block: var(--spacing-20);
+  }
+  .stats > div + div {
+    padding-left: var(--spacing-16);
+    border-left: 1px solid var(--color-line);
+  }
+  @media (min-width: 640px) {
+    .stats > div + div {
+      padding-left: var(--spacing-32);
+    }
+  }
+</style>

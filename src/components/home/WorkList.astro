@@ -14,7 +14,7 @@ import { isTodo, project, resume, type Line } from '../../lib/resume';
 import { workImage as image, workImageMobile } from '../../lib/images';
 
 const suite = resume.suites.find((s) => s.id === 'clinic')!;
-const companions = resume.projects.filter((p) => p.suite === 'clinic' && p.slug !== 'clinic-platform');
+const companions = resume.projects.filter((p) => p.suite === 'clinic' && p.slug !== 'bodymed-hub');
 const jarvis = project('jarvis');
 const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
 const text = (line: Line | undefined) => (typeof line === 'string' ? line : line?.text);

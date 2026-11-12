@@ -7,7 +7,6 @@
  */
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import DashboardPreview from '../../components/DashboardPreview.astro';
 import Icon from '../../components/Icon.astro';
 import Todo from '../../components/Todo.astro';
 import WorkLinks from '../../components/WorkLinks.astro';
@@ -16,25 +15,27 @@ import Excerpt from '../../components/work/Excerpt.astro';
 import Pipeline from '../../components/work/Pipeline.astro';
 import Toc from '../../components/work/Toc.astro';
 import Shot from '../../components/work/Shot.astro';
-import BreakIt from '../../components/work/BreakIt.astro';
 import Pending from '../../components/Pending.astro';
 import BrowserFrame from '../../components/BrowserFrame.astro';
 import { project, showTodos } from '../../lib/resume';
 import { article, breadcrumbs } from '../../lib/seo';
 import { workImage, workImageMobile } from '../../lib/images';
+import { hub } from '../../lib/hub';
 
 export async function getStaticPaths() {
   const entries = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+  // "Next case study" runs through these in order and ends at the flagship,
+  // BodyMed Hub, which is its own page (bodymed-hub.astro).
   return entries.map((entry, i) => ({
     params: { slug: entry.id },
-    props: { entry, next: entries[(i + 1) % entries.length] },
+    props: { entry, nextSlug: entries[i + 1]?.id ?? hub.slug },
   }));
 }
 
-const { entry, next } = Astro.props;
+const { entry, nextSlug } = Astro.props;
 const item = project(entry.id);
 if (!item.caseStudy) throw new Error(`content/work/${entry.id}.mdx exists but "${entry.id}" is not marked caseStudy in resume.json`);
-const nextItem = project(next.id);
+const nextItem = project(nextSlug);
 
 const { Content, headings } = await render(entry);
 
@@ -135,14 +136,6 @@ const tldr = [
 
     <div class="mx-auto max-w-page px-gutter">
       {
-        entry.id === 'clinic-platform' ? (
-          <div class="night mt-32 grid place-items-center overflow-clip rounded-md p-12 sm:p-32 lg:mt-48 lg:p-64">
-            <div class="night-glow" aria-hidden="true" />
-            <div class="scheme-light w-full max-w-card-wide" style={`view-transition-name: work-${entry.id}`}>
-              <DashboardPreview />
-            </div>
-          </div>
-        ) : (
           image && (
             <BrowserFrame
               src={image}
@@ -155,7 +148,6 @@ const tldr = [
               class="mt-32 lg:mt-48"
             />
           )
-        )
       }
 
       <div class="mt-48 grid gap-x-24 gap-y-16 lg:mt-64 lg:grid-cols-12">
@@ -188,14 +180,14 @@ const tldr = [
           </section>
 
           <div class="prose mt-section">
-            <Content components={{ Todo, Decision, Excerpt, Pipeline, Pending, Shot, BreakIt }} />
+            <Content components={{ Todo, Decision, Excerpt, Pipeline, Pending, Shot }} />
           </div>
           {pendingIds.length > 0 && <style set:html={pendingIds.map((id) => `#${id}{display:none}`).join('')} />}
         </div>
       </div>
 
       <aside aria-label="Next case study" class="mt-section border-t border-ink">
-        <a href={`/work/${next.id}/`} class="group flex items-end justify-between gap-24 py-24 lg:py-32">
+        <a href={`/work/${nextSlug}/`} class="group flex items-end justify-between gap-24 py-24 lg:py-32">
           <span>
             <span class="block text-small font-medium text-muted">Next case study</span>
             <span class="mt-8 block text-h1 transition-colors duration-(--dur-micro) group-hover:text-accent">{nextItem.name}</span>

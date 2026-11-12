@@ -1,0 +1,86 @@
+---
+/** Before and after: what each part of the Hub took the place of. */
+import Icon from '../Icon.astro';
+import Pending from '../Pending.astro';
+import Todo from '../Todo.astro';
+import { hub } from '../../lib/hub';
+
+const { rows, pending } = hub.replaced;
+---
+
+<div class="strip">
+  <p class="heads" aria-hidden="true"><span>Before</span><span></span><span>With the Hub</span></p>
+  <ol>
+    {
+      rows.map((row) => (
+        <li>
+          <span class="before">
+            <span class="sr-only">Before: </span>
+            {row.before}
+          </span>
+          <Icon name="arrow-right" size={20} class="arrow" />
+          <span class="after">
+            <span class="sr-only">Now: </span>
+            {row.after}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+{
+  pending && (
+    <Pending approval={pending.approval} class="mt-24 max-w-prose">
+      <p>{pending.text}</p>
+      <Todo block text={pending.todo} class="mt-12" />
+    </Pending>
+  )
+}
+
+<style>
+  .heads,
+  li {
+    display: grid;
+    gap: var(--spacing-4) var(--spacing-24);
+  }
+  .heads {
+    display: none;
+    padding-bottom: var(--spacing-12);
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    font-weight: 500;
+  }
+  li {
+    padding-block: var(--spacing-16);
+    border-top: 1px solid var(--color-line);
+  }
+  li:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .before {
+    color: var(--color-muted);
+  }
+  .after {
+    font-size: var(--text-h3);
+    font-weight: 500;
+    line-height: var(--text-h3--line-height);
+    letter-spacing: var(--text-h3--letter-spacing);
+  }
+  li :global(.arrow) {
+    display: none;
+    color: var(--color-accent);
+  }
+  @media (min-width: 768px) {
+    .heads,
+    li {
+      grid-template-columns: minmax(0, 5fr) var(--spacing-20) minmax(0, 6fr);
+      align-items: center;
+    }
+    .heads {
+      display: grid;
+    }
+    li :global(.arrow) {
+      display: block;
+    }
+  }
+</style>

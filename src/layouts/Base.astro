@@ -19,9 +19,11 @@ interface Props {
   /** The links page is a standalone card: no nav or footer. */
   chrome?: boolean;
   noindex?: boolean;
+  /** The page opens on the night band, so the nav starts in its dark tint. */
+  nightTop?: boolean;
 }
 
-const { title, description, og = 'home', schema = [], chrome = true, noindex = false } = Astro.props;
+const { title, description, og = 'home', schema = [], chrome = true, noindex = false, nightTop = false } = Astro.props;
 const { name } = resume.basics;
 // The home page leads with the name; every other page ends with it.
 const fullTitle = title.startsWith(name) ? title : `${title} · ${name}`;
@@ -83,7 +85,7 @@ const image = absolute(`/og/${og}.png`);
     >
       Skip to content
     </a>
-    {chrome && <Nav />}
+    {chrome && <Nav night={nightTop} />}
     <main id="main" tabindex="-1" class="outline-none">
       <slot />
     </main>

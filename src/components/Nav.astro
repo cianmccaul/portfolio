@@ -13,10 +13,15 @@ import Monogram from './Monogram.astro';
 import { nav } from '../lib/site';
 import { resume } from '../lib/resume';
 
+interface Props {
+  /** Start in the dark tint: the page opens on the night band. */
+  night?: boolean;
+}
+const { night = false } = Astro.props;
 const path = Astro.url.pathname;
 ---
 
-<header class="site-nav pointer-events-none sticky top-16 z-40 px-gutter print:hidden" data-nav>
+<header class="site-nav pointer-events-none sticky top-16 z-40 px-gutter print:hidden" data-nav data-over={night ? 'night' : undefined}>
   <nav aria-label="Main" style="view-transition-name: site-nav" class="glass glass-lens pointer-events-auto mx-auto flex w-fit items-center rounded-lg p-4">
     {/* Always goes home. On the home page it carries the same active pill as the other items. */}
     <a

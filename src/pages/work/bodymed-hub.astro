@@ -1,0 +1,136 @@
+---
+/**
+ * BodyMed Hub: the flagship case study, laid out like a product page. Its
+ * content is content/hub.json (see src/lib/hub.ts); name, links and the live
+ * date come from the project entry in resume.json.
+ */
+import Base from '../../layouts/Base.astro';
+import BrowserFrame from '../../components/BrowserFrame.astro';
+import Icon from '../../components/Icon.astro';
+import Pending from '../../components/Pending.astro';
+import Todo from '../../components/Todo.astro';
+import HubHero from '../../components/hub/HubHero.astro';
+import HubNav from '../../components/hub/HubNav.astro';
+import HubSection from '../../components/hub/HubSection.astro';
+import Replaced from '../../components/hub/Replaced.astro';
+import { hub, hubProject as item } from '../../lib/hub';
+import { isApproved, project, resume, showTodos } from '../../lib/resume';
+import { workImage, workImageMobile } from '../../lib/images';
+import { article, breadcrumbs } from '../../lib/seo';
+import { inline } from '../../lib/site';
+
+const path = `/work/${item.slug}/`;
+const suite = resume.projects.filter((p) => p.suite === item.suite && p.slug !== item.slug);
+const next = project('email-triage');
+const { results } = hub;
+const showPending = results.pending && (isApproved(results.pending.approval) || showTodos);
+
+const sections = [
+  { id: 'replaced', label: 'What it replaced' },
+  { id: 'results', label: 'Results' },
+  { id: 'reflection', label: 'Reflection' },
+];
+---
+
+<Base
+  title={`Case study: ${item.name}`}
+  description={hub.description}
+  og={`work-${item.slug}`}
+  nightTop
+  schema={[
+    article(item.name, hub.description, path),
+    breadcrumbs([
+      { name: 'Home', path: '/' },
+      { name: 'Work', path: '/#work' },
+      { name: item.name, path },
+    ]),
+  ]}
+>
+  <article>
+    <HubHero />
+    <HubNav items={sections} />
+
+    <HubSection id="replaced" title="What it replaced" lede={hub.replaced.lede}>
+      <Replaced />
+    </HubSection>
+
+    <HubSection id="built" title="How I built it">
+      <div class="grid gap-x-48 gap-y-24 lg:grid-cols-12">
+        <p class="text-h2 lg:col-span-8">{hub.built.statement}</p>
+        <p class="max-w-prose text-muted lg:col-span-8">{hub.built.detail}</p>
+      </div>
+    </HubSection>
+
+    <HubSection id="results" title="Results">
+      <div class="grid max-w-prose gap-16">
+        <ul class="grid gap-12">
+          {results.lines.map((line) => <li set:html={inline(line)} />)}
+        </ul>
+        {
+          showPending && results.pending && (
+            <Pending approval={results.pending.approval}>
+              <p>{results.pending.intro}</p>
+              <ul class="mt-8 grid list-disc gap-8 pl-20 marker:text-muted">
+                {results.pending.lines.map((line) => <li set:html={inline(line)} />)}
+              </ul>
+            </Pending>
+          )
+        }
+        <p class="text-muted">{results.next}</p>
+        {results.todo && <Todo block text={results.todo} />}
+      </div>
+    </HubSection>
+
+    <HubSection id="suite" title="The rest of the suite" lede={resume.suites.find((s) => s.id === item.suite)?.summary}>
+      <ul class="grid gap-24 md:grid-cols-3">
+        {
+          suite.map((other) => {
+            const image = workImage(other.image);
+            const href = other.caseStudy ? `/work/${other.slug}/` : other.demo;
+            return (
+              <li class="flex flex-col">
+                {image && (
+                  <BrowserFrame
+                    src={image}
+                    mobile={workImageMobile(other.image)}
+                    alt={other.imageAlt ?? ''}
+                    sizes="(min-width: 1296px) 352px, (min-width: 768px) 30vw, 92vw"
+                  />
+                )}
+                <h3 class="mt-16 text-h2">{other.name}</h3>
+                <p class="mt-8 text-muted">{other.tagline}</p>
+                {href && (
+                  <a href={href} class="link link-action mt-auto pt-8">
+                    {other.caseStudy ? 'Read the case study' : 'Try the demo'}
+                    <span class="sr-only">: {other.name}</span>
+                    <Icon name={other.caseStudy ? 'arrow-right' : 'arrow-up-right'} />
+                  </a>
+                )}
+              </li>
+            );
+          })
+        }
+      </ul>
+    </HubSection>
+
+    <HubSection id="reflection" title="Reflection">
+      <div class="grid max-w-prose gap-16 text-body-lg">
+        {hub.reflection.map((paragraph) => <p>{paragraph}</p>)}
+        {hub.reflectionTodo && <Todo block text={hub.reflectionTodo} />}
+      </div>
+    </HubSection>
+
+    <div class="mx-auto max-w-page px-gutter">
+      <aside aria-label="Next case study" class="mt-section border-t border-ink">
+        <a href={`/work/${next.slug}/`} class="group flex items-end justify-between gap-24 py-24 lg:py-32">
+          <span>
+            <span class="block text-small font-medium text-muted">Next case study</span>
+            <span class="mt-8 block text-h1 transition-colors duration-(--dur-micro) group-hover:text-accent">{next.name}</span>
+            <span class="mt-8 block max-w-prose text-body-lg text-muted">{next.tagline}</span>
+          </span>
+          <Icon name="arrow-right" size={24} class="mb-8 shrink-0 text-muted transition-transform duration-(--dur-fast) ease-out group-hover:translate-x-4" />
+        </a>
+      </aside>
+    </div>
+  </article>
+</Base>

@@ -3,5 +3,21 @@
   "framework": "astro",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "redirects": [{ "source": "/cv.pdf", "destination": "/Cian-McCaul-CV.pdf", "permanent": false }]
+  "redirects": [
+    {
+      "source": "/cv.pdf",
+      "destination": "/Cian-McCaul-CV.pdf",
+      "permanent": false
+    },
+    {
+      "source": "/work/clinic-platform",
+      "destination": "/work/bodymed-hub/",
+      "permanent": true
+    },
+    {
+      "source": "/work/clinic-platform/:path*",
+      "destination": "/work/bodymed-hub/",
+      "permanent": true
+    }
+  ]
 }

@@ -1,0 +1,537 @@
+{
+  "slug": "bodymed-hub",
+  "description": "BodyMed Hub, the system a physiotherapy clinic runs on: what it replaced, every module, a tour of the demo, the architecture, how it shipped and the four hardest decisions.",
+  "approvalTodo": "This case study names BodyMed, so it needs the owner’s written approval before it goes live. It contains no revenue figures and no patient data.",
+  "stats": [
+    {
+      "value": "438",
+      "unit": "tests"
+    },
+    {
+      "value": "90",
+      "unit": "API routes"
+    },
+    {
+      "value": "9",
+      "unit": "scheduled jobs"
+    }
+  ],
+  "smallStats": [
+    "39 pages",
+    "8 architecture decision records"
+  ],
+  "replaced": {
+    "lede": "What the clinic had before, and what does that job now.",
+    "rows": [
+      {
+        "before": "Jane online booking, with no payment at booking",
+        "after": "Pay at booking, on Cliniko and Stripe"
+      },
+      {
+        "before": "Manual phone payments",
+        "after": "Pay links and saved cards"
+      },
+      {
+        "before": "No equipment tracking",
+        "after": "Machine-clash prevention"
+      },
+      {
+        "before": "No fortnightly schedules",
+        "after": "Therapist shifts"
+      },
+      {
+        "before": "A Kendlebell PDF and a 7-page document",
+        "after": "A role-based help centre"
+      },
+      {
+        "before": "A shared admin key",
+        "after": "Roles, passkeys and approved devices"
+      },
+      {
+        "before": "A Mailchimp sync that ignored consent",
+        "after": "Consent-based newsletter opt-in"
+      }
+    ],
+    "pending": {
+      "approval": "bodymedMetrics",
+      "text": "Other tools the Hub was weighed against: a waitlist add-on quoted at €150–200 a month, Vaoucher, HR Locker and ClinicExec.",
+      "todo": "Owner to confirm which subscriptions were dropped once the Hub was live, before any of these names are published."
+    }
+  },
+  "modules": {
+    "lede": "Everything the Hub does, grouped by who it is for. Live means the clinic uses it today.",
+    "groups": [
+      {
+        "name": "Patients",
+        "modules": [
+          {
+            "name": "Booking site",
+            "status": "live",
+            "line": "Pay at booking. Returning patients skip the form. The dropdown treatment menu went live on 12 November 2026."
+          },
+          {
+            "name": "Manage my booking",
+            "status": "live",
+            "line": "Change or cancel under the 24-hour rule, up to 12 weeks ahead."
+          },
+          {
+            "name": "Waitlist",
+            "status": "live",
+            "line": "One fair offer at a time when a slot opens."
+          },
+          {
+            "name": "Gift vouchers",
+            "status": "live",
+            "line": "Redeemed online or at the desk. Online sales are paused."
+          },
+          {
+            "name": "Newsletter opt-in",
+            "status": "live",
+            "line": "Consent-based."
+          }
+        ]
+      },
+      {
+        "name": "Reception",
+        "modules": [
+          {
+            "name": "Phone booking",
+            "status": "live",
+            "line": "A 2-hour pay link, a card on the call, or a saved card once the patient approves on their phone."
+          },
+          {
+            "name": "Appointments",
+            "status": "live",
+            "line": "Diary holds, and rebook or refund."
+          },
+          {
+            "name": "Machine-clash prevention",
+            "status": "live",
+            "line": "One shockwave machine and one laser, never double-booked."
+          },
+          {
+            "name": "Help centre",
+            "status": "live",
+            "line": "Role-based guides for staff."
+          },
+          {
+            "name": "Email templates",
+            "status": "live",
+            "line": "Editable in the Hub."
+          },
+          {
+            "name": "Emergency switch",
+            "status": "live",
+            "line": "Sends booking back to Cliniko if it is ever needed."
+          }
+        ]
+      },
+      {
+        "name": "Money",
+        "modules": [
+          {
+            "name": "Past-appointment payments",
+            "status": "live",
+            "line": "Take payment for an appointment that has already happened."
+          },
+          {
+            "name": "Not invoiced yet",
+            "status": "live",
+            "line": "Paid bookings still waiting for an invoice."
+          },
+          {
+            "name": "Payment reconciliation",
+            "status": "live",
+            "line": "Checked every morning at 06:00."
+          },
+          {
+            "name": "PDF invoices and credit notes",
+            "status": "built",
+            "line": "Built, and switched off for now."
+          }
+        ]
+      },
+      {
+        "name": "Team",
+        "modules": [
+          {
+            "name": "Team",
+            "status": "live",
+            "line": "4 roles, passkeys and device approval."
+          },
+          {
+            "name": "Timesheets",
+            "status": "live",
+            "line": "Clocking in and weekly hours."
+          },
+          {
+            "name": "Weekly tasks",
+            "status": "live",
+            "line": "The “Clinic Tree”."
+          },
+          {
+            "name": "Therapist shifts",
+            "status": "live",
+            "line": "Fortnightly schedules."
+          }
+        ]
+      },
+      {
+        "name": "Insight",
+        "modules": [
+          {
+            "name": "KPI dashboard",
+            "status": "live",
+            "line": "Worked out every night at 01:30."
+          },
+          {
+            "name": "Therapist stats",
+            "status": "live",
+            "line": "The month so far, for each therapist."
+          }
+        ]
+      }
+    ]
+  },
+  "tour": {
+    "lede": "The public demo is the production interface running as a fictional clinic, Northbank Physio, with a pretend back end in the browser. Every name and figure in these screenshots is made up.",
+    "note": "The demo still shows the earlier, card-based treatment picker. The live site has used dropdowns since 12 November 2026.",
+    "stops": [
+      {
+        "image": "hub-booking.png",
+        "title": "Booking, on the patient’s side",
+        "caption": "Five steps: treatment, practitioner, time, details, payment. The time is re-checked against the diary and held while they pay.",
+        "alt": "The demo’s booking page at step 3 of 5, Choose a time, with a week of days, a 10:30am slot and a summary of the booking so far."
+      },
+      {
+        "image": "hub-bookings.png",
+        "title": "Online bookings, on reception’s side",
+        "caption": "Every online booking with its payment beside it. Reception can charge an extra, refund or waive a fee, and every action is logged.",
+        "alt": "The demo’s Online bookings page: a list of made-up patients’ appointments, each marked paid in full, with buttons to charge an extra and to refund or waive."
+      },
+      {
+        "image": "hub-phone.png",
+        "title": "Phone booking and a pay link",
+        "caption": "Reception takes the caller through the same five steps, then takes their card on the call or emails a pay link. The time is held for 2 hours.",
+        "alt": "The demo’s phone booking page at step 5 of 5, Review and take payment, with Email them a payment link selected and a button to email the €80.00 payment link."
+      },
+      {
+        "image": "hub-waitlist.png",
+        "title": "Waitlist",
+        "caption": "Patients waiting for a time. When one opens that suits them they get a link to book it, held for 2 hours. If they don’t take it, it goes to the next person.",
+        "alt": "The demo’s Waitlist page: buttons to add a patient and look for times now, and a made-up patient waiting for a morning slot."
+      },
+      {
+        "image": "hub-kpis.png",
+        "title": "KPI dashboard",
+        "caption": "Last week against the clinic’s own last 8 weeks, starting with one paragraph in plain English. The figures here are invented for the demo.",
+        "alt": "The demo’s Clinic KPIs page: a paragraph summing up last week for the fictional clinic, above a headline figure with its trend."
+      },
+      {
+        "image": "hub-appointments.png",
+        "title": "Appointments, and rebook or refund",
+        "caption": "Find any patient and move or cancel their appointments. Anyone who paid but lost their time is listed here, with Book a time and Refund beside them.",
+        "alt": "The demo’s Appointments page: a made-up patient under Paid, waiting for a new time, with buttons to book a time or refund €80.00."
+      },
+      {
+        "image": "hub-help.png",
+        "title": "Help centre",
+        "caption": "Guides for owners, reception, staff and patients. Every guide has the steps, and most have pictures with the button to press circled.",
+        "alt": "The demo’s Guides page, with guides grouped for owners and for reception."
+      }
+    ]
+  },
+  "architecture": {
+    "lede": "Patients and staff use one application, and it talks to the service that owns each job.",
+    "people": [
+      "Patients",
+      "Staff"
+    ],
+    "hub": {
+      "name": "BodyMed Hub",
+      "stack": "Next.js 15 + React 19",
+      "host": "on Vercel, Dublin"
+    },
+    "services": [
+      {
+        "name": "Cliniko",
+        "role": "the diary"
+      },
+      {
+        "name": "Stripe",
+        "role": "Checkout, Connect direct charges to each therapist’s own account, webhooks"
+      },
+      {
+        "name": "Twilio",
+        "role": "texts"
+      },
+      {
+        "name": "Resend",
+        "role": "email"
+      },
+      {
+        "name": "MailerLite",
+        "role": "newsletter"
+      },
+      {
+        "name": "Upstash Redis",
+        "role": "holds, limits"
+      },
+      {
+        "name": "Postgres",
+        "role": "staff accounts"
+      }
+    ],
+    "jobs": [
+      {
+        "when": "Every 5 min",
+        "what": [
+          "Waitlist",
+          "Invoices",
+          "Diary holds",
+          "Saved-card approvals"
+        ]
+      },
+      {
+        "when": "Every 15 min",
+        "what": [
+          "Vouchers"
+        ]
+      },
+      {
+        "when": "01:30",
+        "what": [
+          "KPIs"
+        ]
+      },
+      {
+        "when": "04:40",
+        "what": [
+          "Shifts"
+        ]
+      },
+      {
+        "when": "06:00",
+        "what": [
+          "Reconciliation"
+        ]
+      },
+      {
+        "when": "22:30",
+        "what": [
+          "Summary"
+        ]
+      }
+    ]
+  },
+  "timeline": {
+    "lede": "Planned from August 2026. The first piece shipped on 25 September, and the clinic went live five weeks later.",
+    "start": "Planned from August 2026",
+    "events": [
+      {
+        "date": "2026-09-25",
+        "label": "Booking site"
+      },
+      {
+        "date": "2026-09-29",
+        "label": "Manage booking"
+      },
+      {
+        "date": "2026-10-08",
+        "label": "Pay links"
+      },
+      {
+        "date": "2026-10-09",
+        "label": "Staff dashboard and help centre"
+      },
+      {
+        "date": "2026-10-12",
+        "label": "Guides, timesheets, approved devices"
+      },
+      {
+        "date": "2026-10-20",
+        "label": "KPIs, tasks, “not invoiced yet”"
+      },
+      {
+        "date": "2026-10-26",
+        "label": "Waitlist"
+      },
+      {
+        "date": "2026-10-27",
+        "label": "Therapist stats, and invoices (built)"
+      },
+      {
+        "date": "2026-10-28",
+        "until": "2026-10-29",
+        "label": "Vouchers"
+      },
+      {
+        "date": "2026-10-30",
+        "label": "Machine clashes, and go-live",
+        "milestone": true
+      },
+      {
+        "date": "2026-11-03",
+        "label": "Shifts, email templates, appointments and rebook"
+      },
+      {
+        "date": "2026-11-06",
+        "label": "Past-appointment payments"
+      },
+      {
+        "date": "2026-11-10",
+        "label": "Returning patients skip the form"
+      },
+      {
+        "date": "2026-11-12",
+        "label": "Dropdown menu live"
+      }
+    ]
+  },
+  "dives": {
+    "lede": "Four problems where the obvious answer was wrong, or not available.",
+    "items": [
+      {
+        "id": "paying-therapists",
+        "title": "Paying self-employed therapists directly",
+        "problem": "The therapists are self-employed. A payment for an appointment with one of them is their money, not the clinic’s, so it has to reach their own account.",
+        "options": [
+          "Destination charges",
+          "One clinic account that pays therapists monthly",
+          "Express accounts",
+          "Direct charges"
+        ],
+        "chose": "Direct charges on each therapist’s own Stripe account. Stripe refused Express accounts that pay their own fees, which ruled that option out.",
+        "tradeoff": "A saved card belongs to one therapist’s account, so saved cards work per therapist. A refund bug needed a fix, and then a repair of older records."
+      },
+      {
+        "id": "never-twice",
+        "title": "Never selling one time twice",
+        "problem": "The Hub, clinic staff and the answering service can all book the same slot, and Cliniko has no webhooks and no locking.",
+        "options": [
+          "Authorise, book, then capture",
+          "Pay, then book from the webhook"
+        ],
+        "chose": "Pay, then book from Stripe’s webhook, with short-lived holds, a HELD block in the diary, a re-check after payment, and rebook or refund if the time has gone. “Authorise, book, capture” came too late before launch, and authorisations only last about 7 days.",
+        "tradeoff": "A patient can pay for a time that someone else takes a moment later, so the Hub has to put that right by itself. A fix on 4 November 2026 closed a gap where a crash in the middle of a booking could leave it unfinished.",
+        "pipeline": {
+          "caption": "Pay, then book. Every step that can fail has a defined way out.",
+          "steps": [
+            {
+              "title": "Hold the slot",
+              "detail": "Before the patient pays, the server re-checks the time with the diary and holds it for 30 minutes, so two people can’t pay for the same slot. Phone pay links and waitlist offers hold a time for 2 hours."
+            },
+            {
+              "title": "Take payment",
+              "detail": "Stripe Checkout, with the card saved for the cancellation policy. Every call that moves money carries an idempotency key."
+            },
+            {
+              "title": "Claim the webhook event",
+              "detail": "Stripe retries webhooks. Each event is claimed once.",
+              "exit": {
+                "when": "Seen before",
+                "then": "Nothing changes. One appointment, one charge."
+              }
+            },
+            {
+              "title": "Re-check the slot",
+              "detail": "Someone may have booked it by phone while the patient paid.",
+              "exit": {
+                "when": "Slot gone",
+                "then": "Payment kept. Link to pick another time, refunded automatically after 7 days."
+              }
+            },
+            {
+              "title": "Look before creating",
+              "detail": "If an earlier attempt already made the appointment, use that one instead of making a duplicate.",
+              "exit": {
+                "when": "Diary down",
+                "then": "Stripe retries for up to two hours. Then a full refund, an email, and an alert to the clinic."
+              }
+            },
+            {
+              "title": "Confirm",
+              "detail": "Save the booking record, send the confirmation. The page polls for this status."
+            }
+          ]
+        }
+      },
+      {
+        "id": "fair-waitlist",
+        "title": "A fair waitlist without webhooks",
+        "problem": "Cliniko has no webhooks, so nothing tells the Hub when a time opens up. When one does, more than one patient may want it.",
+        "chose": "The Hub checks for open times every 5 minutes in working hours and offers each one to one person at a time. The rules below decide who, and when.",
+        "rules": [
+          {
+            "term": "Order",
+            "value": "A patient waiting for a named therapist first, then whoever has gone longest without an offer, then whoever joined first."
+          },
+          {
+            "term": "Offer window",
+            "value": "2 hours, and it always closes 60 minutes before the slot."
+          },
+          {
+            "term": "Short notice",
+            "value": "No automatic offers under 3 hours’ notice."
+          },
+          {
+            "term": "Texts",
+            "value": "Only between 08:30 and 20:00."
+          },
+          {
+            "term": "Limits",
+            "value": "2 places on the list, 1 offer a day and 4 a week. Paused after 3 offers not taken. A place expires after 60 days."
+          },
+          {
+            "term": "At checkout",
+            "value": "The slot is held while they pay."
+          },
+          {
+            "term": "Paid but gone",
+            "value": "Rebook, or an automatic refund after 7 days."
+          }
+        ],
+        "tradeoff": "Checking every 5 minutes means a freed time can wait a few minutes before anyone hears about it, and a time less than 3 hours away is never offered automatically."
+      },
+      {
+        "id": "sign-in",
+        "title": "Sign-in strong enough for refunds, on any laptop",
+        "problem": "Staff can refund patients, so sign-in has to be strong. But not every laptop in the clinic has Face ID.",
+        "chose": "Passkeys, plus approved computers for a laptop with no Face ID. A new browser waits for an approver, so access to someone’s inbox alone can’t move money.",
+        "tradeoff": "A new computer can’t be used until someone approves it."
+      }
+    ]
+  },
+  "built": {
+    "statement": "Built with AI coding tools. I owned the product decisions with the clinic, the architecture (8 written decision records), reviewing and testing every change, and running it in production.",
+    "detail": "Before launch I wrote the requirements, a failure modes and effects analysis of everything that could go wrong with money and bookings, a test plan, a go/no-go checklist and a runbook. The production code is private because it is tied to the clinic’s accounts."
+  },
+  "results": {
+    "lines": [
+      "**Live since 30 October 2026**, taking real bookings and payments every day at book.bodymed.ie.",
+      "**142 tests pass across 21 files** in the public demo. Its end-to-end tests check that a repeated webhook gives one appointment and one charge, that a slot taken mid-payment keeps the payment, and that an unused rebook is refunded after 7 days."
+    ],
+    "pending": {
+      "approval": "bodymedMetrics",
+      "intro": "In the first 10 days after launch, against a matched window before it:",
+      "lines": [
+        "**Appointments paid in advance went from 0% to 14.5%.** Payment moved from the end of the appointment to booking time.",
+        "**90% of new online bookings (43 of 48) came through the Hub.**",
+        "**Online booking volume held steady**, at 46 before and 48 after."
+      ]
+    },
+    "next": "A fuller before and after, including no-shows and late cancellations, follows after about two months of data.",
+    "todo": "A short quote from the clinic owner or reception, with name and role, used with permission."
+  },
+  "reflection": [
+    "The first version refunded a patient straight away when their slot was taken while they paid. Patients preferred not having to pay twice, so since 3 November 2026 the payment is kept and they choose another time instead.",
+    "The dropdowns taught me the bigger lesson: the people who use a system every day know the job better than I do.",
+    "I’d give it more time. Twelve weeks was tight for something a working clinic depends on every day."
+  ],
+  "reflectionTodo": "Confirm how the therapists found the dropdown version after it went live on 12 November 2026, and add it here.",
+  "hero": {
+    "image": "hub-home.png",
+    "alt": "The Hub’s home screen in the public demo, signed in as the owner of a fictional clinic: a list of areas starting with Appointments, Online bookings, Waitlist and Machine clashes.",
+    "caption": "The Hub’s home screen, in the public demo. The clinic and everyone in it are made up."
+  }
+}

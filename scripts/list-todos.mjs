@@ -24,6 +24,18 @@ for (const [key, approved] of Object.entries(resume.approvals ?? {})) {
   if (!approved) found.push([`approvals.${key}`, 'Waiting for sign-off. Set to true once approved to publish everything tagged with it.']);
 }
 
+// The BodyMed Hub case study keeps its TODOs under keys named todo or …Todo.
+const hub = JSON.parse(readFileSync(new URL('../content/hub.json', import.meta.url), 'utf8'));
+(function walk(value, path) {
+  if (Array.isArray(value)) value.forEach((item, i) => walk(item, `${path}[${i}]`));
+  else if (value && typeof value === 'object') {
+    for (const [key, child] of Object.entries(value)) {
+      if (typeof child === 'string' && /todo$/i.test(key)) found.push([`hub.json ${path}.${key}`.replace(' .', ' '), child]);
+      else walk(child, path ? `${path}.${key}` : key);
+    }
+  }
+})(hub, '');
+
 // Case studies: <Todo ... text="..."> blocks and *Todo: lines in the front matter.
 const workDir = new URL('../content/work/', import.meta.url);
 for (const file of readdirSync(workDir).filter((name) => name.endsWith('.mdx'))) {

@@ -28,7 +28,8 @@
       "What I enjoy most is building things that make people’s day easier. At BodyMed Healthcare I’ve gone from admin work to building the booking, payments and staff platform the clinic runs on, working with the owner, reception and the therapists. Their feedback changed what I built, and taught me that the people who use a system every day know the job better than I do.",
       "On Saturday mornings I coach at Rugbytots, where I went from assistant coach to head coach, running four classes for young children. My favourite moment is a child finally scoring their first conversion.",
       "Next, I want to keep building software that real people rely on, and to do it in a team of experienced engineers, where I can learn faster than I could on my own. That’s why I’m looking for a software engineering internship."
-    ]
+    ],
+    "buildNote": "I build with AI coding tools. I own the product decisions, the architecture, reviewing and testing every change, and running it in production."
   },
   "approvals": {
     "bodymedMetrics": false
@@ -78,11 +79,36 @@
       "note": "First 10 days after launch against a matched window before it."
     },
     {
+      "id": "hub-tests",
+      "status": "ready",
+      "value": "438",
+      "unit": "tests",
+      "label": "cover BodyMed Hub, the system the clinic runs on"
+    },
+    {
+      "id": "hub-routes",
+      "status": "ready",
+      "value": "90",
+      "unit": "API routes",
+      "label": "behind booking, payments, the waitlist, KPIs and the team tools"
+    },
+    {
+      "id": "hub-live",
+      "status": "ready",
+      "value": "Live",
+      "unit": "since 30 Oct 2026",
+      "label": "at book.bodymed.ie, taking real bookings and payments every day",
+      "source": {
+        "label": "book.bodymed.ie",
+        "url": "https://book.bodymed.ie"
+      }
+    },
+    {
       "id": "clinic-tests",
       "status": "ready",
       "value": "142",
       "unit": "tests",
-      "label": "pass across 21 test files in the clinic platform demo",
+      "label": "pass across 21 test files in the public BodyMed Hub demo",
       "source": {
         "label": "clinic-platform-demo",
         "url": "https://github.com/cianmccaul/clinic-platform-demo#tests"
@@ -121,6 +147,7 @@
       "summary": "Started on admin and grew into running the clinic’s digital side: automating the front desk, replacing the old online booking with pay-at-booking on Cliniko and Stripe, and building a central hub the whole team works from. I work with the owner, reception and the therapists.",
       "brief": "Grew from admin into running the clinic’s digital side, replacing its old online booking with pay-at-booking on Cliniko and Stripe. I work with the owner, reception and therapists.",
       "highlights": [
+        "Built a clinic operations platform with AI coding tools (Next.js, Stripe Connect, Cliniko, Twilio): booking, payments, waitlist, KPIs and team tools; 90 API routes, 438 tests; live since October 2026.",
         {
           "text": "Moved payment from the end of the appointment to booking time, taking advance payment from 0% to 14.5% in the first 10 days.",
           "approval": "bodymedMetrics",
@@ -130,15 +157,20 @@
           "text": "Therapists found the first version of the live patient booking site too complicated, so I rebuilt treatment and practitioner selection as simple dropdowns based on their feedback; the dropdown version went live on 12 November 2026. I learned that the people who use a system every day know the job better than I do.",
           "cv": "Rebuilt the live booking site’s treatment and practitioner selection as simple dropdowns after therapist feedback."
         },
+        {
+          "text": "Built PulsePay, a separate tool that works out each self-employed therapist’s monthly rent from booking exports and produces a PDF statement for each.",
+          "cv": false
+        },
         "TODO: confirm how the therapists found the dropdown version after it went live on 12 November 2026 (for example, “They found it much easier to use”), and add it to this highlight and the clinic case study."
       ],
       "stack": [
         "Next.js",
         "TypeScript",
         "Stripe Connect",
-        "Cliniko API"
+        "Cliniko API",
+        "Twilio"
       ],
-      "caseStudy": "clinic-platform"
+      "caseStudy": "bodymed-hub"
     },
     {
       "company": "Rugbytots Ireland",
@@ -216,17 +248,17 @@
     {
       "id": "clinic",
       "name": "The clinic suite",
-      "summary": "Three tools built for BodyMed Healthcare. The public demos run as a fictional clinic, Northbank Physio, with made-up patients and data."
+      "summary": "Four tools built for BodyMed Healthcare. The public demos run as a fictional clinic, Northbank Physio, with made-up patients and data."
     }
   ],
   "projects": [
     {
-      "slug": "clinic-platform",
-      "name": "Clinic platform",
+      "slug": "bodymed-hub",
+      "name": "BodyMed Hub",
       "suite": "clinic",
       "featured": true,
       "caseStudy": true,
-      "tagline": "Online booking, payments and a staff hub for a real clinic.",
+      "tagline": "The system a physiotherapy clinic runs on: booking, payments, waitlist, insight and team, in one Hub.",
       "description": "The clinic already took bookings online through Jane, but nobody paid until the end of the appointment. Late cancellations and no-shows cost therapists money, and reception tracked payments by hand. I replaced it with one system on top of the clinic’s diary (Cliniko) and payments (Stripe): patients pay when they book, reception handles refunds, fees and phone bookings from one dashboard, and each therapist is paid straight into their own Stripe account.",
       "outcome": {
         "text": "In its first 10 days, appointments paid in advance rose from 0% to 14.5%.",
@@ -244,82 +276,27 @@
           "approval": "bodymedMetrics"
         },
         "Designed a pay-then-book flow with slot holds, idempotent webhooks and automatic refunds, so a patient is never left paid but not booked, or booked twice.",
-        "Wrote a failure-mode analysis, test plan, runbook and decision records before launch; 142 tests pass."
+        "Wrote a failure-mode analysis, test plan, runbook and 8 architecture decision records before launch."
       ],
       "role": "Sole developer",
       "client": "BodyMed Healthcare, Clontarf",
       "liveSince": "2026-10-30",
       "stack": [
-        "Next.js",
+        "Next.js 15",
+        "React 19",
         "TypeScript",
         "Stripe Connect",
         "Cliniko API",
-        "Redis",
-        "Zod",
         "Twilio",
-        "Vercel",
-        "GitHub Actions"
+        "Resend",
+        "Upstash Redis",
+        "Postgres",
+        "Vercel"
       ],
       "repo": "https://github.com/cianmccaul/clinic-platform-demo",
       "demo": "https://cian-clinic-demo.vercel.app",
       "live": "https://book.bodymed.ie",
-      "flow": [
-        {
-          "title": "Patient picks a time",
-          "detail": "Treatment, therapist and slot, on any phone."
-        },
-        {
-          "title": "Slot is held",
-          "detail": "Re-checked against the diary and held for 30 minutes."
-        },
-        {
-          "title": "Pays securely",
-          "detail": "Stripe Checkout, with the card saved for late cancellations."
-        },
-        {
-          "title": "Booked in the diary",
-          "detail": "Appointment created in Cliniko, confirmation emailed."
-        },
-        {
-          "title": "Reception sees it",
-          "detail": "On the dashboard, with payment, notes and actions."
-        }
-      ],
-      "failure": "Slot taken while they paid? They keep the payment and pick another time. Diary down? A full refund, automatically, and the clinic gets an alert. A reconciliation check runs every morning.",
-      "modules": [
-        {
-          "title": "Booking and payments",
-          "detail": "Saved cards; returning patients sign in with an email code."
-        },
-        {
-          "title": "Manage my booking",
-          "detail": "Cancel or reschedule within the 24-hour policy."
-        },
-        {
-          "title": "Reception dashboard",
-          "detail": "Refunds, no-show fees, phone bookings and pay links."
-        },
-        {
-          "title": "Therapists paid directly",
-          "detail": "Stripe Connect pays each therapist’s own account."
-        },
-        {
-          "title": "Invoicing",
-          "detail": "A PDF invoice for every payment, emailed to the patient."
-        },
-        {
-          "title": "Staff hub and help centre",
-          "detail": "Passkey sign-in, timesheets, tasks and guides."
-        },
-        {
-          "title": "Gift vouchers",
-          "detail": "Bought online, sent as PDFs, redeemed at booking."
-        },
-        {
-          "title": "Waitlist",
-          "detail": "Open slots offered to waiting patients by text."
-        }
-      ]
+      "failure": "Slot taken while they paid? They keep the payment and pick another time. Diary down? A full refund, automatically, and the clinic gets an alert. A reconciliation check runs every morning."
     },
     {
       "slug": "email-triage",
@@ -369,6 +346,26 @@
       "image": "clinic-chatbot.png",
       "imageAlt": "The chatbot demo on a fictional clinic’s site. Asked about a back injury, it suggests a physiotherapist and offers a link to book.",
       "outcome": "Urgent symptoms, such as chest pain, trouble breathing or signs of a stroke, get a “call 112 or 999, or your GP” message, checked before every other rule. 35 tests."
+    },
+    {
+      "slug": "pulsepay",
+      "name": "PulsePay",
+      "suite": "clinic",
+      "featured": true,
+      "caseStudy": false,
+      "tagline": "Works out each self-employed therapist’s monthly rent and produces a PDF statement for each.",
+      "description": "Works out each self-employed therapist’s monthly rent across different deals (percentage, fixed, capacity tiers, hybrid, weekend rates, caps, minimums, equipment fees) from booking exports, and produces a PDF statement for each.",
+      "outcome": "Works out each self-employed therapist’s monthly rent across different deals (percentage, fixed, capacity tiers, hybrid, weekend rates, caps, minimums, equipment fees) from booking exports, and produces a PDF statement for each.",
+      "fact": "A separate tool, built July to October 2026. The real one is private; the demo runs as a fictional clinic, with PDF statements and 122 tests.",
+      "stack": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "repo": "https://github.com/cianmccaul/pulsepay-demo",
+      "demo": "https://cian-pulsepay-demo.vercel.app",
+      "image": "pulsepay.png",
+      "imageAlt": "The PulsePay demo for a fictional clinic: five made-up therapists, and a month overview listing each one’s rent model, sessions, takings and rent due."
     },
     {
       "slug": "jarvis",

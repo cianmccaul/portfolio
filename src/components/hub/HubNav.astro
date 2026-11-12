@@ -1,0 +1,96 @@
+---
+/**
+ * "On this page", as a second floating pill that sticks under the main nav
+ * once the hero has scrolled away. On a phone it scrolls sideways. The
+ * current section is marked by a few lines of script; without it the links
+ * still work.
+ */
+interface Props {
+  items: { id: string; label: string }[];
+}
+const { items } = Astro.props;
+---
+
+<nav aria-label="On this page" class="subnav pointer-events-none sticky z-30 mt-48 px-gutter lg:mt-64 print:hidden" data-subnav>
+  <ul class="glass glass-1 pointer-events-auto mx-auto flex w-fit max-w-full items-center overflow-x-auto rounded-pill">
+    {
+      items.map((item) => (
+        <li>
+          <a href={`#${item.id}`}>{item.label}</a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<script>
+  for (const nav of document.querySelectorAll<HTMLElement>('[data-subnav]')) {
+    const list = nav.querySelector('ul')!;
+    const links = [...nav.querySelectorAll<HTMLAnchorElement>('a')];
+    const sections = links.map((link) => document.querySelector<HTMLElement>(link.hash)).filter((el): el is HTMLElement => !!el);
+    let current: HTMLAnchorElement | undefined;
+    const mark = () => {
+      // The current section is the last one whose top has passed under the two navs.
+      const line = nav.getBoundingClientRect().bottom + 24;
+      const at = sections.filter((section) => section.getBoundingClientRect().top <= line).pop();
+      const link = at && links.find((l) => l.hash === `#${at.id}`);
+      if (link === current) return;
+      current?.removeAttribute('aria-current');
+      current = link;
+      if (!link) return;
+      link.setAttribute('aria-current', 'true');
+      // Keep it in view inside the pill, without touching the page's own scroll.
+      list.scrollTo({ left: link.offsetLeft - (list.clientWidth - link.offsetWidth) / 2, behavior: 'auto' });
+    };
+    let queued = false;
+    document.addEventListener(
+      'scroll',
+      () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          mark();
+        });
+      },
+      { passive: true },
+    );
+    mark();
+  }
+</script>
+
+<style>
+  .subnav {
+    top: calc(var(--spacing-16) + var(--nav-h) + var(--spacing-8));
+  }
+  ul {
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  ul::-webkit-scrollbar {
+    display: none;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    height: var(--spacing-tap);
+    padding-inline: var(--spacing-16);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-small);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color var(--dur-micro) ease;
+  }
+  a[aria-current] {
+    background-color: var(--glass-hover);
+  }
+  @media (hover: hover) {
+    a:hover {
+      background-color: var(--glass-hover);
+    }
+  }
+  /* Anchored sections have to clear both pills. */
+  :global(html:has([data-subnav])) {
+    scroll-padding-top: calc(var(--spacing-16) + var(--nav-h) + var(--spacing-8) + var(--spacing-tap) + var(--spacing-32));
+  }
+</style>

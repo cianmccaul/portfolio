@@ -2,7 +2,9 @@
 // The demos run as a fictional clinic (Northbank Physio) with made-up data,
 // so nothing in these screenshots is real patient information.
 //
-//   node scripts/capture-work.mjs
+//   node scripts/capture-work.mjs                 everything
+//   node scripts/capture-work.mjs hub pulsepay    only the named groups
+//   (groups: triage, chatbot, more, hub, pulsepay)
 //
 // Needs Playwright with Chromium. Images are 16:10 unless noted.
 //
@@ -13,6 +15,8 @@
 import { chromium } from 'playwright';
 
 const out = new URL('../src/assets/work/', import.meta.url).pathname;
+const only = process.argv.slice(2);
+const want = (group) => only.length === 0 || only.includes(group);
 const browser = await chromium.launch();
 const open = async (width, height, deviceScaleFactor) => {
   const context = await browser.newContext({
@@ -25,7 +29,7 @@ const open = async (width, height, deviceScaleFactor) => {
 };
 
 // AI email triage: an email that tripped the red-flag safety check.
-{
+if (want('triage')) {
   const page = await open(1240, 760, 3);
   await page.goto('https://cian-email-triage.vercel.app', { waitUntil: 'networkidle' });
   await page.waitForTimeout(6000); // the sample inbox sorts itself on load
@@ -49,7 +53,7 @@ const open = async (width, height, deviceScaleFactor) => {
 
 // Clinic chatbot: asked who is best for a back injury. The whole page is
 // kept so the "made-up clinic" banner stays in shot.
-{
+if (want('chatbot')) {
   const page = await open(1120, 700, 2);
   await page.goto('https://physio-chatbot.vercel.app', { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'Chat with us' }).first().click();
@@ -64,7 +68,7 @@ const open = async (width, height, deviceScaleFactor) => {
 // More projects: the first screen of each live site, 16:10, saved at 1920 px.
 // DesignRoom is opened in demo mode (nothing is saved or emailed) with its
 // intro skipped, so the showroom itself is in shot.
-{
+if (want('more')) {
   const sharp = (await import('sharp')).default;
   const sites = [
     ['designroom', 'https://cm-studio-designroom.vercel.app/?demo=1', async (page) => page.getByText(/skip intro/i).first().click()],
@@ -78,6 +82,80 @@ const open = async (width, height, deviceScaleFactor) => {
     await page.waitForTimeout(3000);
     await sharp(await page.screenshot()).resize(1920, 1200).png({ compressionLevel: 9 }).toFile(`${out}${name}.png`);
   }
+}
+
+// BodyMed Hub: the tour on its case study, from the public demo. The demo is
+// the production interface running as a fictional clinic, so every name and
+// figure in shot is made up. 1200 × 750 at 2×. Nothing is ever taken from the
+// real Hub.
+if (want('hub')) {
+  const DEMO = 'https://cian-clinic-demo.vercel.app';
+  const shot = (page, name) => page.screenshot({ path: `${out}hub-${name}.png` });
+  // Put the first element with this text `offset` px below the top of the window.
+  const bring = async (page, text, offset) => {
+    const box = await page.getByText(text).first().boundingBox();
+    await page.evaluate((y) => window.scrollTo(0, Math.max(0, y)), box.y + (await page.evaluate(() => window.scrollY)) - offset);
+    await page.waitForTimeout(400);
+  };
+  const chooseTime = async (page, path) => {
+    await page.goto(DEMO + path, { waitUntil: 'networkidle' });
+    await page.getByText('New patient').first().click();
+    await page.waitForTimeout(600);
+    await page.getByText('Physiotherapy').first().click();
+    await page.waitForTimeout(800);
+    await page.getByText('Physiotherapy - New Patient').first().click();
+    await page.waitForTimeout(1200);
+    await page.getByText('Sarah Byrne').first().click();
+    await page.waitForTimeout(1800);
+    await page.getByRole('button', { name: /\d{1,2}:\d{2}(am|pm)/ }).first().click();
+    await page.waitForTimeout(400);
+  };
+
+  // The patient's side: step 3 of 5, choosing a time.
+  {
+    const page = await open(1200, 750, 2);
+    await chooseTime(page, '/');
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await shot(page, 'booking');
+  }
+  // Reception: the list of online bookings, each with its payment.
+  {
+    const page = await open(1200, 750, 2);
+    await page.goto(`${DEMO}/dashboard/bookings`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1200);
+    await bring(page, /^08:00/, 120);
+    await shot(page, 'bookings');
+  }
+  // A phone booking for a made-up caller, at the step where reception sends a pay link.
+  {
+    const page = await open(1200, 750, 2);
+    await chooseTime(page, '/dashboard/book');
+    await page.getByRole('button', { name: /^continue$/i }).first().click();
+    await page.waitForTimeout(900);
+    const caller = { firstName: 'Niamh', lastName: 'Brennan', email: 'niamh.brennan@example.com', phone: '083 555 0142', dateOfBirth: '2', 'dateOfBirth-month': '4', 'dateOfBirth-year': '1988', address: '12 Example Road, Dublin 3', gpName: 'None' };
+    for (const [id, value] of Object.entries(caller)) await page.locator(`#${id}`).fill(value);
+    await page.getByRole('button', { name: /^continue$/i }).first().click();
+    await page.waitForTimeout(1500);
+    await page.getByText('Email them a payment link').first().click();
+    await page.waitForTimeout(600);
+    await bring(page, 'Review and take payment', 150);
+    await shot(page, 'phone');
+  }
+  // The staff home screen (for the case study's hero) and four areas shown from the top.
+  for (const [name, path] of [['home', ''], ['waitlist', '/waitlist'], ['kpis', '/kpis'], ['appointments', '/appointments'], ['help', '/help']]) {
+    const page = await open(1200, 750, 2);
+    await page.goto(`${DEMO}/dashboard${path}`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1500);
+    await shot(page, name);
+  }
+}
+
+// PulsePay: the demo's first screen, a fictional clinic with made-up therapists.
+if (want('pulsepay')) {
+  const page = await open(1200, 750, 2);
+  await page.goto('https://cian-pulsepay-demo.vercel.app', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(1500);
+  await page.screenshot({ path: `${out}pulsepay.png` });
 }
 
 await browser.close();

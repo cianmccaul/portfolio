@@ -48,6 +48,8 @@ const schema = z.object({
     location: z.object({ city: z.string(), area: z.string().optional(), country: z.string().length(2) }),
     profiles: z.array(z.object({ network: z.string(), username: z.string(), url })),
     bio: z.array(z.string()),
+    /** One line on how the work gets built, for the About page. */
+    buildNote: z.string().optional(),
   }),
 
   logistics: z.object({
