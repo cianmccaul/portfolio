@@ -1,9 +1,14 @@
 ---
 /**
- * Floating navigation. This is the solid tier: it has to look finished on its
- * own, because the glass skin (phase 3) is optional and can be switched off.
- * The header ignores pointer events so only the pill itself is interactive.
+ * Floating navigation: one pill, glass where the browser and the reader allow
+ * it and solid otherwise (see src/styles/skin.css). The header ignores pointer
+ * events so only the pill itself is interactive.
+ *
+ * Over the night band the pill takes the dark tint, so it never sits as a
+ * white slab on the one dark surface of the site.
  */
+import Appearance from './Appearance.astro';
+import Icon from './Icon.astro';
 import Monogram from './Monogram.astro';
 import { nav } from '../lib/site';
 import { resume } from '../lib/resume';
@@ -11,17 +16,14 @@ import { resume } from '../lib/resume';
 const path = Astro.url.pathname;
 ---
 
-<header class="pointer-events-none sticky top-16 z-40 px-gutter print:hidden">
-  <nav
-    aria-label="Main"
-    class="pointer-events-auto mx-auto flex w-fit items-center rounded-lg border border-line bg-surface p-4 shadow-e2"
-  >
+<header class="site-nav pointer-events-none sticky top-16 z-40 px-gutter print:hidden" data-nav>
+  <nav aria-label="Main" style="view-transition-name: site-nav" class="glass glass-lens pointer-events-auto mx-auto flex w-fit items-center rounded-lg p-4">
     {/* Always goes home. On the home page it carries the same active pill as the other items. */}
     <a
       href="/"
       aria-label={`${resume.basics.name}, home`}
       aria-current={path === '/' || path === '/index.html' ? 'page' : undefined}
-      class="grid size-tap place-items-center rounded-pill transition-colors duration-(--dur-micro) hover:bg-well aria-[current]:bg-well"
+      class="nav-item size-tap"
     >
       <Monogram size={32} />
     </a>
@@ -29,16 +31,87 @@ const path = Astro.url.pathname;
       {
         nav.map((item) => (
           <li>
-            <a
-              href={item.href}
-              aria-current={path.startsWith(item.match) ? 'page' : undefined}
-              class="flex h-tap items-center rounded-pill px-16 text-small font-medium text-ink transition-colors duration-(--dur-micro) hover:bg-well aria-[current]:bg-well"
-            >
+            <a href={item.href} aria-current={path.startsWith(item.match) ? 'page' : undefined} class="nav-item h-tap px-12 sm:px-16">
               {item.label}
             </a>
           </li>
         ))
       }
     </ul>
+    {/* These two need JavaScript, so they only appear once it has run. */}
+    <div class="nav-tools items-center">
+      <span class="mx-4 h-20 w-px bg-line-strong" aria-hidden="true"></span>
+      <button type="button" class="nav-item h-tap max-sm:w-tap sm:gap-8 sm:px-12" data-palette-open aria-haspopup="dialog">
+        <Icon name="search" size={20} class="sm:hidden" />
+        <span class="max-sm:sr-only">Search</span>
+        <kbd class="max-sm:hidden" aria-hidden="true"><span data-mod>Ctrl</span> K</kbd>
+      </button>
+      <button type="button" class="nav-item size-tap" popovertarget="appearance" aria-label="Appearance">
+        <Icon name="contrast" size={20} />
+      </button>
+    </div>
   </nav>
+  <Appearance />
+  {/* The lens for the refracted tier: bend the backdrop along the rim, frost
+      the middle, and lay the frosted middle over the bent picture. Empty until
+      chrome.ts has measured the pill and drawn the map. */}
+  <svg class="absolute" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="lens" x="0" y="0" width="100%" height="100%" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feImage data-lens-map x="0" y="0" width="1" height="1" preserveAspectRatio="none" result="map"></feImage>
+      <feDisplacementMap in="SourceGraphic" in2="map" scale="44" xChannelSelector="R" yChannelSelector="G" result="bent"></feDisplacementMap>
+      <feGaussianBlur in="bent" stdDeviation="1.5" edgeMode="duplicate" result="rim"></feGaussianBlur>
+      <feGaussianBlur in="bent" stdDeviation="12" edgeMode="duplicate" result="frost"></feGaussianBlur>
+      <feColorMatrix in="map" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 1 0 0" result="middle"></feColorMatrix>
+      <feComposite in="frost" in2="middle" operator="in" result="centre"></feComposite>
+      <feMerge>
+        <feMergeNode in="rim"></feMergeNode>
+        <feMergeNode in="centre"></feMergeNode>
+      </feMerge>
+    </filter>
+  </svg>
 </header>
+
+<script>
+  import '../scripts/chrome.ts';
+</script>
+
+<style>
+  .nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    color: inherit;
+    font-size: var(--text-small);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--dur-micro) ease;
+  }
+  .nav-item[aria-current],
+  .nav-item:active {
+    background-color: var(--glass-hover);
+  }
+  @media (hover: hover) {
+    .nav-item:hover {
+      background-color: var(--glass-hover);
+    }
+  }
+  .nav-tools {
+    display: none;
+  }
+  :global(:root[data-js]) .nav-tools {
+    display: flex;
+  }
+  kbd {
+    padding: var(--spacing-2) var(--spacing-8);
+    border: 1px solid color-mix(in oklch, currentColor 22%, transparent);
+    border-radius: var(--radius-xs);
+    /* Ink, not muted: on the pill only full-strength text clears 4.5:1 over
+       anything that can scroll underneath. */
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    line-height: var(--text-caption--line-height);
+    white-space: nowrap;
+  }
+</style>

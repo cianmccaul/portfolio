@@ -13,7 +13,7 @@
   class="pointer-events-none fixed inset-x-0 bottom-24 z-50 flex justify-center px-gutter print:hidden"
 >
   <p
-    class="translate-y-8 rounded-sm bg-ink px-16 py-12 text-small font-medium text-canvas opacity-0 shadow-e3 transition-[opacity,transform] duration-(--dur-fast) ease-out data-[open]:translate-y-0 data-[open]:opacity-100"
+    class="toast glass glass-1 translate-y-8 rounded-pill px-20 py-12 text-small font-medium opacity-0 data-[open]:translate-y-0 data-[open]:opacity-100"
   >
   </p>
 </div>
@@ -43,3 +43,13 @@
     }
   });
 </script>
+
+<style>
+  /* The glass class already transitions colour; add the toast's own entrance. */
+  .toast {
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) ease;
+  }
+</style>

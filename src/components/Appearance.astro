@@ -1,0 +1,161 @@
+---
+/**
+ * The appearance panel: theme (light, dark or follow the system) and Reduce
+ * glass. Native radio buttons and a checkbox inside a native popover, so the
+ * keyboard, focus and dismissal behaviour all come from the browser. Both
+ * choices are remembered and applied before first paint (see Base.astro).
+ */
+import Icon from './Icon.astro';
+const themes = [
+  { value: 'light', label: 'Light', icon: 'sun' },
+  { value: 'dark', label: 'Dark', icon: 'moon' },
+  { value: 'system', label: 'System', icon: 'monitor' },
+] as const;
+---
+
+<div id="appearance" popover class="appearance glass glass-3">
+  <fieldset>
+    <legend>Theme</legend>
+    <div class="seg">
+      {
+        themes.map((theme) => (
+          <label>
+            <input type="radio" name="theme" value={theme.value} checked={theme.value === 'system'} />
+            <span>
+              <Icon name={theme.icon} />
+              {theme.label}
+            </span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+  <label class="row">
+    <span>
+      <span class="name">Reduce glass</span>
+      <span class="hint">Solid panels, no blur</span>
+    </span>
+    <input type="checkbox" role="switch" data-glass-toggle />
+  </label>
+</div>
+
+<style>
+  .appearance {
+    position: fixed;
+    inset: calc(var(--spacing-16) + var(--nav-h) + var(--spacing-12)) 0 auto;
+    width: min(320px, calc(100vw - 2 * var(--spacing-gutter)));
+    margin: 0 auto;
+    padding: var(--spacing-16);
+    border-radius: var(--radius-md);
+    font-size: var(--text-small);
+    pointer-events: auto;
+  }
+  /* Opens in 180 ms where the browser can animate into the top layer. */
+  .appearance:popover-open {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  @starting-style {
+    .appearance:popover-open {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+  legend,
+  .name {
+    font-weight: 600;
+  }
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-8);
+    padding: var(--spacing-2);
+    border-radius: var(--radius-sm);
+    background-color: var(--glass-hover);
+  }
+  .seg label {
+    position: relative;
+  }
+  .seg input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .seg span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-8);
+    min-height: var(--spacing-tap);
+    border-radius: calc(var(--radius-sm) - var(--spacing-2));
+    font-weight: 500;
+    transition: background-color var(--dur-micro) ease;
+  }
+  .seg input:checked + span {
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-e1);
+  }
+  .seg input:focus-visible + span,
+  .row input:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-16);
+    min-height: var(--spacing-tap);
+    margin-top: var(--spacing-16);
+    padding-top: var(--spacing-12);
+    border-top: 1px solid var(--color-line-strong);
+    cursor: pointer;
+  }
+  .hint {
+    display: block;
+    color: var(--color-muted);
+  }
+  /* The switch: a native checkbox, drawn as a track and a thumb. */
+  .row input {
+    appearance: none;
+    position: relative;
+    flex: none;
+    width: var(--spacing-48);
+    height: var(--spacing-32);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-n8);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) ease;
+  }
+  .row input::after {
+    content: '';
+    position: absolute;
+    top: var(--spacing-4);
+    left: var(--spacing-4);
+    width: var(--spacing-24);
+    height: var(--spacing-24);
+    border-radius: var(--radius-pill);
+    background-color: oklch(1 0 0);
+    box-shadow: 0 1px 3px oklch(0 0 0 / 0.3);
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .row input:checked {
+    background-color: var(--color-accent);
+  }
+  .row input:checked::after {
+    transform: translateX(var(--spacing-16));
+  }
+  @media (forced-colors: active) {
+    .row input {
+      border: 1px solid CanvasText;
+    }
+    .row input::after {
+      background-color: CanvasText;
+    }
+  }
+</style>

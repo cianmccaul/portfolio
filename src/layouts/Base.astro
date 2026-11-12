@@ -4,6 +4,7 @@ import fontUrl from '../assets/fonts/InterVariable-latin.woff2?url';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Toast from '../components/Toast.astro';
+import Palette from '../components/Palette.astro';
 import { resume } from '../lib/resume';
 import { absolute } from '../lib/seo';
 
@@ -33,6 +34,23 @@ const image = absolute(`/og/${og}.png`);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Theme and glass choices, applied before anything paints. data-lens marks
+        Chromium, the one engine that can bend a backdrop through an SVG filter. */}
+    <script is:inline>
+      (function (d, s) {
+        try {
+          s = localStorage;
+        } catch (e) {
+          s = {};
+        }
+        if (s.theme === 'light' || s.theme === 'dark') d.dataset.theme = s.theme;
+        if (s.glass === 'off' || (s.glass !== 'on' && matchMedia('(prefers-reduced-transparency: reduce)').matches))
+          d.dataset.glass = 'off';
+        d.dataset.js = '';
+        if ((navigator.userAgentData || window.chrome) && window.CSS && CSS.supports('backdrop-filter', 'url(#a)'))
+          d.dataset.lens = '';
+      })(document.documentElement);
+    </script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -42,8 +60,8 @@ const image = absolute(`/og/${og}.png`);
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfcfd" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0d0f" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfcfd" data-own="#fbfcfd" data-light="#fbfcfd" data-dark="#0c0d0f" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0d0f" data-own="#0c0d0f" data-light="#fbfcfd" data-dark="#0c0d0f" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={name} />
@@ -70,6 +88,7 @@ const image = absolute(`/og/${og}.png`);
       <slot />
     </main>
     {chrome && <Footer />}
+    {chrome && <Palette />}
     <Toast />
   </body>
 </html>

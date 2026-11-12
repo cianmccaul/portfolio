@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
+@import './skin.css';
 
 /* ── Font ─────────────────────────────────────────────────────────────────
    One self-hosted file (see scripts/subset-font.sh). The fallback face is
@@ -32,7 +33,7 @@
     --image-brightness: 1;
   }
 
-  /* The theme toggle (phase 3) sets data-theme; until then the system decides. */
+  /* The theme toggle sets data-theme; without it the system decides. */
   :root[data-theme='light'] {
     color-scheme: light;
   }
@@ -418,6 +419,34 @@
   .media img {
     filter: brightness(var(--image-brightness));
   }
+}
+
+/* ── Page-to-page transitions ──────────────────────────────────────────────
+   A card's picture and title travel to their place on the case study, and
+   back. Native cross-document view transitions: no script, and browsers
+   without them just load the page. 300 ms, and off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+::view-transition-group(*) {
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-in-out);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-fast);
+}
+/* The theme reveal is drawn by chrome.ts as one circle on the whole page, so
+   nothing else may animate on its own while it runs. */
+:root[data-reveal] * {
+  view-transition-name: none !important;
+}
+:root[data-reveal]::view-transition-old(root),
+:root[data-reveal]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 @media (forced-colors: active) {

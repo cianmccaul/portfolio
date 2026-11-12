@@ -1,0 +1,212 @@
+---
+/**
+ * The command palette (⌘K or Ctrl K): every page, the useful actions and the
+ * two profiles, one keystroke away. It is a native modal dialog holding a
+ * combobox and a listbox, already in the page, so it opens instantly with no
+ * animation and nothing to download. Behaviour is in src/scripts/chrome.ts.
+ */
+import Icon from './Icon.astro';
+import { resume } from '../lib/resume';
+import { cvPdf } from '../lib/site';
+
+const { basics } = resume;
+type Command = {
+  label: string;
+  hint?: string;
+  icon: 'arrow-right' | 'arrow-up-right' | 'copy' | 'download' | 'sun' | 'moon' | 'monitor' | 'contrast' | 'mail';
+  keys?: string;
+  href?: string;
+  attrs?: Record<string, string>;
+};
+const studies = resume.projects.filter((p) => p.caseStudy);
+const groups: { name: string; commands: Command[] }[] = [
+  {
+    name: 'Pages',
+    commands: [
+      { label: 'Home', icon: 'arrow-right', href: '/', keys: 'start front page' },
+      { label: 'Selected work', icon: 'arrow-right', href: '/#work', keys: 'projects portfolio' },
+      ...studies.map((p) => ({
+        label: p.name,
+        hint: 'Case study',
+        icon: 'arrow-right' as const,
+        href: `/work/${p.slug}/`,
+        keys: p.stack.join(' '),
+      })),
+      { label: 'About', icon: 'arrow-right', href: '/about/', keys: 'bio story' },
+      { label: 'CV', icon: 'arrow-right', href: '/cv/', keys: 'resume curriculum vitae' },
+      { label: 'Colophon', icon: 'arrow-right', href: '/colophon/', keys: 'how this site is built stack' },
+    ],
+  },
+  {
+    name: 'Actions',
+    commands: [
+      { label: 'Copy email address', hint: basics.email, icon: 'copy', keys: 'contact', attrs: { 'data-copy': basics.email, 'data-copied': 'Email copied' } },
+      { label: 'Download CV', hint: 'PDF', icon: 'download', href: cvPdf(basics.name), keys: 'resume', attrs: { 'data-download': '' } },
+      { label: 'Light theme', icon: 'sun', keys: 'appearance mode', attrs: { 'data-theme': 'light' } },
+      { label: 'Dark theme', icon: 'moon', keys: 'appearance mode night', attrs: { 'data-theme': 'dark' } },
+      { label: 'System theme', icon: 'monitor', keys: 'appearance mode auto', attrs: { 'data-theme': 'system' } },
+      { label: 'Reduce glass', icon: 'contrast', keys: 'appearance transparency blur solid', attrs: { 'data-run': 'glass' } },
+    ],
+  },
+  {
+    name: 'Elsewhere',
+    commands: [
+      ...basics.profiles.map((p) => ({ label: p.network, icon: 'arrow-up-right' as const, href: p.url, keys: 'profile' })),
+      { label: 'Email me', hint: basics.email, icon: 'mail', href: `mailto:${basics.email}`, keys: 'contact' },
+    ],
+  },
+];
+let n = 0;
+---
+
+<dialog id="palette" class="palette glass glass-3" aria-label="Search and commands">
+  <div class="field">
+    <Icon name="search" size={20} class="text-muted" />
+    <input
+      type="text"
+      role="combobox"
+      aria-label="Search pages and actions"
+      aria-expanded="true"
+      aria-controls="palette-list"
+      aria-autocomplete="list"
+      placeholder="Search pages and actions"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      enterkeyhint="go"
+    />
+    <kbd aria-hidden="true">Esc</kbd>
+  </div>
+  <div id="palette-list" role="listbox" aria-label="Pages and actions" class="list">
+    {
+      groups.map((group, g) => (
+        <div role="group" aria-labelledby={`palette-group-${g}`}>
+          <p id={`palette-group-${g}`} class="group-name">
+            {group.name}
+          </p>
+          {group.commands.map((command) => (
+            <div
+              role="option"
+              id={`palette-option-${n++}`}
+              aria-selected="false"
+              data-href={command.href}
+              data-keys={command.keys}
+              {...command.attrs}
+            >
+              <Icon name={command.icon} class="icon" />
+              <span>{command.label}</span>
+              {command.hint && <span class="hint">{command.hint}</span>}
+              <span class="tick" aria-hidden="true">On</span>
+            </div>
+          ))}
+        </div>
+      ))
+    }
+    <p class="empty" data-empty hidden>Nothing matches. Try “CV” or “dark”.</p>
+  </div>
+</dialog>
+
+<style>
+  .palette {
+    position: fixed;
+    inset: min(18vh, 160px) 0 auto;
+    width: min(560px, calc(100vw - 2 * var(--spacing-16)));
+    max-width: none;
+    max-height: none;
+    margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    font-size: var(--text-small);
+  }
+  .palette::backdrop {
+    background-color: oklch(0.2 0.02 250 / 0.28);
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-12);
+    padding-inline: var(--spacing-16);
+    border-bottom: 1px solid var(--color-line-strong);
+  }
+  input {
+    flex: 1;
+    min-width: 0;
+    height: var(--spacing-48);
+    background: none;
+    color: inherit;
+    /* 16 px, so iOS doesn't zoom the page when the field takes focus. */
+    font-size: 1rem;
+    outline: none;
+  }
+  input::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
+  }
+  kbd {
+    padding: var(--spacing-2) var(--spacing-8);
+    border: 1px solid color-mix(in oklch, currentColor 22%, transparent);
+    border-radius: var(--radius-xs);
+    color: var(--color-muted);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+  .list {
+    max-height: min(56vh, 420px);
+    padding: var(--spacing-8);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: var(--spacing-8);
+  }
+  .group-name {
+    padding: var(--spacing-8) var(--spacing-12) var(--spacing-4);
+    color: var(--color-muted);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: var(--text-caption--letter-spacing);
+  }
+  [role='option'] {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-12);
+    min-height: var(--spacing-tap);
+    padding-inline: var(--spacing-12);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  [role='option'][hidden],
+  [role='group'][hidden] {
+    display: none;
+  }
+  [role='option'][aria-selected='true'] {
+    background-color: var(--glass-hover);
+  }
+  [role='option'] :global(.icon) {
+    color: var(--color-muted);
+  }
+  .hint {
+    margin-left: auto;
+    overflow: hidden;
+    color: var(--color-muted);
+    font-weight: 400;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tick {
+    display: none;
+    margin-left: auto;
+    font-size: var(--text-caption);
+  }
+  [data-current] .tick {
+    display: block;
+  }
+  .empty {
+    padding: var(--spacing-24) var(--spacing-12);
+    color: var(--color-muted);
+  }
+  .empty[hidden] {
+    display: none;
+  }
+</style>

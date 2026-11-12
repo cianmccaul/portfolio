@@ -1,0 +1,129 @@
+/*
+ * The glass skin (master report, section 5).
+ *
+ * A material for floating chrome only: the nav pill, the command palette, the
+ * appearance panel, toasts, and small notes that sit on imagery in the night
+ * band. It never goes behind body text.
+ *
+ * Three tiers, each a complete design on its own:
+ *
+ *   1. Solid     the default. Opaque surface, hairline, shadow. This is what
+ *                you get with "Reduce glass" on, with reduced transparency or
+ *                more contrast asked for in system settings, in forced
+ *                colours, and in any browser without backdrop-filter.
+ *   2. Frosted   a tinted, legible layer over a blurred backdrop, with a soft
+ *                dark rim, a bright specular top edge, a hairline and a soft
+ *                shadow. Blur grows with elevation.
+ *   3. Refracted Chromium only, nav pill only: the backdrop also bends at the
+ *                rim, like the edge of a lens (see src/scripts/chrome.ts).
+ *
+ * The tint is opaque enough that text keeps at least 4.5:1 whatever scrolls
+ * underneath: dark screenshots under the light pill, white ones under the
+ * dark pill. The numbers are in docs/glass.md.
+ */
+
+:root {
+  --glass-tint: light-dark(oklch(1 0 0 / 0.72), oklch(0.25 0.012 250 / 0.76));
+  --glass-edge: light-dark(oklch(1 0 0 / 0.95), oklch(1 0 0 / 0.26)); /* specular top edge */
+  --glass-hairline: light-dark(oklch(1 0 0 / 0.5), oklch(1 0 0 / 0.1));
+  --glass-rim: light-dark(oklch(0.25 0.02 250 / 0.16), oklch(0 0 0 / 0.55)); /* soft dark rim */
+  --glass-shade: light-dark(oklch(0.25 0.03 250 / 0.2), oklch(0 0 0 / 0.5));
+  --glass-shade-near: light-dark(oklch(0.25 0.03 250 / 0.08), oklch(0 0 0 / 0.3));
+  --glass-hover: color-mix(in oklch, var(--color-ink) 9%, transparent);
+}
+@supports not (color: light-dark(white, black)) {
+  .glass-3 {
+    --glass-tint: oklch(1 0 0 / 0.9);
+  }
+  :root {
+    --glass-tint: oklch(1 0 0 / 0.72);
+    --glass-edge: oklch(1 0 0 / 0.95);
+    --glass-hairline: oklch(1 0 0 / 0.5);
+    --glass-rim: oklch(0.25 0.02 250 / 0.16);
+    --glass-shade: oklch(0.25 0.03 250 / 0.2);
+    --glass-shade-near: oklch(0.25 0.03 250 / 0.08);
+  }
+}
+
+/* ── Tier 1: solid ───────────────────────────────────────────────────────── */
+.glass {
+  --glass-blur: 20px;
+  --glass-lift: 28px;
+  border: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+  background-clip: padding-box;
+  color: var(--color-ink);
+  box-shadow: var(--shadow-e2);
+  transition:
+    background-color var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+}
+/* Elevation: how far off the page it floats sets the blur and the shadow. */
+.glass-1 {
+  --glass-blur: 12px;
+  --glass-lift: 16px;
+}
+/* Panels hold a list of text, so their tint is heavier: whatever is under
+   them (the masthead is 200 px tall) must not read through. */
+.glass-3 {
+  --glass-blur: 32px;
+  --glass-lift: 48px;
+  --glass-tint: light-dark(oklch(1 0 0 / 0.9), oklch(0.25 0.012 250 / 0.9));
+  box-shadow: var(--shadow-e3);
+}
+/* Chrome that sits over the night band takes the dark half of the tokens. */
+.glass-night,
+[data-over='night'] .glass {
+  color-scheme: dark;
+}
+
+/* ── Tier 2: frosted ─────────────────────────────────────────────────────── */
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root:not([data-glass='off']) .glass {
+    border-color: transparent;
+    background-color: var(--glass-tint);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    box-shadow:
+      inset 0 1px 0 var(--glass-edge),
+      inset 0 0 0 0.5px var(--glass-hairline),
+      0 0 0 0.5px var(--glass-rim),
+      0 1px 2px var(--glass-rim),
+      0 calc(var(--glass-lift) * 0.3) var(--glass-lift) calc(var(--glass-lift) * -0.3) var(--glass-shade),
+      0 2px 6px var(--glass-shade-near);
+  }
+  /* Clear glass: a thinner layer for small notes on imagery, so the picture
+     still shows through. Always dark, with light text, because it has to stay
+     readable over a white screenshot and over the band behind it. */
+  :root:not([data-glass='off']) .glass-clear {
+    --glass-blur: 10px;
+    background-color: oklch(0.2 0.02 232 / 0.7);
+  }
+
+  /* ── Tier 3: refracted ─────────────────────────────────────────────────
+     data-lens is set before first paint, in Chromium only. The filter itself
+     is built once the pill has been measured; until then this is tier 2. */
+  :root[data-lens='on']:not([data-glass='off']) .glass-lens {
+    backdrop-filter: url(#lens) saturate(170%);
+  }
+}
+.glass-clear {
+  color-scheme: dark;
+}
+
+/* Anyone who asks for less transparency or more contrast gets tier 1, even if
+   the toggle says otherwise. */
+@media (prefers-contrast: more), (forced-colors: active) {
+  :root .glass {
+    border-color: var(--color-line-strong);
+    background-color: var(--color-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+}
+@media (forced-colors: active) {
+  :root .glass {
+    border-color: CanvasText;
+  }
+}
