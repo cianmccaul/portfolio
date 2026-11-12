@@ -3,8 +3,8 @@ order: 2
 description: A prototype inbox assistant for a clinic that sorts email, drafts replies and learns from staff, with a safety check the AI can’t overrule.
 tldr:
   problem: Some emails were slipping through the gaps in the clinic’s shared inbox, which mixes new injuries, questions for therapists, admin and spam. A few of those emails describe symptoms that need a doctor, not a physio appointment.
-  approach: I built a prototype that sorts each email into Priority, Therapists, Admin or Spam, explains why, drafts a reply from the clinic’s own handbook and learns from the edits staff make. An AI model does the sorting, built-in rules are the fallback, and a safety check runs on every email.
-  result: Sorted all 12 labelled test emails into the right folder on repeated runs, including every urgent-symptom email and the cases built to trick a keyword filter. A working prototype, tested on sample emails; it never went into daily use.
+  approach: I built a prototype that sorts each email into Priority, Therapists, Admin or Spam, explains why, drafts a reply and learns from the edits staff make. Built-in rules sort the email; with a Groq key, an AI model (Llama 3.3) sorts and drafts from the clinic’s handbook instead. A safety check runs on every email, whichever sorter is used.
+  result: The built-in rule-based sorter put all 12 labelled test emails in the right folder on repeated runs, including every urgent-symptom email and the cases built to trick a keyword filter. A working prototype, tested on sample emails; it never went into daily use.
 team: Solo
 timeline: 3 weeks, March 2026
 ---
@@ -15,7 +15,7 @@ Some emails were slipping through the gaps in the clinic’s shared inbox, so I 
 
 It is a working prototype, tested on sample emails. It was never adopted for daily use.
 
-The [public demo](https://cian-email-triage.vercel.app) keeps the sorting, safety and learning logic and replaces the mailbox with sample and test emails, so anyone can run it without access to real patient data. The clinic in the demo, Northbank Physio, is fictional, and every patient and email is made up.
+The [public demo](https://cian-email-triage.vercel.app) keeps the sorting, safety and learning logic and replaces the mailbox with sample and test emails, so anyone can run it without access to real patient data. It runs without an AI key, so the built-in rules do the sorting there; the badge at the top of the app says which sorter is running. The clinic in the demo, Northbank Physio, is fictional, and every patient and email is made up.
 
 Two constraints shaped it:
 
@@ -45,7 +45,7 @@ Two constraints shaped it:
 </Decision>
 
 <Decision title="Learn from what staff change" rejected="A fixed prompt">
-  When staff edit a draft before sending, the assistant works out what they added and saves it as a rule under “Learned from your edits” in the handbook. Future drafts follow it. This works with and without the AI model.
+  When staff edit a draft before sending, the assistant works out what they added and saves it as a rule under “Learned from your edits” in the handbook, and future AI drafts follow it. Learning works without the AI model too, but only AI drafts use the learned rules: without a key, the built-in sorter writes its own stock replies.
 </Decision>
 
 ## Hardest problem
@@ -70,7 +70,7 @@ A model can get any of these wrong, and one of them matters far more than the ot
   ]}
 />
 
-The whole policy fits in one function:
+The public demo runs without a key, so it leaves at the first step: the rules sort every email, and the red-flag check still runs. With a key, the whole policy fits in one function:
 
 <Excerpt file="src/lib/triage/index.ts" repo="email-triage-demo">
 
@@ -104,7 +104,7 @@ export async function triageEmail(
 
 ## Results
 
-- **Sorted all 12 labelled test emails into the right folder on repeated runs**, including every urgent-symptom email and the cases built to trick a keyword filter.
+- **The built-in rule-based sorter put all 12 labelled test emails in the right folder on repeated runs**, including every urgent-symptom email and the cases built to trick a keyword filter. This is the sorter the public demo runs.
 - **37 tests pass**, covering the sorter, the safety check, parsing of the model’s answer and learning from edits.
 - One test checks that **every test email and sample email lands in its expected folder**, so a change to the sorter that breaks a case fails straight away.
 - The demo runs with **no API keys**: without one, the rule-based sorter does the work.

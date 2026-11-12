@@ -328,12 +328,12 @@
       "featured": true,
       "caseStudy": true,
       "tagline": "A prototype that sorts a clinic inbox, drafts replies and learns from staff edits.",
-      "description": "A working prototype, tested on sample emails, that sorts clinic email by topic and urgency, drafts replies from the clinic’s own handbook and learns from the changes staff make before they press send. A red-flag check runs on every email and overrules the AI when a symptom needs a doctor.",
-      "outcome": "Sorted all 12 labelled test emails into the right folder on repeated runs, including every urgent-symptom email and the cases built to trick a keyword filter.",
+      "description": "A working prototype, tested on sample emails. It sorts clinic email by topic and urgency, drafts replies and learns from the changes staff make before they press send. Built-in rules do the sorting in the public demo; with a Groq key, an AI model (Llama 3.3) sorts and drafts replies from the clinic’s handbook instead. A red-flag check runs on every email, whichever sorter is used.",
+      "outcome": "The built-in rule-based sorter put all 12 labelled test emails in the right folder on repeated runs, including every urgent-symptom email and the cases built to trick a keyword filter.",
       "fact": "37 tests, including one that checks every sample email lands in its expected folder.",
       "highlights": [
         "Built a prototype that sorts clinic email into four folders, drafts replies and learns from staff edits.",
-        "Sorted all 12 labelled test emails correctly on repeated runs, backed by a red-flag safety check and 37 tests."
+        "Its rule-based sorter filed all 12 labelled test emails correctly on repeated runs, with a red-flag check and 37 tests."
       ],
       "role": "Sole developer",
       "stack": [
@@ -367,7 +367,8 @@
       "repo": "https://github.com/cianmccaul/physio-chatbot",
       "demo": "https://physio-chatbot.vercel.app",
       "image": "clinic-chatbot.png",
-      "imageAlt": "The chatbot demo on a fictional clinic’s site. Asked about a back injury, it suggests a physiotherapist and offers a link to book."
+      "imageAlt": "The chatbot demo on a fictional clinic’s site. Asked about a back injury, it suggests a physiotherapist and offers a link to book.",
+      "outcome": "Urgent symptoms, such as chest pain, trouble breathing or signs of a stroke, get a “call 112 or 999, or your GP” message, checked before every other rule. 35 tests."
     },
     {
       "slug": "jarvis",
@@ -380,7 +381,7 @@
       "fact": "Every AI-proposed fix passes five guard rails enforced in code, not in a prompt.",
       "highlights": [
         "Built a monitor that checks sites every 15 minutes, explains outages with an LLM and opens small fix pull requests.",
-        "Enforced five guard rails in code: pull request only, one file, under 15 changed lines, scoped token, fail closed."
+        "Enforced five guard rails in code: pull request only, one file, 15 changed lines or fewer, scoped token, fail closed."
       ],
       "role": "Sole developer",
       "stack": [
@@ -402,7 +403,7 @@
           "detail": "A fix that touches more is rejected."
         },
         {
-          "title": "Under 15 changed lines",
+          "title": "15 changed lines or fewer",
           "detail": "Anything bigger is flagged for manual review."
         },
         {
@@ -432,7 +433,8 @@
         "Supabase"
       ],
       "repo": "https://github.com/cianmccaul/cm-studio-designroom",
-      "live": "https://cm-studio-designroom.vercel.app"
+      "demo": "https://cm-studio-designroom.vercel.app/?demo=1",
+      "demoNote": "The demo link is safe to try: in demo mode nothing is saved or emailed."
     },
     {
       "slug": "house-prices",

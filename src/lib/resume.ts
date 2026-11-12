@@ -121,6 +121,8 @@ const schema = z.object({
       // Always the exact repository, never the GitHub profile.
       repo: url.regex(/^https:\/\/github\.com\/[^/]+\/[^/]+$/, 'Link the exact repository'),
       demo: url.optional(),
+      /** One line under the links, e.g. that a demo is safe to try. */
+      demoNote: z.string().optional(),
       live: url.optional(),
       image: z.string().optional(),
       imageAlt: z.string().optional(),

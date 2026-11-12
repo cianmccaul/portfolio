@@ -9,6 +9,10 @@ How unfinished content behaves:
 - **TODOs** show in draft builds (local and Vercel previews) in an amber dashed box. Production leaves the line or section out. They never print, so they can't reach the PDF.
 - **Pending approval** is content that is written and true but needs a sign-off first. It is tagged with a switch in `approvals` in `resume.json`. Draft builds show it with a "Pending approval" marker; production and the PDF leave it out until the switch is `true`.
 
+## Before this portfolio goes live
+
+- [ ] **Merge and deploy three branches in other repos.** The chatbot's urgent-symptom path and DesignRoom's demo mode are only on `claude/intelligent-bell-4dvkw8`, not on `main` or the live sites, and the portfolio describes both. Until DesignRoom's is deployed, its "safe to try" demo link would send a real brief. Details in `docs/project-followups.md`, item 0.
+
 ## Waiting for the BodyMed owner
 
 One conversation covers all of this.

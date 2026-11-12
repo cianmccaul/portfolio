@@ -63,7 +63,7 @@ Letting a model change code on a live site is only acceptable if the worst case 
     { title: 'Find the one file', detail: 'Deterministic paths from the failing URL first; the model’s guess only if none match.', exit: { when: 'No single file', then: 'No pull request.' } },
     { title: 'Ask for a snippet', detail: 'One old snippet, one new snippet, in a fixed format.', exit: { when: 'No confident fix, or wrong format', then: 'No pull request.' } },
     { title: 'Match exactly once', detail: 'The old snippet must appear in the file once and only once.', exit: { when: 'Missing or repeated', then: 'Fix rejected.' } },
-    { title: 'Count the changed lines', detail: 'The limit is 15.', exit: { when: 'Over the limit', then: 'Flagged for manual review.' } },
+    { title: 'Count the changed lines', detail: 'Fifteen changed lines or fewer.', exit: { when: 'Over the limit', then: 'Flagged for manual review.' } },
     { title: 'Open a pull request', detail: 'On a new branch. Never a push to main.' },
     { title: 'A person confirms the merge', detail: 'From the dashboard, or the signed link’s confirmation page.' },
   ]}

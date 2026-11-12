@@ -28,11 +28,19 @@ Recommended:
 - [ ] The same clause applies to **DEME House Painting** (`deme-housepainting.vercel.app`, a real business with a contact-form function) and arguably to **CM Studio DesignRoom** (it collects client briefs). Move them to the client's own account, to Pro, or to Cloudflare.
 - [ ] The demos (`cian-clinic-demo`, `cian-email-triage`, `physio-chatbot`, `irish-house-prices`) are personal and fine on Hobby.
 
+## 0. Merge and deploy before this portfolio goes live
+
+The portfolio now describes changes that exist only on unmerged branches. Checked on 12 November 2026: `main` and the deployed sites don't have them yet.
+
+- [ ] **`physio-chatbot`, branch `claude/intelligent-bell-4dvkw8`:** the urgent-symptom safety path and its tests. The live demo today answers "I have chest pain" with "Sorry, I'm not quite sure what you mean". The portfolio card says urgent symptoms get "call 112 or 999, or your GP", so this must be live first.
+- [ ] **`cm-studio-designroom`, branch `claude/intelligent-bell-4dvkw8`:** demo mode (`?demo=1`). The deployed `js/submit.js` has no demo mode yet, so today the portfolio's demo link would save and email a real brief.
+- [ ] **`email-triage-demo`, branch `claude/intelligent-bell-4dvkw8`:** the README that says the live demo sorts with the built-in rules. The portfolio already says so; the README on `main` doesn't yet.
+
 ## 3. Clinic chatbot: add an urgent-symptom path, and describe it honestly
 
-`physio-chatbot/app.py` is 115 lines of rules. A search of it for red-flag terms (chest pain, numbness, emergency, 999/112), rate limiting and a kill switch found none.
+`physio-chatbot/app.py` on `main` is 115 lines of rules, with no red-flag terms, rate limiting or kill switch.
 
-- [ ] **Urgent-symptom safety path.** Typed messages are matched to a therapist by body part. Someone who types "numb leg and can't control my bladder" or "chest pain" should not be offered a booking link. Check typed input against a red-flag list first and reply with "contact your GP or emergency department" before anything else. `email-triage-demo/src/lib/triage/rules.ts` already has this list and logic: reuse it, and add tests for each red flag.
+- [x] **Urgent-symptom safety path.** Done on `claude/intelligent-bell-4dvkw8` (see item 0): a word list checked before every other rule, replying "call 112 or 999, or your GP", with 35 tests.
 - [ ] **Describe it as rule-based everywhere.** The README already says "plain rules, not AI", which is the right call and a good story. Match it in the repo description (currently empty) and on the demo page, which says "Ask our assistant". The portfolio card now says "rule-based on purpose".
 - [ ] **Rate limiting.** `/ask-text` and `/handoff` accept unlimited requests. In the real clinic `/handoff` sends email, so limit it per IP and validate harder.
 - [ ] **Kill switch.** One environment variable that swaps the widget for "please call reception", so staff can turn it off without a deploy. The clinic platform already has this pattern.
@@ -40,7 +48,7 @@ Recommended:
 
 ## 4. CM Studio DesignRoom: make it safe to hand to a recruiter
 
-- [ ] **Demo-safe mode.** A recruiter clicking through should not write a row to Supabase, upload to the `moodboards` bucket or trigger EmailJS. Add `?demo=1` (and use it in the portfolio link) that runs the whole flow but stops before `js/submit.js` sends anything, with a visible "Demo: nothing is sent" note.
+- [x] **Demo-safe mode.** Done on `claude/intelligent-bell-4dvkw8` (see item 0): `?demo=1` runs the whole flow but uploads, saves and emails nothing, with a "Demo" badge. The portfolio links it.
 - [ ] **Skip the intro for recruiter links.** `js/intro.js` plays before the showroom. Add a `?skip-intro` parameter, respect `prefers-reduced-motion`, and remember the choice.
 - [ ] The repo's homepage field points to `uf-showroom.vercel.app`. Point it at `cm-studio-designroom.vercel.app`, or retire the old alias.
 
