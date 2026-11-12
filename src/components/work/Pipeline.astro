@@ -4,22 +4,27 @@
  * about failing safely, so they share this one diagram: the main path runs
  * down the left, and each exit says when it's taken and where it ends.
  * It is an ordered list with real text, so it reflows and reads aloud.
+ *
+ * With `progress`, the line between the steps is drawn by the page's own
+ * scroll position: no script, nothing timed, and nothing at all under reduced
+ * motion or in a browser without scroll-driven animations.
  */
 import Icon from '../Icon.astro';
 interface Props {
   caption: string;
   steps: { title: string; detail: string; exit?: { when: string; then: string } }[];
+  progress?: boolean;
 }
-const { caption, steps } = Astro.props;
+const { caption, steps, progress = false } = Astro.props;
 ---
 
-<figure class="pipeline not-prose my-32">
+<figure class:list={['pipeline not-prose my-32', progress && 'progress']}>
   <ol>
     {
       steps.map((step, i) => (
         <li class="relative grid gap-x-24 gap-y-8 pb-24 pl-48 last:pb-0 lg:grid-cols-9">
           <span
-            class="absolute top-0 left-0 grid size-32 place-items-center rounded-pill border border-line-strong bg-canvas text-caption text-muted tabular-nums"
+            class="num absolute top-0 left-0 z-10 grid size-32 place-items-center rounded-pill border border-line-strong bg-canvas text-caption text-muted tabular-nums"
             aria-hidden="true"
           >
             {i + 1}
@@ -53,5 +58,51 @@ const { caption, steps } = Astro.props;
     left: calc(var(--spacing-16) - 0.5px);
     width: 1px;
     background-color: var(--color-line-strong);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .progress li {
+        view-timeline: --step block;
+      }
+      /* The same line again in the accent colour, growing down as the step
+         crosses the middle of the screen. */
+      .progress li:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: var(--spacing-32);
+        bottom: 0;
+        left: calc(var(--spacing-16) - 1px);
+        width: 2px;
+        background-color: var(--color-accent);
+        transform-origin: top;
+        animation: draw linear both;
+      }
+      .progress .num {
+        animation: reach linear both;
+      }
+      /* The timeline is set in its own rules, under a different selector: the
+         CSS minifier would otherwise fold it into the animation shorthand,
+         which browsers then throw away. */
+      figure.progress li:not(:last-child)::after {
+        animation-timeline: --step;
+        animation-range: cover 35% cover 62%;
+      }
+      figure.progress .num {
+        animation-timeline: --step;
+        animation-range: cover 31% cover 35%;
+      }
+    }
+  }
+  @keyframes draw {
+    from {
+      transform: scaleY(0);
+    }
+  }
+  @keyframes reach {
+    to {
+      border-color: var(--color-accent);
+      color: var(--color-ink);
+    }
   }
 </style>

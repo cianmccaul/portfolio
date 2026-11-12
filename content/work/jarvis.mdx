@@ -57,6 +57,7 @@ The [interactive demo](https://cian-jarvis-demo.vercel.app) is simulated, with f
 Letting a model change code on a live site is only acceptable if the worst case is boring. So the fix layer is a row of gates, and every gate fails closed: if anything is ambiguous, no pull request is opened and the reason is recorded.
 
 <Pipeline
+  progress
   caption="From outage to pull request. Any gate that fails stops there, with the reason recorded, never a commit."
   steps={[
     { title: 'Is fixing set up for this site?', detail: 'A token scoped only to the monitored sites’ repos. It can’t modify Jarvis itself.', exit: { when: 'Not configured', then: 'Explain the outage. No fix attempted.' } },

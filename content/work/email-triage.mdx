@@ -60,6 +60,7 @@ The emails that are hard to sort are the ones where the tone and the content dis
 A model can get any of these wrong, and one of them matters far more than the others. So the safety check does not depend on the model:
 
 <Pipeline
+  progress
   caption="One email through the sorter. The safety check has the last word."
   steps={[
     { title: 'Sort with the built-in rules', detail: 'Always computed first, so there is an answer whatever happens next.', exit: { when: 'No AI key', then: 'Use the rules result.' } },

@@ -290,6 +290,7 @@
   /* Something inside the band that should follow the page's theme again. */
   .scheme-page {
     color-scheme: light dark;
+    color: var(--color-ink);
   }
   :root[data-theme='light'] .scheme-page {
     color-scheme: light;
@@ -355,6 +356,8 @@
   }
   .prose > h2 {
     margin-top: var(--spacing-section);
+    padding-top: var(--spacing-24);
+    border-top: 1px solid var(--color-ink);
     font-size: var(--text-h2);
     font-weight: var(--text-h2--font-weight);
     line-height: var(--text-h2--line-height);
