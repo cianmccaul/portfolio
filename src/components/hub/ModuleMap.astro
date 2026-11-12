@@ -1,0 +1,171 @@
+---
+/**
+ * The module map: everything the Hub does, grouped by who it is for. Each
+ * group is a row with its name in the left rail and its modules as tiles.
+ * A badge says whether the clinic uses the module today (Live) or it is
+ * built and waiting to be switched on (Built).
+ */
+import { hub, moduleCount } from '../../lib/hub';
+
+const { groups } = hub.modules;
+const built = moduleCount.all - moduleCount.live;
+const label = { live: 'Live', built: 'Built' } as const;
+---
+
+<p class="legend">
+  <span class="count">{moduleCount.all} modules</span>
+  <span><span class="badge live">Live</span> {moduleCount.live} in daily use</span>
+  <span><span class="badge built">Built</span> {built} switched off for now</span>
+</p>
+
+<div class="map">
+  {
+    groups.map((group, g) => (
+      <section aria-labelledby={`modules-${g}`}>
+        <h3 id={`modules-${g}`}>
+          {group.name}
+          <span aria-hidden="true">{String(group.modules.length).padStart(2, '0')}</span>
+        </h3>
+        <ul>
+          {group.modules.map((module) => (
+            <li>
+              <p class="name">
+                <span>{module.name}</span>
+                <span class:list={['badge', module.status]}>{label[module.status]}</span>
+              </p>
+              <p class="line">{module.line}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-8) var(--spacing-24);
+    color: var(--color-muted);
+    font-size: var(--text-small);
+  }
+  .count {
+    color: var(--color-ink);
+    font-size: var(--text-h3);
+    font-weight: 600;
+  }
+  .badge {
+    display: inline-block;
+    padding: var(--spacing-2) var(--spacing-8);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    line-height: var(--text-caption--line-height);
+    letter-spacing: var(--text-caption--letter-spacing);
+    white-space: nowrap;
+  }
+  .badge.live {
+    background-color: var(--color-ok-soft);
+    color: var(--color-ok);
+  }
+  .badge.built {
+    box-shadow: inset 0 0 0 1px var(--color-line-strong);
+    color: var(--color-muted);
+  }
+  .map {
+    margin-top: var(--spacing-24);
+  }
+  section {
+    display: grid;
+    gap: var(--spacing-16) var(--spacing-24);
+    padding-block: var(--spacing-24);
+    border-top: 1px solid var(--color-line);
+  }
+  section:last-child {
+    padding-bottom: 0;
+  }
+  h3 {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-12);
+    font-size: var(--text-h2);
+    font-weight: 600;
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+  }
+  h3 span {
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    font-weight: 500;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  ul {
+    display: grid;
+    gap: var(--spacing-12);
+  }
+  li {
+    padding: var(--spacing-16);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface);
+  }
+  .name {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing-12);
+    font-weight: 600;
+  }
+  .line {
+    margin-top: var(--spacing-4);
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+  /* On a phone the tiles become rows on hairlines: 21 cards in one column
+     would be most of three screens. */
+  @media (max-width: 559px) {
+    ul {
+      gap: 0;
+    }
+    li {
+      padding: var(--spacing-12) 0;
+      border: 0;
+      border-top: 1px solid var(--color-line);
+      border-radius: 0;
+      background: none;
+    }
+    li:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+    section {
+      padding-block: var(--spacing-20);
+    }
+  }
+  @media (min-width: 560px) {
+    ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    section {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+      padding-block: var(--spacing-32);
+    }
+    h3 {
+      display: block;
+    }
+    h3 span {
+      display: block;
+      margin-top: var(--spacing-4);
+    }
+    ul {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
