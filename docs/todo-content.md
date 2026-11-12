@@ -48,6 +48,14 @@ One conversation covers all of this.
 - [ ] **Leaving Certificate points**, if you want them shown.
 - [ ] **A fourth Jarvis image.** `src/assets/work/jarvis-ai-insight.png` is in the repo but not used: the case study already has three screenshots, and a fourth crowded it.
 
+## Pictures
+
+- [ ] **The three phone screenshots in the clinic band** still show the older card-based booking screens. To update them, replace these files in `src/assets/work/` with new phone screenshots of the same three steps. Nothing else needs to change: the frame crops each image from the top, and the alt text only names the step.
+  - `clinic-step-treatment.png` (choose a treatment)
+  - `clinic-step-practitioner.png` (choose a practitioner)
+  - `clinic-booking-phone.png` (choose a time)
+- [ ] **More projects now has a screenshot per project**, captured from the live sites on 12 November 2026: `designroom.png` (demo mode), `house-prices.png`, `deme-housepainting.png`. Their alt text is in `resume.json` (`imageAlt`); correct it if anything reads wrong. Re-capture with `node scripts/capture-work.mjs`.
+
 ## Before launch, not blocking the build
 
 - [ ] **Domain.** The site is at `cianmccaul.vercel.app` until you buy one. Then change `site` in `astro.config.mjs` and `basics.url` in `resume.json`.

@@ -1,19 +1,19 @@
 {
-  "measured": "2026-11-11",
-  "conditions": "Lighthouse mobile emulation and axe-core, run against a local production build. Lighthouse figures are the worst result across all pages.",
+  "measured": "2026-11-12",
+  "conditions": "Lighthouse mobile emulation and axe-core, run against a local production build served with gzip, as the host serves it. Lighthouse figures are the worst result across all pages, except the 404 page’s SEO score, which is lower by design because that page asks not to be indexed. JavaScript is the home page’s total, gzipped.",
   "lighthouse": {
     "performance": 100,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 100
   },
-  "lcpSeconds": 1.7,
+  "lcpSeconds": 1.65,
   "cls": 0,
-  "homeJsBytes": 427,
+  "homeJsBytes": 3586,
   "fontBytes": 48468,
   "axe": {
     "violations": 0,
     "routes": 9,
-    "configurations": 8
+    "configurations": 16
   }
 }

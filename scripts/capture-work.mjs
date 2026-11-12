@@ -5,6 +5,11 @@
 //   node scripts/capture-work.mjs
 //
 // Needs Playwright with Chromium. Every image is 16:10.
+//
+// Not captured here: the three phone screenshots in the clinic band
+// (clinic-step-treatment.png, clinic-step-practitioner.png,
+// clinic-booking-phone.png). Replace those files by hand; the site crops them
+// from the top, so any phone screenshot of the right step will fit.
 import { chromium } from 'playwright';
 
 const out = new URL('../src/assets/work/', import.meta.url).pathname;
@@ -48,6 +53,25 @@ const open = async (width, height, deviceScaleFactor) => {
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.waitForTimeout(3500);
   await page.screenshot({ path: `${out}clinic-chatbot.png` });
+}
+
+// More projects: the first screen of each live site, 16:10, saved at 1920 px.
+// DesignRoom is opened in demo mode (nothing is saved or emailed) with its
+// intro skipped, so the showroom itself is in shot.
+{
+  const sharp = (await import('sharp')).default;
+  const sites = [
+    ['designroom', 'https://cm-studio-designroom.vercel.app/?demo=1', async (page) => page.getByText(/skip intro/i).first().click()],
+    ['house-prices', 'https://irish-house-prices.vercel.app'],
+    ['deme-housepainting', 'https://deme-housepainting.vercel.app'],
+  ];
+  for (const [name, url, prepare] of sites) {
+    const page = await open(1280, 800, 2);
+    await page.goto(url, { waitUntil: 'networkidle' });
+    if (prepare) await prepare(page).catch(() => {});
+    await page.waitForTimeout(3000);
+    await sharp(await page.screenshot()).resize(1920, 1200).png({ compressionLevel: 9 }).toFile(`${out}${name}.png`);
+  }
 }
 
 await browser.close();
