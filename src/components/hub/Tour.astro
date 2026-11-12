@@ -1,0 +1,85 @@
+---
+/**
+ * The tour: large screenshots of the public demo, one area at a time, with
+ * the picture and its caption swapping sides down the page. Everything shown
+ * is the demo's fictional clinic.
+ */
+import BrowserFrame from '../BrowserFrame.astro';
+import { hub } from '../../lib/hub';
+import { workImage, workImageMobile } from '../../lib/images';
+
+const { stops, note } = hub.tour;
+---
+
+<ol class="tour">
+  {
+    stops.map((stop, i) => {
+      const image = workImage(stop.image);
+      if (!image) throw new Error(`No image src/assets/work/${stop.image}`);
+      return (
+        <li class:list={[i % 2 === 1 && 'flip']}>
+          <BrowserFrame
+            src={image}
+            mobile={workImageMobile(stop.image)}
+            alt={stop.alt}
+            sizes="(min-width: 1296px) 720px, (min-width: 1024px) 60vw, 92vw"
+            class="shot"
+          />
+          <div>
+            <p class="step" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')} <span>/ {String(stops.length).padStart(2, '0')}</span>
+            </p>
+            <h3>{stop.title}</h3>
+            <p class="caption">{stop.caption}</p>
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>
+<p class="mt-32 max-w-prose border-t border-line pt-16 text-small text-muted lg:mt-48">{note}</p>
+
+<style>
+  .tour {
+    display: grid;
+    gap: var(--spacing-48);
+  }
+  li {
+    display: grid;
+    gap: var(--spacing-16) var(--spacing-48);
+    align-items: center;
+  }
+  .step {
+    font-size: var(--text-small);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .step span {
+    color: var(--color-muted);
+  }
+  h3 {
+    margin-top: var(--spacing-8);
+    font-size: var(--text-h2);
+    font-weight: 600;
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+  }
+  .caption {
+    margin-top: var(--spacing-12);
+    color: var(--color-muted);
+  }
+  @media (min-width: 1024px) {
+    .tour {
+      gap: var(--spacing-80);
+    }
+    li {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    }
+    li.flip {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    }
+    li.flip > :global(.shot) {
+      order: 2;
+    }
+  }
+</style>

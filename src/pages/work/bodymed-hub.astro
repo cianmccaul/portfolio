@@ -12,7 +12,9 @@ import Todo from '../../components/Todo.astro';
 import HubHero from '../../components/hub/HubHero.astro';
 import HubNav from '../../components/hub/HubNav.astro';
 import HubSection from '../../components/hub/HubSection.astro';
+import ModuleMap from '../../components/hub/ModuleMap.astro';
 import Replaced from '../../components/hub/Replaced.astro';
+import Tour from '../../components/hub/Tour.astro';
 import { hub, hubProject as item } from '../../lib/hub';
 import { isApproved, project, resume, showTodos } from '../../lib/resume';
 import { workImage, workImageMobile } from '../../lib/images';
@@ -27,6 +29,8 @@ const showPending = results.pending && (isApproved(results.pending.approval) || 
 
 const sections = [
   { id: 'replaced', label: 'What it replaced' },
+  { id: 'modules', label: 'Modules' },
+  { id: 'tour', label: 'Tour' },
   { id: 'results', label: 'Results' },
   { id: 'reflection', label: 'Reflection' },
 ];
@@ -52,6 +56,14 @@ const sections = [
 
     <HubSection id="replaced" title="What it replaced" lede={hub.replaced.lede}>
       <Replaced />
+    </HubSection>
+
+    <HubSection id="modules" title="Module map" lede={hub.modules.lede}>
+      <ModuleMap />
+    </HubSection>
+
+    <HubSection id="tour" title="A tour of the demo" lede={hub.tour.lede}>
+      <Tour />
     </HubSection>
 
     <HubSection id="built" title="How I built it">

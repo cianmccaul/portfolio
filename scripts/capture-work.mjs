@@ -90,7 +90,6 @@ if (want('more')) {
 // real Hub.
 if (want('hub')) {
   const DEMO = 'https://cian-clinic-demo.vercel.app';
-  const shot = (page, name) => page.screenshot({ path: `${out}hub-${name}.png` });
   // Put the first element with this text `offset` px below the top of the window.
   const bring = async (page, text, offset) => {
     const box = await page.getByText(text).first().boundingBox();
@@ -111,42 +110,64 @@ if (want('hub')) {
     await page.waitForTimeout(400);
   };
 
-  // The patient's side: step 3 of 5, choosing a time.
-  {
-    const page = await open(1200, 750, 2);
-    await chooseTime(page, '/');
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await shot(page, 'booking');
-  }
-  // Reception: the list of online bookings, each with its payment.
-  {
-    const page = await open(1200, 750, 2);
-    await page.goto(`${DEMO}/dashboard/bookings`, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(1200);
-    await bring(page, /^08:00/, 120);
-    await shot(page, 'bookings');
-  }
-  // A phone booking for a made-up caller, at the step where reception sends a pay link.
-  {
-    const page = await open(1200, 750, 2);
-    await chooseTime(page, '/dashboard/book');
-    await page.getByRole('button', { name: /^continue$/i }).first().click();
-    await page.waitForTimeout(900);
-    const caller = { firstName: 'Niamh', lastName: 'Brennan', email: 'niamh.brennan@example.com', phone: '083 555 0142', dateOfBirth: '2', 'dateOfBirth-month': '4', 'dateOfBirth-year': '1988', address: '12 Example Road, Dublin 3', gpName: 'None' };
-    for (const [id, value] of Object.entries(caller)) await page.locator(`#${id}`).fill(value);
-    await page.getByRole('button', { name: /^continue$/i }).first().click();
-    await page.waitForTimeout(1500);
-    await page.getByText('Email them a payment link').first().click();
-    await page.waitForTimeout(600);
-    await bring(page, 'Review and take payment', 150);
-    await shot(page, 'phone');
-  }
-  // The staff home screen (for the case study's hero) and four areas shown from the top.
-  for (const [name, path] of [['home', ''], ['waitlist', '/waitlist'], ['kpis', '/kpis'], ['appointments', '/appointments'], ['help', '/help']]) {
-    const page = await open(1200, 750, 2);
-    await page.goto(`${DEMO}/dashboard${path}`, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(1500);
-    await shot(page, name);
+  // Every stop is taken twice: at desktop size, and on a phone (saved as
+  // NAME-mobile.png, which the site shows below 640 px), so the tour is
+  // readable on a small screen instead of a shrunken desktop.
+  for (const [suffix, size] of [['', [1200, 750, 2]], ['-mobile', [390, 520, 3]]]) {
+    const phone = suffix !== '';
+    const fresh = async () => {
+      const context = await browser.newContext({
+        viewport: { width: size[0], height: size[1] },
+        deviceScaleFactor: size[2],
+        isMobile: phone,
+        hasTouch: phone,
+        colorScheme: 'light',
+        reducedMotion: 'reduce',
+      });
+      return context.newPage();
+    };
+    const shot = (page, name) => page.screenshot({ path: `${out}hub-${name}${suffix}.png` });
+
+    // The patient's side: step 3 of 5, choosing a time.
+    {
+      const page = await fresh();
+      await chooseTime(page, '/');
+      if (phone) await bring(page, 'Step 3 of 5', 90);
+      else await page.evaluate(() => window.scrollTo(0, 0));
+      await shot(page, 'booking');
+    }
+    // Reception: the list of online bookings, each with its payment.
+    {
+      const page = await fresh();
+      await page.goto(`${DEMO}/dashboard/bookings`, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(1200);
+      await bring(page, /^08:00/, phone ? 90 : 120);
+      await shot(page, 'bookings');
+    }
+    // A phone booking for a made-up caller, at the step where reception sends a pay link.
+    {
+      const page = await fresh();
+      await chooseTime(page, '/dashboard/book');
+      await page.getByRole('button', { name: /^continue$/i }).first().click();
+      await page.waitForTimeout(900);
+      const caller = { firstName: 'Niamh', lastName: 'Brennan', email: 'niamh.brennan@example.com', phone: '083 555 0142', dateOfBirth: '2', 'dateOfBirth-month': '4', 'dateOfBirth-year': '1988', address: '12 Example Road, Dublin 3', gpName: 'None' };
+      for (const [id, value] of Object.entries(caller)) await page.locator(`#${id}`).fill(value);
+      await page.getByRole('button', { name: /^continue$/i }).first().click();
+      await page.waitForTimeout(1500);
+      await page.getByText('Email them a payment link').first().click();
+      await page.waitForTimeout(600);
+      if (phone) await bring(page, 'How will the patient pay?', 90);
+      else await bring(page, 'Review and take payment', 150);
+      await shot(page, 'phone');
+    }
+    // The staff home screen (for the case study's hero) and four areas shown from their headings.
+    for (const [name, path, heading] of [['home', '', 'Hello Demo'], ['waitlist', '/waitlist', 'Waitlist'], ['kpis', '/kpis', 'Clinic KPIs'], ['appointments', '/appointments', 'Appointments'], ['help', '/help', 'Guides']]) {
+      const page = await fresh();
+      await page.goto(`${DEMO}/dashboard${path}`, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(1500);
+      if (phone) await bring(page, heading, 90);
+      await shot(page, name);
+    }
   }
 }
 

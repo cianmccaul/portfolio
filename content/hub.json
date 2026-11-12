@@ -201,7 +201,7 @@
         "image": "hub-booking.png",
         "title": "Booking, on the patient’s side",
         "caption": "Five steps: treatment, practitioner, time, details, payment. The time is re-checked against the diary and held while they pay.",
-        "alt": "The demo’s booking page at step 3 of 5, Choose a time, with a week of days, a 10:30am slot and a summary of the booking so far."
+        "alt": "The demo’s booking page at step 3 of 5, Choose a time, with a week of days, the free times that morning and a summary of the booking so far."
       },
       {
         "image": "hub-bookings.png",

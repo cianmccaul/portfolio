@@ -1,9 +1,10 @@
 /**
  * The screenshots in src/assets/work/, by file name.
  *
- * A file named NAME-mobile.png beside NAME.png is a crop of the same
- * screenshot (made by scripts/crop-work.mjs) that replaces it on screens
- * under 640 px wide, where the whole picture would be too small to read.
+ * A file named NAME-mobile.png beside NAME.png replaces it on screens under
+ * 640 px wide, where the whole picture would be too small to read. It is
+ * either a crop of the same screenshot (scripts/crop-work.mjs) or the same
+ * screen captured on a phone (the BodyMed Hub tour, scripts/capture-work.mjs).
  */
 import type { ImageMetadata } from 'astro';
 
