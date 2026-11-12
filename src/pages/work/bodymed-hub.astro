@@ -11,6 +11,7 @@ import Pending from '../../components/Pending.astro';
 import Todo from '../../components/Todo.astro';
 import Architecture from '../../components/hub/Architecture.astro';
 import Timeline from '../../components/hub/Timeline.astro';
+import DeepDives from '../../components/hub/DeepDives.astro';
 import HubHero from '../../components/hub/HubHero.astro';
 import HubNav from '../../components/hub/HubNav.astro';
 import HubSection from '../../components/hub/HubSection.astro';
@@ -35,6 +36,7 @@ const sections = [
   { id: 'tour', label: 'Tour' },
   { id: 'architecture', label: 'Architecture' },
   { id: 'timeline', label: 'Timeline' },
+  { id: 'decisions', label: 'Deep dives' },
   { id: 'results', label: 'Results' },
   { id: 'reflection', label: 'Reflection' },
 ];
@@ -76,6 +78,10 @@ const sections = [
 
     <HubSection id="timeline" title="How it shipped" lede={hub.timeline.lede}>
       <Timeline />
+    </HubSection>
+
+    <HubSection id="decisions" title="Deep dives" lede={hub.dives.lede}>
+      <DeepDives />
     </HubSection>
 
     <HubSection id="built" title="How I built it">

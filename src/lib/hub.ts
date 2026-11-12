@@ -63,6 +63,8 @@ const schema = z.object({
         title: z.string(),
         problem: z.string(),
         options: z.array(z.string()).optional(),
+        /** Which of the options was taken. */
+        chosen: z.string().optional(),
         chose: z.string(),
         tradeoff: z.string(),
         rules: z.array(z.object({ term: z.string(), value: z.string() })).optional(),

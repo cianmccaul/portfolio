@@ -402,7 +402,8 @@
           "Direct charges"
         ],
         "chose": "Direct charges on each therapist’s own Stripe account. Stripe refused Express accounts that pay their own fees, which ruled that option out.",
-        "tradeoff": "A saved card belongs to one therapist’s account, so saved cards work per therapist. A refund bug needed a fix, and then a repair of older records."
+        "tradeoff": "A saved card belongs to one therapist’s account, so saved cards work per therapist. A refund bug needed a fix, and then a repair of older records.",
+        "chosen": "Direct charges"
       },
       {
         "id": "never-twice",
@@ -454,7 +455,8 @@
               "detail": "Save the booking record, send the confirmation. The page polls for this status."
             }
           ]
-        }
+        },
+        "chosen": "Pay, then book from the webhook"
       },
       {
         "id": "fair-waitlist",

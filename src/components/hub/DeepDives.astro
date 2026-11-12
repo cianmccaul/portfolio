@@ -1,0 +1,159 @@
+---
+/**
+ * The deep dives: for each hard problem, what it was, the options, what was
+ * chosen and why, and what that choice costs. The double-booking one carries
+ * the pay-then-book pipeline and "Break it on purpose".
+ */
+import Icon from '../Icon.astro';
+import SpecSheet from '../SpecSheet.astro';
+import BreakIt from '../work/BreakIt.astro';
+import Pipeline from '../work/Pipeline.astro';
+import { hub } from '../../lib/hub';
+
+const { items } = hub.dives;
+const count = String(items.length).padStart(2, '0');
+---
+
+<div class="dives">
+  {
+    items.map((dive, i) => (
+      <article id={dive.id} aria-labelledby={`${dive.id}-title`}>
+        <p class="step" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')} <span>/ {count}</span>
+        </p>
+        <h3 id={`${dive.id}-title`}>{dive.title}</h3>
+
+        <dl>
+          <div>
+            <dt>The problem</dt>
+            <dd>{dive.problem}</dd>
+          </div>
+          {dive.options && (
+            <div>
+              <dt>Options considered</dt>
+              <dd>
+                <ul class="options">
+                  {dive.options.map((option) => (
+                    <li class:list={[option === dive.chosen && 'chosen']}>
+                      {option === dive.chosen ? <Icon name="check" /> : <span class="dot" aria-hidden="true" />}
+                      <span>
+                        {option}
+                        {option === dive.chosen && <span class="sr-only"> (chosen)</span>}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )}
+          <div>
+            <dt>What I chose, and why</dt>
+            <dd>{dive.chose}</dd>
+          </div>
+          {dive.rules && (
+            <div>
+              <dt>The rules</dt>
+              <dd>
+                <SpecSheet items={dive.rules} compact />
+              </dd>
+            </div>
+          )}
+          <div>
+            <dt>The trade-off</dt>
+            <dd>{dive.tradeoff}</dd>
+          </div>
+        </dl>
+
+        {dive.pipeline && (
+          <div class="more">
+            <Pipeline caption={dive.pipeline.caption} steps={dive.pipeline.steps} />
+            <BreakIt />
+          </div>
+        )}
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  article {
+    padding-block: var(--spacing-48);
+    border-top: 1px solid var(--color-line);
+  }
+  article:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+  article:last-child {
+    padding-bottom: 0;
+  }
+  .step {
+    font-size: var(--text-small);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .step span {
+    color: var(--color-muted);
+  }
+  h3 {
+    max-width: 18em;
+    margin-top: var(--spacing-8);
+    font-size: var(--text-h1);
+    font-weight: 600;
+    line-height: var(--text-h1--line-height);
+    letter-spacing: var(--text-h1--letter-spacing);
+  }
+  dl {
+    margin-top: var(--spacing-32);
+  }
+  dl > div {
+    display: grid;
+    gap: var(--spacing-4) var(--spacing-24);
+    padding-block: var(--spacing-16);
+    border-top: 1px solid var(--color-line);
+  }
+  dt {
+    font-size: var(--text-small);
+    font-weight: 600;
+    line-height: var(--text-body--line-height);
+  }
+  dd {
+    max-width: var(--container-prose);
+  }
+  .options {
+    display: grid;
+    gap: var(--spacing-8);
+  }
+  .options li {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-12);
+    color: var(--color-muted);
+  }
+  .options .chosen {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .options :global(svg) {
+    color: var(--color-accent);
+  }
+  .dot {
+    width: var(--spacing-16);
+    height: 1px;
+    background-color: var(--color-n8);
+  }
+  .more {
+    margin-top: var(--spacing-16);
+  }
+  @media (min-width: 1024px) {
+    article {
+      padding-block: var(--spacing-80);
+    }
+    dl > div {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    }
+    .more {
+      margin-left: calc(25% + var(--spacing-24) * 0.25);
+    }
+  }
+</style>
