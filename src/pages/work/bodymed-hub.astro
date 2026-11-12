@@ -9,6 +9,8 @@ import BrowserFrame from '../../components/BrowserFrame.astro';
 import Icon from '../../components/Icon.astro';
 import Pending from '../../components/Pending.astro';
 import Todo from '../../components/Todo.astro';
+import Architecture from '../../components/hub/Architecture.astro';
+import Timeline from '../../components/hub/Timeline.astro';
 import HubHero from '../../components/hub/HubHero.astro';
 import HubNav from '../../components/hub/HubNav.astro';
 import HubSection from '../../components/hub/HubSection.astro';
@@ -31,6 +33,8 @@ const sections = [
   { id: 'replaced', label: 'What it replaced' },
   { id: 'modules', label: 'Modules' },
   { id: 'tour', label: 'Tour' },
+  { id: 'architecture', label: 'Architecture' },
+  { id: 'timeline', label: 'Timeline' },
   { id: 'results', label: 'Results' },
   { id: 'reflection', label: 'Reflection' },
 ];
@@ -64,6 +68,14 @@ const sections = [
 
     <HubSection id="tour" title="A tour of the demo" lede={hub.tour.lede}>
       <Tour />
+    </HubSection>
+
+    <HubSection id="architecture" title="Architecture" lede={hub.architecture.lede}>
+      <Architecture />
+    </HubSection>
+
+    <HubSection id="timeline" title="How it shipped" lede={hub.timeline.lede}>
+      <Timeline />
     </HubSection>
 
     <HubSection id="built" title="How I built it">

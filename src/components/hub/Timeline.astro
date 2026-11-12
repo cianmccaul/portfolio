@@ -1,0 +1,120 @@
+---
+/**
+ * How it shipped: one rail, a dot for each date, and go-live marked. On a
+ * wide screen the rail runs in two columns.
+ */
+import { hub } from '../../lib/hub';
+
+const { start, events } = hub.timeline;
+// Three-letter months, as everywhere else on the site ("Sep", not "Sept").
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const day = (iso: string) => Number(iso.slice(8, 10));
+const label = (event: (typeof events)[number]) => {
+  const days = event.until ? `${day(event.date)}–${day(event.until)}` : String(day(event.date));
+  return `${days} ${months[Number(event.date.slice(5, 7)) - 1]}`;
+};
+---
+
+<ol class="timeline">
+  <li class="start">
+    <span class="date">Aug</span>
+    <span class="what">{start}</span>
+  </li>
+  {
+    events.map((event) => (
+      <li class:list={[event.milestone && 'milestone']}>
+        <time class="date" datetime={event.date}>
+          {label(event)}
+        </time>
+        <span class="what">
+          {event.label}
+          {event.milestone && <span class="flag">Go-live</span>}
+        </span>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .timeline {
+    --rail: 6.25em;
+  }
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: calc(var(--rail) - var(--spacing-24)) minmax(0, 1fr);
+    gap: var(--spacing-48);
+    padding-block: var(--spacing-12);
+    break-inside: avoid;
+  }
+  /* The rail, and a dot on it for each date. */
+  li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--rail);
+    width: 1px;
+    background-color: var(--color-line-strong);
+  }
+  li::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--spacing-12) + 0.8em - 4px);
+    left: calc(var(--rail) - 4px);
+    width: 9px;
+    height: 9px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--color-n9);
+    background-color: var(--color-canvas);
+  }
+  .date {
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    line-height: var(--text-body--line-height);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .what {
+    font-weight: 500;
+  }
+  .start .what {
+    color: var(--color-muted);
+    font-weight: 400;
+  }
+  .milestone::after {
+    top: calc(var(--spacing-12) + 0.8em - 7px);
+    left: calc(var(--rail) - 7px);
+    width: 15px;
+    height: 15px;
+    border-color: var(--color-accent);
+    background-color: var(--color-accent);
+    box-shadow: 0 0 0 4px color-mix(in oklch, var(--color-accent) 22%, transparent);
+  }
+  .milestone .date {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .milestone .what {
+    font-weight: 600;
+  }
+  .flag {
+    display: inline-block;
+    margin-left: var(--spacing-8);
+    padding: var(--spacing-2) var(--spacing-8);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-ok-soft);
+    color: var(--color-ok);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: var(--text-caption--letter-spacing);
+    vertical-align: 0.1em;
+  }
+  @media (min-width: 900px) {
+    .timeline {
+      columns: 2;
+      column-gap: var(--spacing-48);
+    }
+  }
+</style>

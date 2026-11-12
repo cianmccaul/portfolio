@@ -1,0 +1,248 @@
+---
+/**
+ * The architecture, as one SVG drawn from content/hub.json: who uses the Hub,
+ * what it runs on, the services it talks to and the jobs it runs on a
+ * schedule. It is laid out twice, wide and tall, and CSS shows the one that
+ * fits; both are real text in the page's own type and colours, so the
+ * diagram follows the theme and stays sharp at any size.
+ */
+import { hub, jobCount } from '../../lib/hub';
+
+const { people, services, jobs } = hub.architecture;
+const core = hub.architecture.hub;
+
+/** Break a line at spaces so no part is longer than `max` characters. */
+const wrap = (text: string, max: number) => {
+  const lines: string[] = [];
+  for (const word of text.split(' ')) {
+    const last = lines[lines.length - 1];
+    if (last !== undefined && `${last} ${word}`.length <= max) lines[lines.length - 1] = `${last} ${word}`;
+    else lines.push(word);
+  }
+  return lines;
+};
+const jobList = (what: string[]) => what.map((name, i) => (i === 0 ? name : name.charAt(0).toLowerCase() + name.slice(1))).join(', ');
+const description = [
+  `${people.join(' and ')} use ${core.name}, built with ${core.stack} ${core.host}.`,
+  `It talks to ${services.map((s) => `${s.name} (${s.role})`).join('; ')}.`,
+  `It runs ${jobCount} scheduled jobs: ${jobs.map((j) => `${j.when.toLowerCase()}, ${jobList(j.what).toLowerCase()}`).join('; ')}.`,
+].join(' ');
+
+function layout(wide: boolean) {
+  const W = wide ? 1104 : 328;
+  const type = wide ? { name: 15, role: 13, line: 18 } : { name: 14, role: 12.5, line: 17 };
+
+  // Services: one line when the role fits beside the name, wrapped under it when it doesn't.
+  const sx = wide ? 760 : 28;
+  const sw = W - sx;
+  const roomy = wide ? 30 : 26;
+  const wrapAt = wide ? 44 : 38;
+  let y = 0;
+  const serviceBoxes = services.map((service) => {
+    const inline = service.name.length + service.role.length <= roomy;
+    const lines = inline ? [] : wrap(service.role, wrapAt);
+    const h = inline ? (wide ? 44 : 40) : 34 + lines.length * type.line + 8;
+    const box = { ...service, inline, lines, y, h };
+    y += h + 8;
+    return box;
+  });
+  const servicesHeight = y - 8;
+
+  // The Hub: its name and stack, then the scheduled jobs.
+  const hx = wide ? 256 : 0;
+  const hw = wide ? 400 : W;
+  const whatX = wide ? 132 : 104;
+  const jobWrap = wide ? 36 : 30;
+  let jy = wide ? 176 : 150;
+  const jobRows = jobs.map((job) => {
+    const lines = wrap(jobList(job.what), jobWrap);
+    const row = { when: job.when, lines, y: jy };
+    jy += lines.length * type.line + 10;
+    return row;
+  });
+  const hubHeight = Math.max(jy + 6, wide ? servicesHeight : 0);
+
+  // People.
+  const pw = wide ? 176 : 156;
+  const ph = wide ? 56 : 44;
+
+  if (wide) {
+    const mid = hubHeight / 2;
+    const offset = (hubHeight - servicesHeight) / 2;
+    const peopleBoxes = people.map((name, i) => ({ name, x: 0, y: mid - ph - 8 + i * (ph + 16), w: pw, h: ph }));
+    const sb = serviceBoxes.map((b) => ({ ...b, x: sx, y: b.y + offset, w: sw }));
+    const trunk = 712;
+    const wires = [
+      ...peopleBoxes.map((p) => `M${p.w},${p.y + p.h / 2}H${216}V${mid}H${hx}`),
+      `M${hx + hw},${mid}H${trunk}`,
+      `M${trunk},${sb[0]!.y + sb[0]!.h / 2}V${sb[sb.length - 1]!.y + sb[sb.length - 1]!.h / 2}`,
+      ...sb.map((b) => `M${trunk},${b.y + b.h / 2}H${b.x}`),
+    ];
+    const heads = [{ x: hx, y: mid, dir: 'right' }, ...sb.map((b) => ({ x: b.x, y: b.y + b.h / 2, dir: 'right' }))];
+    return { W, H: hubHeight, type, people: peopleBoxes, hub: { x: hx, y: 0, w: hw, h: hubHeight }, jobRows, whatX, services: sb, wires, heads };
+  }
+
+  const peopleBoxes = people.map((name, i) => ({ name, x: i * (pw + 16), y: 0, w: pw, h: ph }));
+  const hy = ph + 40;
+  const top = hy + hubHeight + 28;
+  const sb = serviceBoxes.map((b) => ({ ...b, x: sx, y: b.y + top, w: sw }));
+  const trunk = 12;
+  const wires = [
+    ...peopleBoxes.map((p) => `M${p.x + p.w / 2},${p.h}V${p.h + 20}H${W / 2}V${hy}`),
+    `M${trunk},${hy + hubHeight}V${sb[sb.length - 1]!.y + sb[sb.length - 1]!.h / 2}`,
+    ...sb.map((b) => `M${trunk},${b.y + b.h / 2}H${b.x}`),
+  ];
+  const heads = [{ x: W / 2, y: hy, dir: 'down' }, ...sb.map((b) => ({ x: b.x, y: b.y + b.h / 2, dir: 'right' }))];
+  return { W, H: sb[sb.length - 1]!.y + sb[sb.length - 1]!.h, type, people: peopleBoxes, hub: { x: 0, y: hy, w: hw, h: hubHeight }, jobRows, whatX, services: sb, wires, heads };
+}
+
+const views = [
+  { wide: true, id: 'wide', ...layout(true) },
+  { wide: false, id: 'tall', ...layout(false) },
+];
+---
+
+{
+  views.map((v) => (
+    <svg
+      class:list={['arch', v.id]}
+      viewBox={`-1 -1 ${v.W + 2} ${v.H + 2}`}
+      role="img"
+      aria-labelledby={`arch-${v.id}-title arch-${v.id}-desc`}
+    >
+      <title id={`arch-${v.id}-title`}>How BodyMed Hub fits together</title>
+      <desc id={`arch-${v.id}-desc`}>{description}</desc>
+
+      <g class="wires">
+        {v.wires.map((d) => <path d={d} />)}
+        {v.heads.map((h) =>
+          h.dir === 'right' ? <path d={`M${h.x - 7},${h.y - 4.5}L${h.x - 1},${h.y}L${h.x - 7},${h.y + 4.5}`} /> : <path d={`M${h.x - 4.5},${h.y - 7}L${h.x},${h.y - 1}L${h.x + 4.5},${h.y - 7}`} />,
+        )}
+      </g>
+
+      {v.people.map((p) => (
+        <g>
+          <rect class="box" x={p.x} y={p.y} width={p.w} height={p.h} rx="12" />
+          <text class="name" x={p.x + p.w / 2} y={p.y + p.h / 2} text-anchor="middle" dominant-baseline="central" font-size={v.type.name}>
+            {p.name}
+          </text>
+        </g>
+      ))}
+
+      <g>
+        <rect class="box core" x={v.hub.x} y={v.hub.y} width={v.hub.w} height={v.hub.h} rx="16" />
+        <text class="title" x={v.hub.x + (v.wide ? 24 : 16)} y={v.hub.y + (v.wide ? 46 : 36)} font-size={v.wide ? 26 : 21}>
+          {core.name}
+        </text>
+        <text class="name" x={v.hub.x + (v.wide ? 24 : 16)} y={v.hub.y + (v.wide ? 76 : 60)} font-size={v.type.name}>
+          {core.stack}
+        </text>
+        <text class="role" x={v.hub.x + (v.wide ? 24 : 16)} y={v.hub.y + (v.wide ? 98 : 80)} font-size={v.type.role}>
+          {core.host}
+        </text>
+        <path class="rule" d={`M${v.hub.x + (v.wide ? 24 : 16)},${v.hub.y + (v.wide ? 122 : 100)}H${v.hub.x + v.hub.w - (v.wide ? 24 : 16)}`} />
+        <text class="name" x={v.hub.x + (v.wide ? 24 : 16)} y={v.hub.y + (v.wide ? 150 : 126)} font-size={v.type.role}>
+          {jobCount} scheduled jobs
+        </text>
+        {v.jobRows.map((row) => (
+          <>
+            <text class="when" x={v.hub.x + (v.wide ? 24 : 16)} y={v.hub.y + row.y} font-size={v.type.role}>
+              {row.when}
+            </text>
+            <text class="role" x={v.hub.x + v.whatX} y={v.hub.y + row.y} font-size={v.type.role}>
+              {row.lines.map((line, i) => (
+                <tspan x={v.hub.x + v.whatX} dy={i === 0 ? 0 : v.type.line}>
+                  {line}
+                </tspan>
+              ))}
+            </text>
+          </>
+        ))}
+      </g>
+
+      {v.services.map((s) => (
+        <g>
+          <rect class="box" x={s.x} y={s.y} width={s.w} height={s.h} rx="12" />
+          <text x={s.x + 16} y={s.y + (s.inline ? s.h / 2 : 24)} dominant-baseline={s.inline ? 'central' : 'auto'} font-size={v.type.name}>
+            <tspan class="name">{s.name}</tspan>
+            {s.inline && (
+              <tspan class="role" dx="10" font-size={v.type.role}>
+                {s.role}
+              </tspan>
+            )}
+          </text>
+          {!s.inline && (
+            <text class="role" x={s.x + 16} y={s.y + 24 + v.type.line + 2} font-size={v.type.role}>
+              {s.lines.map((line, i) => (
+                <tspan x={s.x + 16} dy={i === 0 ? 0 : v.type.line}>
+                  {line}
+                </tspan>
+              ))}
+            </text>
+          )}
+        </g>
+      ))}
+    </svg>
+  ))
+}
+
+<style>
+  .arch {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-feature-settings: 'ss03', 'tnum';
+  }
+  .wide {
+    display: none;
+  }
+  .tall {
+    max-width: 440px;
+    margin-inline: auto;
+  }
+  @media (min-width: 1024px) {
+    .wide {
+      display: block;
+    }
+    .tall {
+      display: none;
+    }
+  }
+  .box {
+    fill: var(--color-surface);
+    stroke: var(--color-line-strong);
+    stroke-width: 1;
+  }
+  .core {
+    stroke: var(--color-ink);
+    stroke-width: 1.5;
+  }
+  .wires path {
+    fill: none;
+    stroke: var(--color-n8);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .rule {
+    stroke: var(--color-line);
+    stroke-width: 1;
+  }
+  .title {
+    fill: var(--color-ink);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .name {
+    fill: var(--color-ink);
+    font-weight: 600;
+  }
+  .when {
+    fill: var(--color-ink);
+    font-weight: 500;
+  }
+  .role {
+    fill: var(--color-muted);
+    font-weight: 400;
+  }
+</style>
