@@ -42,6 +42,21 @@
 
   /* ~1.25 scale, fluid between 360 and 1280 px viewports.
      size · line-height · tracking · weight, exactly as report 9.1. */
+  /* Two steps above display, for the broadsheet headings: the clinic band's
+     title and the inner pages' mastheads. The name on the home page is larger
+     still and sized to the column (see .masthead in global.css). */
+  --text-hero: clamp(3.25rem, 1.5875rem + 7.3913vw, 7.5rem); /* 52 → 120 */
+  --text-hero--line-height: 0.95;
+  --text-hero--letter-spacing: -0.045em;
+  --text-hero--font-weight: 600;
+
+  /* Reserved for owner-approved metrics. Nothing uses it yet: the proof strip
+     stays at h1 size until there are measured outcomes to carry it. */
+  --text-figure: clamp(3rem, 1.8261rem + 5.2174vw, 6rem); /* 48 → 96 */
+  --text-figure--line-height: 1;
+  --text-figure--letter-spacing: -0.04em;
+  --text-figure--font-weight: 600;
+
   --text-display: clamp(2.5rem, 1.7174rem + 3.4783vw, 4.5rem); /* 40 → 72 */
   --text-display--line-height: 1;
   --text-display--letter-spacing: -0.035em;
@@ -112,6 +127,7 @@
   --container-card-wide: 640px; /* the dashboard preview on its case study */
   --container-sheet: 800px; /* the CV, a sheet of paper on screen */
   --container-display: 11.5em; /* breaks the hero line into two even lines */
+  --container-phone: 280px; /* the phone in the clinic band */
 
   /* ── Colour ─────────────────────────────────────────────────────────── */
   /* 12-step cool neutral, hue 250. Steps follow the usual roles:
@@ -153,6 +169,20 @@
   --color-warn: light-dark(oklch(0.42 0.09 70), oklch(0.87 0.09 85));
   --color-warn-soft: light-dark(oklch(0.95 0.055 85), oklch(0.32 0.05 80));
 
+  /* The night band: the one full-bleed dark surface, the same in both themes.
+     Everything inside it uses the dark half of the tokens above (the band
+     sets color-scheme: dark); these are only its own ground and glow. */
+  --color-night: oklch(0.17 0.02 232);
+  --color-night-teal: oklch(0.52 0.12 192);
+  --color-night-blue: oklch(0.45 0.13 240);
+  --color-night-green: oklch(0.5 0.13 158);
+
+  /* Aurora behind the mastheads: teal, green and blue, never purple. Dark
+     mode keeps the hues and drops them to a glow. */
+  --color-aurora-teal: light-dark(oklch(0.86 0.1 192), oklch(0.36 0.075 192));
+  --color-aurora-blue: light-dark(oklch(0.86 0.09 236), oklch(0.33 0.08 240));
+  --color-aurora-green: light-dark(oklch(0.9 0.11 158), oklch(0.32 0.07 158));
+
   /* ── Shape ──────────────────────────────────────────────────────────── */
   /* Nested corners stay concentric: outer radius = inner radius + padding. */
   --radius-xs: 6px; /* kbd, inputs */
@@ -160,6 +190,7 @@
   --radius-md: 20px; /* cards */
   --radius-lg: 28px; /* nav, dialogs */
   --radius-pill: 999px;
+  --radius-device: 40px; /* the phone frame; its screen is this minus the bezel */
 
   /* Elevation. Dark mode drops shadows and relies on hairlines and lighter
      surfaces instead. */
@@ -202,6 +233,31 @@
     --shadow-e1: 0 1px 2px oklch(0 0 0 / 0.06);
     --shadow-e2: 0 4px 16px -4px oklch(0 0 0 / 0.12);
     --shadow-e3: 0 16px 48px -12px oklch(0 0 0 / 0.2);
+    --color-aurora-teal: oklch(0.86 0.1 192);
+    --color-aurora-blue: oklch(0.86 0.09 236);
+    --color-aurora-green: oklch(0.9 0.11 158);
+  }
+  /* The night band can't lean on color-scheme here, so it gets the dark
+     values spelled out. */
+  .night {
+    --color-n1: oklch(0.16 0.005 250);
+    --color-n4: oklch(0.265 0.008 250);
+    --color-n5: oklch(0.295 0.009 250);
+    --color-n7: oklch(0.39 0.011 250);
+    --color-n11: oklch(0.74 0.01 250);
+    --color-n12: oklch(0.96 0.003 250);
+    --color-surface: oklch(0.2 0.006 250);
+    --color-well: oklch(0.235 0.007 250);
+    --color-accent: oklch(0.76 0.09 200);
+    --color-accent-strong: oklch(0.84 0.09 200);
+    --color-accent-ink: oklch(0.16 0.005 250);
+    --color-ok: oklch(0.86 0.08 160);
+    --color-ok-soft: oklch(0.3 0.04 160);
+    --color-warn: oklch(0.87 0.09 85);
+    --color-warn-soft: oklch(0.32 0.05 80);
+    --shadow-e1: none;
+    --shadow-e2: none;
+    --shadow-e3: none;
   }
 }
 
@@ -212,6 +268,7 @@
   --dur-fast: 180ms;
   --dur-base: 240ms;
   --dur-slow: 300ms;
+  --nav-h: 52px; /* the floating nav's own height; the aurora runs up behind it */
 }
 
 @media (prefers-reduced-motion: reduce) {

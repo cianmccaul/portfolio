@@ -1,6 +1,8 @@
 ---
 /**
  * Static proof: three numbers, each linked to its evidence. No marquee.
+ * The figures stay at a modest size on purpose. The 96 px figure token
+ * (--text-figure) is held back for owner-approved outcomes.
  * Measured outcomes marked `lead` take the first places once they can be
  * published; until then the verified facts fill the strip. Figures waiting
  * for a sign-off are listed underneath in draft builds only.
@@ -15,8 +17,8 @@ const pending = pendingMetrics();
 
 {
   strip.length > 0 && (
-    <section aria-label="Proof" class="mx-auto mt-64 max-w-page px-gutter lg:mt-96">
-      <ul class="grid border-y border-line md:grid-cols-3">
+    <section aria-label="Proof" class="mx-auto mt-48 max-w-page px-gutter lg:mt-80">
+      <ul class="grid border-y border-line-strong md:grid-cols-3">
         {strip.map((metric) => (
           <li class="border-line py-24 not-first:border-t md:px-32 md:not-first:border-t-0 md:not-first:border-l md:first:pl-0 md:last:pr-0">
             <p class="flex items-baseline gap-8">

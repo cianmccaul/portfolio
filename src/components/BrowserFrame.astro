@@ -14,15 +14,22 @@ interface Props {
   caption?: string;
   /** Width the frame is shown at on wide screens, for `sizes`. */
   maxWidth?: number;
+  /** Overrides the `sizes` derived from maxWidth, for frames in a column. */
+  sizes?: string;
   eager?: boolean;
+  /** Shared-element name, so the frame travels between a card and its case study. */
+  transitionName?: string;
   class?: string;
 }
-const { src, alt, caption, maxWidth = 1200, eager = false, class: className } = Astro.props;
+const { src, alt, caption, maxWidth = 1200, sizes, eager = false, transitionName, class: className } = Astro.props;
 const widths = [480, 720, 960, 1280, 1600, 2000].filter((w) => w <= src.width);
 ---
 
 <figure class:list={['not-prose', className]}>
-  <div class="overflow-hidden rounded-sm border border-line bg-surface shadow-e1">
+  <div
+    class="overflow-hidden rounded-sm border border-line bg-surface shadow-e2"
+    style={transitionName ? `view-transition-name: ${transitionName}` : undefined}
+  >
     <div class="flex h-24 items-center gap-4 border-b border-line bg-well px-12" aria-hidden="true">
       <span class="size-8 rounded-pill bg-n7"></span>
       <span class="size-8 rounded-pill bg-n7"></span>
@@ -34,7 +41,7 @@ const widths = [480, 720, 960, 1280, 1600, 2000].filter((w) => w <= src.width);
       formats={['avif', 'webp']}
       fallbackFormat="webp"
       widths={widths.length ? widths : [src.width]}
-      sizes={`(min-width: ${maxWidth + 96}px) ${maxWidth}px, 92vw`}
+      sizes={sizes ?? `(min-width: ${maxWidth + 96}px) ${maxWidth}px, 92vw`}
       loading={eager ? 'eager' : 'lazy'}
       fetchpriority={eager ? 'high' : undefined}
       class="block h-auto w-full"

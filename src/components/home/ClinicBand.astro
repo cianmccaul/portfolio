@@ -1,0 +1,331 @@
+---
+/**
+ * The centrepiece: the clinic platform on the one dark band of the site.
+ * A phone steps through the patient's side of a booking, then the booking
+ * lands on reception's dashboard.
+ *
+ * The three phone screenshots are plain files in src/assets/work/. To update
+ * them, replace the files (any height: the frame crops from the top). Nothing
+ * here depends on what the screens look like, only on which step they show.
+ */
+import { Picture } from 'astro:assets';
+import LivingDashboard from '../LivingDashboard.astro';
+import Pending from '../Pending.astro';
+import SpecSheet from '../SpecSheet.astro';
+import WorkLinks from '../WorkLinks.astro';
+import Icon from '../Icon.astro';
+import stepTreatment from '../../assets/work/clinic-step-treatment.png';
+import stepPractitioner from '../../assets/work/clinic-step-practitioner.png';
+import stepTime from '../../assets/work/clinic-booking-phone.png';
+import { project, resume, type Line } from '../../lib/resume';
+import { formatDate } from '../../lib/dates';
+
+const suite = resume.suites.find((s) => s.id === 'clinic')!;
+const platform = project('clinic-platform');
+const outcome = platform.outcome as Line | undefined;
+const pending = typeof outcome === 'object' && outcome?.approval ? outcome : undefined;
+
+const steps = [
+  { shot: stepTreatment, title: 'Choose a treatment', detail: 'New or returning patient, then the treatment.' },
+  { shot: stepPractitioner, title: 'Choose a practitioner', detail: 'A named therapist, or whoever is free first.' },
+  { shot: stepTime, title: 'Choose a time', detail: 'Re-checked against the diary, then held while they pay.' },
+];
+const facts = [
+  { term: 'Role', value: platform.role },
+  { term: 'Client', value: platform.client },
+  { term: 'Live since', value: platform.liveSince && formatDate(platform.liveSince, 'long') },
+  { term: 'Stack', value: platform.stack.slice(0, 3).join(' · ') },
+].filter((fact): fact is { term: string; value: string } => !!fact.value);
+---
+
+<div class="night band" data-night>
+  <div class="night-glow" aria-hidden="true"></div>
+  <div class="mx-auto max-w-page px-gutter py-section">
+    <h2 id="work-title" class="border-b border-line pb-12 text-h3 text-muted">Selected work</h2>
+
+    <article aria-labelledby="clinic-title">
+      <p class="mt-48 text-h3 text-accent lg:mt-64">{suite.name}</p>
+      <h3 id="clinic-title" class="mt-8 text-hero" style="view-transition-name: title-clinic-platform">{platform.name}</h3>
+
+      <div class="mt-24 grid gap-x-48 gap-y-32 lg:mt-32 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+          <p class="max-w-prose text-body-lg">{platform.tagline} <span class="text-muted">{platform.fact}</span></p>
+          <p class="mt-16 max-w-prose text-small text-muted">{suite.summary}</p>
+          {
+            pending && (
+              <Pending approval={pending.approval!} class="mt-16 max-w-prose">
+                <p>{pending.text}</p>
+              </Pending>
+            )
+          }
+        </div>
+        <SpecSheet items={facts} compact class="lg:col-span-5" />
+      </div>
+
+      <div class="stage mt-48 lg:mt-64" data-stage>
+        <div class="phone">
+          <div class="phone-screen">
+            {
+              steps.map((step, i) => (
+                <div class="frame" data-frame data-on={i === 0 ? '' : undefined}>
+                  <Picture
+                    src={step.shot}
+                    alt={`The demo on a phone: ${step.title.toLowerCase()}.`}
+                    formats={['avif', 'webp']}
+                    fallbackFormat="webp"
+                    widths={[280, 560, 840]}
+                    sizes="280px"
+                    loading="lazy"
+                  />
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="side">
+          <p class="text-small text-muted">The patient’s side, on a phone</p>
+          <ol class="mt-8">
+            {
+              steps.map((step, i) => (
+                <li>
+                  <button type="button" data-step aria-pressed={i === 0 ? 'true' : 'false'}>
+                    <span class="n" aria-hidden="true">{i + 1}</span>
+                    <span>
+                      <b>{step.title}</b>
+                      <span class="d">{step.detail}</span>
+                    </span>
+                  </button>
+                </li>
+              ))
+            }
+          </ol>
+          <p class="then">
+            <Icon name="corner-down-right" class="mt-4 text-accent" />
+            <span>Then they pay, the appointment is created in the diary, and reception sees it.</span>
+          </p>
+          <WorkLinks project={platform} class="mt-24" />
+        </div>
+
+        <div class="desk">
+          <div class="scheme-page" style="view-transition-name: work-clinic-platform">
+            <LivingDashboard />
+          </div>
+          <button type="button" class="replay" data-replay hidden>
+            <Icon name="rotate" />Replay
+          </button>
+        </div>
+      </div>
+
+      {
+        platform.failure && (
+          <p class="mt-48 border-t border-line pt-16 text-small lg:mt-64">
+            <strong>If it fails.</strong> <span class="text-muted">{platform.failure}</span>
+          </p>
+        )
+      }
+    </article>
+  </div>
+</div>
+
+<script>
+  // One short story, told once when the band scrolls into view: the phone
+  // steps through the booking, then two bookings land on the dashboard. It
+  // runs for under five seconds, can be replayed, and under reduced motion
+  // nothing moves: the last frame is simply shown.
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const STEP_MS = 1100;
+  const ARRIVALS = [
+    { booked: 15, paid: 12, chip: 'New booking · 11:30 · paid online' },
+    { booked: 16, paid: 13, chip: 'New booking · 12:15 · paid online' },
+  ];
+
+  for (const stage of document.querySelectorAll<HTMLElement>('[data-stage]')) {
+    const frames = [...stage.querySelectorAll<HTMLElement>('[data-frame]')];
+    const buttons = [...stage.querySelectorAll<HTMLButtonElement>('[data-step]')];
+    const rows = stage.querySelector<HTMLElement>('[data-rows]')!;
+    const booked = stage.querySelector<HTMLElement>('[data-count="booked"]')!;
+    const paid = stage.querySelector<HTMLElement>('[data-count="paid"]')!;
+    const of = stage.querySelector<HTMLElement>('[data-of]')!;
+    const chip = stage.querySelector<HTMLElement>('[data-chip]')!;
+    const chipText = stage.querySelector<HTMLElement>('[data-chip-text]')!;
+    const replay = stage.querySelector<HTMLButtonElement>('[data-replay]')!;
+    let timers: number[] = [];
+    const later = (ms: number, run: () => void) => timers.push(window.setTimeout(run, ms));
+    const stop = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+    };
+
+    const step = (index: number) => {
+      frames.forEach((frame, i) => frame.toggleAttribute('data-on', i === index));
+      buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+    };
+    const tick = (el: HTMLElement, value: string) => {
+      el.textContent = value;
+      el.classList.remove('tick');
+      void el.offsetWidth; // restart the keyframes
+      el.classList.add('tick');
+    };
+    const desk = (arrived: number, animate: boolean) => {
+      const state = arrived === 0 ? { booked: 14, paid: 11, chip: '' } : ARRIVALS[arrived - 1]!;
+      rows.style.transition = animate ? '' : 'none';
+      rows.style.setProperty('--shift', String(arrived));
+      if (animate) {
+        tick(booked, String(state.booked));
+        tick(paid, String(state.paid));
+      } else {
+        booked.textContent = String(state.booked);
+        paid.textContent = String(state.paid);
+      }
+      of.textContent = `of ${state.booked} booked`;
+      if (state.chip) chipText.textContent = state.chip;
+      chip.toggleAttribute('data-away', arrived === 0);
+    };
+    const play = () => {
+      stop();
+      if (reduced.matches) {
+        step(frames.length - 1);
+        return desk(ARRIVALS.length, false);
+      }
+      step(0);
+      desk(0, false);
+      frames.slice(1).forEach((_, i) => later(STEP_MS * (i + 1), () => step(i + 1)));
+      ARRIVALS.forEach((_, i) => later(STEP_MS * frames.length + 900 * i, () => desk(i + 1, true)));
+    };
+
+    buttons.forEach((button, i) =>
+      button.addEventListener('click', () => {
+        stop();
+        step(i);
+        desk(ARRIVALS.length, false);
+      }),
+    );
+    replay.hidden = false;
+    replay.addEventListener('click', play);
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        play();
+      },
+      { threshold: 0.35 },
+    ).observe(stage);
+  }
+</script>
+
+<style>
+  .band {
+    overflow: clip;
+  }
+  .stage {
+    display: grid;
+    gap: var(--spacing-48);
+    align-items: start;
+  }
+  .phone {
+    width: min(var(--container-phone), 74vw);
+    margin-inline: auto;
+  }
+  .frame {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+  .frame[data-on] {
+    opacity: 1;
+  }
+  .side button {
+    display: flex;
+    gap: var(--spacing-16);
+    width: 100%;
+    padding-block: var(--spacing-16);
+    border-top: 1px solid var(--color-line);
+    color: var(--color-muted);
+    text-align: left;
+    cursor: pointer;
+    transition: color var(--dur-fast) ease;
+  }
+  .side button[aria-pressed='true'] {
+    color: var(--color-ink);
+  }
+  .side b {
+    display: block;
+    font-size: var(--text-h3);
+    font-weight: 600;
+    line-height: var(--text-h3--line-height);
+    letter-spacing: var(--text-h3--letter-spacing);
+  }
+  .n {
+    width: var(--spacing-16);
+    padding-top: var(--spacing-4);
+    color: var(--color-accent);
+    font-size: var(--text-small);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .d {
+    display: block;
+    margin-top: var(--spacing-2);
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+  .then {
+    display: flex;
+    gap: var(--spacing-16);
+    padding-top: var(--spacing-16);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+  .desk {
+    min-width: 0;
+    /* Room for the glass note that hangs off the dashboard's lower edge. */
+    padding-bottom: var(--spacing-20);
+  }
+  .replay {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    min-height: var(--spacing-tap);
+    margin-top: var(--spacing-4);
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    font-weight: 500;
+    cursor: pointer;
+    transition: color var(--dur-micro) ease;
+  }
+  .replay[hidden] {
+    display: none;
+  }
+  @media (hover: hover) {
+    .side button:hover,
+    .replay:hover {
+      color: var(--color-ink);
+    }
+  }
+  @media (min-width: 768px) {
+    .stage {
+      grid-template-columns: var(--container-phone) minmax(0, 1fr);
+    }
+    .phone {
+      width: auto;
+      margin: 0;
+    }
+    .desk {
+      grid-column: 1 / -1;
+      max-width: var(--container-card-wide);
+    }
+  }
+  @media (min-width: 1100px) {
+    .stage {
+      grid-template-columns: var(--container-phone) minmax(0, 1fr) minmax(0, 1.3fr);
+    }
+    .desk {
+      grid-column: auto;
+      max-width: none;
+    }
+  }
+</style>

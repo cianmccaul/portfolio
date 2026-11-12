@@ -1,60 +1,95 @@
 ---
 /**
- * First viewport: who this is, what they want and when, on a phone, in seconds.
- * Name, one line, one sentence, one row of logistics, then the actions.
+ * First viewport, set like a broadsheet's front page: the name runs the width
+ * of the column, a rule, then the line and the actions on the left and the
+ * logistics as a spec sheet on the right.
+ *
+ * On a phone the order is name, line, actions, spec sheet, and the paragraph
+ * comes last, so who this is, what they want and when all sit on the first
+ * screen.
  */
 import Icon from './Icon.astro';
-import { currentDegree, resume } from '../lib/resume';
-import { availabilityLabel, graduationLabel, yearOfStudy, yearOfStudyLabel } from '../lib/dates';
-import { inline, now } from '../lib/site';
+import SpecSheet from './SpecSheet.astro';
+import { resume } from '../lib/resume';
+import { logisticsSpecs } from '../lib/specs';
+import { inline } from '../lib/site';
 
-const { basics, logistics } = resume;
-
-const study = currentDegree?.durationYears
-  ? yearOfStudy(currentDegree.startDate, currentDegree.endDate, currentDegree.durationYears, now)
-  : null;
-
-// Short chips that pack two or three to a row at 360 px. Each has a spoken
-// label so "Jan–Sep 2028" is never read out without context.
-const chips = [
-  { term: 'Looking for', value: logistics.targetRole },
-  { term: 'Year of study', value: study && currentDegree && yearOfStudyLabel(study, currentDegree.durationYears!) },
-  { term: 'Availability', value: availabilityLabel(logistics.availableFrom, logistics.availableUntil, now) },
-  { term: 'Graduation', value: currentDegree && graduationLabel(currentDegree.endDate, now) },
-  { term: 'Based in', value: basics.location.city },
-  { term: 'Relocation', value: logistics.relocate.open && 'Will relocate' },
-  ...logistics.workAuthorization.map((auth) => ({ term: 'Work authorisation', value: auth.label })),
-].filter((chip): chip is { term: string; value: string } => !!chip.value);
+const { basics } = resume;
 ---
 
-<section aria-labelledby="hero-title" class="mx-auto max-w-page px-gutter pt-64 lg:pt-96">
-  <div class="flex flex-wrap items-baseline gap-x-12 text-h3">
-    <h1 id="hero-title" class="font-semibold">{basics.name}</h1>
-    <p class="text-muted">{basics.label}</p>
-  </div>
+<section aria-labelledby="hero-title" class="hero relative isolate">
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="mx-auto max-w-page px-gutter pt-32 lg:pt-48">
+    <p class="text-small font-medium text-muted lg:text-body">{basics.label}</p>
+    <div class="masthead-box mt-8 lg:mt-12">
+      <h1 id="hero-title" class="masthead">{basics.name}</h1>
+    </div>
 
-  <p class="mt-16 max-w-display text-display">{basics.headline}</p>
-
-  <p class="mt-24 max-w-prose text-body-lg text-muted [&_strong]:text-ink" set:html={inline(basics.summary)} />
-
-  <ul class="mt-24 flex flex-wrap gap-8" aria-label="At a glance">
-    {
-      chips.map((chip) => (
-        <li class="chip">
-          <span class="sr-only">{chip.term}: </span>
-          {chip.value}
-        </li>
-      ))
-    }
-  </ul>
-
-  <div class="mt-32 flex flex-wrap gap-12">
-    <a class="btn btn-primary" href="/cv/">View CV</a>
-    <a class="btn btn-secondary" href="#work">
-      Selected work<Icon name="arrow-down" />
-    </a>
-    <a class="btn btn-secondary" href="#contact" data-copy={basics.email} data-copied="Email copied">
-      <Icon name="copy" />Copy email
-    </a>
+    <div class="hero-grid mt-16 border-t border-ink pt-20 lg:mt-32 lg:pt-32">
+      <p class="line text-h1">{basics.headline}</p>
+      <p class="lede max-w-prose text-body-lg text-muted [&_strong]:text-ink" set:html={inline(basics.summary)} />
+      <div class="actions flex flex-wrap gap-12">
+        <a class="btn btn-primary" href="/cv/">View CV</a>
+        <a class="btn btn-secondary" href="#work">
+          Selected work<Icon name="arrow-down" />
+        </a>
+        <a class="btn btn-secondary max-sm:hidden" href="#contact" data-copy={basics.email} data-copied="Email copied">
+          <Icon name="copy" />Copy email
+        </a>
+      </div>
+      <SpecSheet items={logisticsSpecs} label="At a glance" class="sheet" />
+    </div>
   </div>
 </section>
+
+<style>
+  .hero-grid {
+    display: grid;
+    gap: var(--spacing-20) var(--spacing-48);
+    grid-template-areas: 'line' 'actions' 'sheet' 'lede';
+  }
+  .line {
+    grid-area: line;
+    max-width: 14em;
+    text-wrap: balance;
+  }
+  .lede {
+    grid-area: lede;
+  }
+  .actions {
+    grid-area: actions;
+  }
+  .hero-grid :global(.sheet) {
+    grid-area: sheet;
+  }
+  /* The phone's spec sheet is the compact cut, so all five rows fit above the
+     fold with the name, the line and the actions. */
+  @media (max-width: 1023px) {
+    .hero-grid :global(.sheet > div) {
+      grid-template-columns: 6em minmax(0, 1fr);
+      gap: var(--spacing-12);
+      padding-block: var(--spacing-8);
+    }
+    .hero-grid :global(.sheet dd) {
+      font-size: var(--text-small);
+      line-height: var(--text-small--line-height);
+    }
+    .lede {
+      margin-top: var(--spacing-12);
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas: 'line sheet' 'lede sheet' 'actions sheet';
+      row-gap: 0;
+    }
+    .lede {
+      margin-top: var(--spacing-16);
+    }
+    .actions {
+      margin-top: var(--spacing-32);
+    }
+  }
+</style>

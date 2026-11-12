@@ -1,0 +1,245 @@
+---
+/**
+ * The reception dashboard, alive: bookings arrive, the list moves up to make
+ * room and the counts tick. It is an illustration drawn in HTML with sample
+ * data, and says so in its caption.
+ *
+ * Every motion is a transform or an opacity change of 300 ms or less inside
+ * fixed-height boxes, so nothing around it shifts. The clinic band's script
+ * drives it (see ClinicBand.astro); without JavaScript, or with reduced
+ * motion, it simply shows a normal morning.
+ */
+const rows = [
+  { time: '09:00', patient: 'Emma Nolan', service: 'Physiotherapy', payment: 'Paid', tone: 'ok' },
+  { time: '09:30', patient: 'Liam O’Brien', service: 'Sports massage', payment: 'Deposit only', tone: 'warn' },
+  { time: '10:15', patient: 'Grace Kinsella', service: 'Physio and shockwave', payment: 'Paid', tone: 'ok' },
+  { time: '11:00', patient: 'Daniel Farrell', service: 'Initial assessment', payment: 'Paid', tone: 'ok' },
+  { time: '11:30', patient: 'Aoife Byrne', service: 'Sports massage', payment: 'Paid', tone: 'ok' },
+  { time: '12:15', patient: 'Seán Murphy', service: 'Physiotherapy', payment: 'Paid', tone: 'ok' },
+];
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={['live-box', className]}>
+  <figure class="live" data-live>
+    <figcaption>
+      <span class="title">Day overview</span>
+      <span class="note">Reception dashboard, sample data</span>
+    </figcaption>
+
+    <ul class="tiles">
+      <li><span class="label">Booked</span><b data-count="booked">14</b><span class="ok">Up 2 on last week</span></li>
+      <li><span class="label">Paid in full</span><b data-count="paid">11</b><span class="ok" data-of>of 14 booked</span></li>
+      <li class="third"><span class="label">Still to collect</span><b>€130</b><span class="warn">3 patients</span></li>
+    </ul>
+
+    <div class="head" aria-hidden="true">
+      <span>Time</span><span>Patient</span><span class="svc">Service</span><span>Payment</span>
+    </div>
+    <div class="viewport">
+      <ol data-rows>
+        {
+          rows.map((row) => (
+            <li>
+              <span class="time">{row.time}</span>
+              <span>{row.patient}</span>
+              <span class="svc">{row.service}</span>
+              <span>
+                <i class={row.tone}>{row.payment}</i>
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    {/* Clear glass over imagery: a small note that floats on the dashboard's edge. */}
+    <p class="chip glass glass-clear" data-chip aria-hidden="true">
+      <i class="dot"></i><span data-chip-text>Paid online · booked in the diary</span>
+    </p>
+  </figure>
+</div>
+
+<style>
+  .live-box {
+    container-type: inline-size;
+  }
+  .live {
+    --row: 44px;
+    position: relative;
+    padding: var(--spacing-20);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    box-shadow:
+      0 0 0 1px oklch(1 0 0 / 0.1),
+      0 32px 64px -24px oklch(0 0 0 / 0.55);
+    text-align: left;
+  }
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--spacing-16);
+  }
+  .title {
+    font-size: var(--text-h3);
+    font-weight: 600;
+  }
+  .note,
+  .label,
+  .head,
+  .ok,
+  .warn {
+    font-size: var(--text-caption);
+  }
+  .note,
+  .label,
+  .head {
+    color: var(--color-muted);
+  }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-8);
+    margin-top: var(--spacing-16);
+  }
+  .tiles li {
+    display: grid;
+    padding: var(--spacing-12);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-xs);
+  }
+  .tiles b {
+    height: 1.15em;
+    overflow: hidden;
+    font-size: var(--text-h2);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    font-variant-numeric: tabular-nums;
+  }
+  .ok {
+    color: var(--color-ok);
+  }
+  .warn {
+    color: var(--color-warn);
+  }
+  .head,
+  ol li {
+    display: grid;
+    grid-template-columns: 48px 1.1fr 1.3fr 104px;
+    gap: var(--spacing-12);
+    align-items: center;
+  }
+  .head {
+    margin-top: var(--spacing-16);
+    padding-bottom: var(--spacing-8);
+    border-bottom: 1px solid var(--color-line);
+    font-weight: 500;
+  }
+  /* Four rows tall, always. Later rows wait below, out of sight. */
+  .viewport {
+    height: calc(var(--row) * 4);
+    overflow: hidden;
+  }
+  ol {
+    transform: translateY(calc(var(--shift, 0) * var(--row) * -1));
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  ol li {
+    height: var(--row);
+    border-bottom: 1px solid var(--color-line);
+    font-size: var(--text-small);
+    white-space: nowrap;
+  }
+  ol li span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .time {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .svc {
+    color: var(--color-muted);
+  }
+  ol i {
+    display: inline-block;
+    padding: var(--spacing-2) var(--spacing-8);
+    border-radius: var(--radius-pill);
+    background: var(--color-ok-soft);
+    color: var(--color-ok);
+    font-size: var(--text-caption);
+    font-style: normal;
+  }
+  ol i.warn {
+    background: var(--color-warn-soft);
+    color: var(--color-warn);
+  }
+  :global(.tick) {
+    animation: tick var(--dur-base) var(--ease-out);
+  }
+  @keyframes tick {
+    from {
+      opacity: 0;
+      transform: translateY(40%);
+    }
+  }
+
+  .chip {
+    position: absolute;
+    right: calc(var(--spacing-12) * -1);
+    bottom: calc(var(--spacing-20) * -1);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    min-height: var(--spacing-40);
+    padding-inline: var(--spacing-16);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-small);
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+  }
+  .chip[data-away] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .dot {
+    width: var(--spacing-8);
+    height: var(--spacing-8);
+    border-radius: var(--radius-pill);
+    background: var(--color-ok);
+  }
+  /* The same dashboard in a narrow column: drop the service, keep the money. */
+  @container (max-width: 520px) {
+    .svc {
+      display: none;
+    }
+    .head,
+    ol li {
+      grid-template-columns: 48px minmax(0, 1fr) auto;
+    }
+  }
+  @container (max-width: 380px) {
+    .live {
+      padding: var(--spacing-16);
+    }
+    .tiles {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .tiles .third {
+      display: none;
+    }
+    .chip {
+      right: var(--spacing-8);
+    }
+  }
+</style>

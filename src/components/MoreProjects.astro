@@ -1,26 +1,43 @@
 ---
-/** Smaller projects as rows, not cards: name, one line, stack, links. */
+/**
+ * Smaller projects, in the same editorial list as the selected work at a
+ * smaller size: a picture of the real thing, a headline, one paragraph, links.
+ */
+import type { ImageMetadata } from 'astro';
+import BrowserFrame from './BrowserFrame.astro';
 import SectionRail from './SectionRail.astro';
 import WorkLinks from './WorkLinks.astro';
 import { resume } from '../lib/resume';
 
+const images = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.png', { eager: true });
 const projects = resume.projects.filter((p) => !p.featured);
 ---
 
 <SectionRail id="projects" title="More projects">
   <ul>
     {
-      projects.map((item) => (
-        <li class="grid gap-x-24 border-t border-line py-24 lg:grid-cols-9">
-          <div class="lg:col-span-6">
-            <h3 class="text-h3">{item.name}</h3>
-            <p class="mt-4 max-w-prose text-muted">{item.description}</p>
-            <p class="mt-12 text-caption text-muted">{item.stack.join(' · ')}</p>
-            {item.demoNote && <p class="mt-8 text-small text-muted">{item.demoNote}</p>}
-          </div>
-          <WorkLinks project={item} end class="mt-4 lg:col-span-3 lg:mt-0 lg:self-start" />
-        </li>
-      ))
+      projects.map((item) => {
+        const src = item.image ? images[`../assets/work/${item.image}`]?.default : undefined;
+        return (
+          <li class="grid items-start gap-x-32 gap-y-16 border-line py-32 not-first:border-t first:pt-0 sm:grid-cols-9">
+            {src && (
+              <BrowserFrame
+                src={src}
+                alt={item.imageAlt ?? ''}
+                sizes="(min-width: 1296px) 350px, (min-width: 640px) 40vw, 92vw"
+                class="sm:col-span-4"
+              />
+            )}
+            <div class:list={[src ? 'sm:col-span-5' : 'sm:col-span-9']}>
+              <h3 class="text-h2">{item.name}</h3>
+              <p class="mt-8 max-w-prose text-muted">{item.description}</p>
+              <p class="mt-12 text-caption text-muted">{item.stack.join(' · ')}</p>
+              {item.demoNote && <p class="mt-8 text-small text-muted">{item.demoNote}</p>}
+              <WorkLinks project={item} class="mt-8" />
+            </div>
+          </li>
+        );
+      })
     }
   </ul>
 </SectionRail>

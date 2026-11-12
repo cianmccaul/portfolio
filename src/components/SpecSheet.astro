@@ -1,0 +1,26 @@
+---
+/**
+ * A spec sheet: label and value on hairlines. Used for the logistics in the
+ * hero and for a project's facts. `compact` is the denser version for small
+ * spaces.
+ */
+import type { Spec } from '../lib/specs';
+interface Props {
+  items: Spec[];
+  label?: string;
+  compact?: boolean;
+  class?: string;
+}
+const { items, label, compact = false, class: className } = Astro.props;
+---
+
+<dl class:list={['specs', compact && 'specs-compact', className]} aria-label={label}>
+  {
+    items.map((item) => (
+      <div>
+        <dt>{item.term}</dt>
+        <dd>{item.value}</dd>
+      </div>
+    ))
+  }
+</dl>

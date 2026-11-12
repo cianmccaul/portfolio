@@ -1,8 +1,8 @@
 ---
 /**
- * The page's recurring layout: the section title sits in a left rail (three of
- * twelve columns) and the content takes the other nine. Stacked on small
- * screens.
+ * The page's recurring layout: a rule across the column, the section title in
+ * a left rail (three of twelve columns) and the content in the other nine.
+ * Stacked on small screens.
  */
 interface Props {
   id: string;
@@ -12,7 +12,7 @@ const { id, title } = Astro.props;
 ---
 
 <section id={id} aria-labelledby={`${id}-title`} class="mx-auto max-w-page px-gutter pt-section">
-  <div class="grid gap-x-24 gap-y-24 lg:grid-cols-12">
+  <div class="grid gap-x-24 gap-y-24 border-t border-ink pt-24 lg:grid-cols-12">
     <h2 id={`${id}-title`} class="text-h2 lg:col-span-3">{title}</h2>
     <div class="lg:col-span-9">
       <slot />

@@ -433,6 +433,8 @@
         "Supabase"
       ],
       "repo": "https://github.com/cianmccaul/cm-studio-designroom",
+      "image": "designroom.png",
+      "imageAlt": "The DesignRoom showroom in demo mode: a grid of animated website backgrounds to choose from, with colour options under each.",
       "demo": "https://cm-studio-designroom.vercel.app/?demo=1",
       "demoNote": "The demo link is safe to try: in demo mode nothing is saved or emailed."
     },
@@ -450,6 +452,8 @@
         "matplotlib"
       ],
       "repo": "https://github.com/cianmccaul/Irish-house-prices",
+      "image": "house-prices.png",
+      "imageAlt": "The house prices site: a row of regions to choose from, and the national figures for mean, median and overall change.",
       "live": "https://irish-house-prices.vercel.app"
     },
     {
@@ -466,6 +470,8 @@
         "Resend"
       ],
       "repo": "https://github.com/cianmccaul/deme-housepainting",
+      "image": "deme-housepainting.png",
+      "imageAlt": "The DEME Housepainting home page: the business name, a line about interior and exterior painting, and a button to get a free quote.",
       "live": "https://deme-housepainting.vercel.app"
     }
   ],

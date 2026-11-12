@@ -190,19 +190,138 @@
     font-size: var(--text-small);
   }
 
-  /* ── Chips ─────────────────────────────────────────────────────────────
-     Hairline, for the logistics row. */
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    padding: var(--spacing-4) var(--spacing-12);
-    border: 1px solid var(--color-line-strong);
-    border-radius: var(--radius-sm);
-    font-size: var(--text-caption);
+  /* ── Spec sheet ────────────────────────────────────────────────────────
+     Label and value on hairlines: the logistics, a project's facts. It does
+     the job chips used to do, and reads as a table of facts, not as tags. */
+  .specs > div {
+    display: grid;
+    grid-template-columns: 7.5em minmax(0, 1fr);
+    gap: var(--spacing-16);
+    align-items: baseline;
+    padding-block: var(--spacing-12);
+    border-bottom: 1px solid var(--color-line-strong);
+  }
+  .specs > div:first-child {
+    padding-top: 0;
+  }
+  .specs dt {
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+  .specs dd {
     font-weight: 500;
-    line-height: var(--text-caption--line-height);
-    letter-spacing: var(--text-caption--letter-spacing);
+  }
+  .specs-compact > div {
+    padding-block: var(--spacing-8);
+  }
+  .specs-compact dd {
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+
+  /* ── Masthead ──────────────────────────────────────────────────────────
+     The name, set to the width of the column like a newspaper's title. The
+     wrapper is a size container, so the type is cut to the column itself and
+     never to the window. 5.17 is the inked width of "Cian McCaul" in ems at
+     this tracking; the vw line is for browsers without container units. */
+  .masthead-box {
+    container-type: inline-size;
+  }
+  .masthead {
+    font-size: min(17.4vw, 213px);
+    font-size: calc(100cqw / var(--masthead-ems, 5.17));
+    font-weight: 600;
+    line-height: 0.86;
+    letter-spacing: -0.055em;
     white-space: nowrap;
+    /* Pull the C's side bearing back so its curve sits on the rule's edge. */
+    margin-left: -0.035em;
+  }
+
+  /* ── Aurora ────────────────────────────────────────────────────────────
+     Three soft lights behind a masthead, fading into the canvas. Colour only:
+     no image, no animation, nothing to download. The grain stops the
+     gradients banding. */
+  .aurora {
+    position: absolute;
+    inset: calc(var(--nav-h) * -1) 0 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      radial-gradient(55% 60% at 8% 0%, var(--color-aurora-teal), transparent 72%),
+      radial-gradient(45% 55% at 92% 8%, var(--color-aurora-blue), transparent 72%),
+      radial-gradient(50% 50% at 58% 70%, var(--color-aurora-green), transparent 70%);
+    -webkit-mask-image: linear-gradient(#000 55%, transparent);
+    mask-image: linear-gradient(#000 55%, transparent);
+  }
+  .aurora::after,
+  .night-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ── Night band ────────────────────────────────────────────────────────
+     The one full-bleed dark surface. It forces the dark half of every token,
+     so buttons, links, focus rings and hairlines inside it need no variants. */
+  .night {
+    position: relative;
+    isolation: isolate;
+    color-scheme: dark;
+    background-color: var(--color-night);
+    color: var(--color-ink);
+  }
+  .night-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 70% at 5% 0%, color-mix(in oklch, var(--color-night-teal) 85%, transparent), transparent 70%),
+      radial-gradient(50% 60% at 95% 15%, color-mix(in oklch, var(--color-night-blue) 75%, transparent), transparent 70%),
+      radial-gradient(55% 55% at 55% 105%, color-mix(in oklch, var(--color-night-green) 55%, transparent), transparent 70%);
+  }
+  /* Something inside the band that should follow the page's theme again. */
+  .scheme-page {
+    color-scheme: light dark;
+  }
+  :root[data-theme='light'] .scheme-page {
+    color-scheme: light;
+  }
+  :root[data-theme='dark'] .scheme-page {
+    color-scheme: dark;
+  }
+
+  /* ── Phone frame ───────────────────────────────────────────────────────
+     Plain, and nobody's hardware. The screen crops whatever image it is
+     given from the top, so a screenshot can be replaced by a new file of any
+     height without touching the layout. */
+  .phone {
+    padding: var(--spacing-8);
+    border-radius: var(--radius-device);
+    background-color: oklch(0.22 0.01 250);
+    box-shadow:
+      0 0 0 1px oklch(1 0 0 / 0.14),
+      0 32px 64px -24px oklch(0 0 0 / 0.55);
+  }
+  .phone-screen {
+    position: relative;
+    overflow: hidden;
+    border-radius: calc(var(--radius-device) - var(--spacing-8));
+    aspect-ratio: 390 / 844;
+    background-color: oklch(0.96 0.004 250);
+  }
+  .phone-screen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
   }
 
   /* ── Draft markers ─────────────────────────────────────────────────────
@@ -302,7 +421,6 @@
 }
 
 @media (forced-colors: active) {
-  .chip,
   .btn {
     border-color: CanvasText;
   }

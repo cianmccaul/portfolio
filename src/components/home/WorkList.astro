@@ -1,0 +1,107 @@
+---
+/**
+ * The rest of the selected work, set as a broadsheet list rather than a grid
+ * of cards: a rule, a large picture, a headline and the facts. Pictures swap
+ * sides from one item to the next. Jarvis runs the full width, because its
+ * dashboard screenshot is shown exactly as it is, uncropped.
+ */
+import type { ImageMetadata } from 'astro';
+import BrowserFrame from '../BrowserFrame.astro';
+import Steps from '../Steps.astro';
+import Todo from '../Todo.astro';
+import WorkLinks from '../WorkLinks.astro';
+import { isTodo, project, resume, type Line } from '../../lib/resume';
+
+const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/work/*.png', { eager: true });
+const image = (file?: string) => (file ? images[`../../assets/work/${file}`]?.default : undefined);
+
+const suite = resume.suites.find((s) => s.id === 'clinic')!;
+const companions = resume.projects.filter((p) => p.suite === 'clinic' && p.slug !== 'clinic-platform');
+const jarvis = project('jarvis');
+const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
+const text = (line: Line | undefined) => (typeof line === 'string' ? line : line?.text);
+const approval = (line: Line | undefined) => (typeof line === 'string' ? undefined : line?.approval);
+---
+
+<div class="mx-auto max-w-page px-gutter">
+  {
+    companions.map((item, i) => {
+      const src = image(item.image);
+      const outcome = text(item.outcome);
+      return (
+        <article class:list={['item border-b border-line py-48 lg:py-80', i % 2 === 1 && 'flip']} aria-labelledby={`work-${item.slug}`}>
+          {src && (
+            <BrowserFrame
+              src={src}
+              alt={item.imageAlt ?? ''}
+              sizes="(min-width: 1296px) 620px, (min-width: 1024px) 52vw, 92vw"
+              transitionName={item.caseStudy ? `work-${item.slug}` : undefined}
+              class="shot"
+            />
+          )}
+          <div>
+            <p class="text-small font-medium text-muted">{suite.name}</p>
+            <h3
+              id={`work-${item.slug}`}
+              class="mt-8 text-h1"
+              style={item.caseStudy ? `view-transition-name: title-${item.slug}` : undefined}
+            >
+              {item.name}
+            </h3>
+            <p class="mt-12 text-body-lg text-muted">{item.tagline}</p>
+            {outcome && !isTodo(outcome) && !approval(item.outcome) && <p class="mt-16">{outcome}</p>}
+            {item.fact && <p class="mt-12 text-small text-muted">{item.fact}</p>}
+            {isTodo(outcome) && <Todo block text={outcome!} class="mt-12" />}
+            <p class="mt-16 text-caption text-muted">{tags(item.stack)}</p>
+            <WorkLinks project={item} class="mt-16" />
+          </div>
+        </article>
+      );
+    })
+  }
+
+  <article class="py-48 lg:py-80" aria-labelledby="work-jarvis">
+    {
+      image(jarvis.image) && (
+        <BrowserFrame src={image(jarvis.image)!} alt={jarvis.imageAlt ?? ''} maxWidth={1104} transitionName="work-jarvis" />
+      )
+    }
+    <div class="mt-32 grid gap-x-48 gap-y-32 lg:mt-48 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <h3 id="work-jarvis" class="text-h1" style="view-transition-name: title-jarvis">{jarvis.name}</h3>
+        <p class="mt-12 text-body-lg text-muted">{jarvis.tagline}</p>
+        <p class="mt-16">{jarvis.description}</p>
+        {text(jarvis.outcome) && !isTodo(text(jarvis.outcome)) && <p class="mt-16">{text(jarvis.outcome)}</p>}
+        <p class="mt-16 text-caption text-muted">{tags(jarvis.stack)}</p>
+        <WorkLinks project={jarvis} class="mt-16" />
+      </div>
+      {
+        jarvis.guardRails && (
+          <div class="lg:col-span-7">
+            <h4 class="text-small font-semibold">{jarvis.fact}</h4>
+            <Steps steps={jarvis.guardRails} class="mt-12 [&>li:last-child]:border-b" />
+          </div>
+        )
+      }
+    </div>
+  </article>
+</div>
+
+<style>
+  .item {
+    display: grid;
+    gap: var(--spacing-24) var(--spacing-48);
+    align-items: center;
+  }
+  @media (min-width: 1024px) {
+    .item {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    }
+    .item.flip {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+    .item.flip > :global(.shot) {
+      order: 2;
+    }
+  }
+</style>

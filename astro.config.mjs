@@ -15,7 +15,7 @@ export default defineConfig({
   site: 'https://cianmccaul.vercel.app',
   output: 'static',
   build: { format: 'directory', inlineStylesheets: 'always' },
-  integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/links/') && !page.includes('/directions/') })],
+  integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/links/') })],
   markdown: { shikiConfig: { theme: codeTheme, wrap: false } },
   vite: { plugins: [tailwindcss()] },
 });
