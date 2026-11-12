@@ -54,6 +54,7 @@ One conversation covers all of this.
   - `clinic-step-treatment.png` (choose a treatment)
   - `clinic-step-practitioner.png` (choose a practitioner)
   - `clinic-booking-phone.png` (choose a time)
+- [ ] **Phone crops.** A file named `NAME-mobile.png` beside `NAME.png` is shown instead of it on screens under 640 px. Today there is one: `jarvis-dashboard-approve-mobile.png`, the Ask Jarvis panel cut from the dashboard screenshot. If you replace the dashboard screenshot, run `node scripts/crop-work.mjs` and check the crop still frames the panel (the region is set in that script).
 - [ ] **More projects now has a screenshot per project**, captured from the live sites on 12 November 2026: `designroom.png` (demo mode), `house-prices.png`, `deme-housepainting.png`. Their alt text is in `resume.json` (`imageAlt`); correct it if anything reads wrong. Re-capture with `node scripts/capture-work.mjs`.
 
 ## Before launch, not blocking the build

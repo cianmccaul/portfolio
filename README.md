@@ -44,7 +44,7 @@ npm run todos      # what content is still missing
 | Styling | Tailwind CSS 4, with its defaults switched off and replaced by the tokens in [`src/styles/tokens.css`](src/styles/tokens.css) |
 | Type | Inter Variable, self-hosted: one 48 KB file, subset by [`scripts/subset-font.sh`](scripts/subset-font.sh) |
 | Case studies | MDX, with code excerpts highlighted by Shiki in the site's own three tones |
-| Images | AVIF and WebP generated at build time; screenshots captured by [`scripts/capture-work.mjs`](scripts/capture-work.mjs) |
+| Images | AVIF and WebP generated at build time; screenshots captured by [`scripts/capture-work.mjs`](scripts/capture-work.mjs), phone crops cut by [`scripts/crop-work.mjs`](scripts/crop-work.mjs) |
 | Social images | One per page, drawn with Satori at build time |
 | CV | The `/cv/` page, printed to PDF by Playwright and checked |
 | Hosting | Vercel, as static files. A personal, non-commercial site, so the free Hobby plan fits |

@@ -4,7 +4,7 @@
 //
 //   node scripts/capture-work.mjs
 //
-// Needs Playwright with Chromium. Every image is 16:10.
+// Needs Playwright with Chromium. Images are 16:10 unless noted.
 //
 // Not captured here: the three phone screenshots in the clinic band
 // (clinic-step-treatment.png, clinic-step-practitioner.png,
@@ -34,10 +34,16 @@ const open = async (width, height, deviceScaleFactor) => {
   // The detail pane has a rounded corner over the demo's colour wash; a flat
   // white page keeps that corner out of the crop.
   await page.addStyleTag({ content: 'html, body { background: #fff !important } [class*="wash"] { display: none !important }' });
-  const pane = await page.locator('article').filter({ hasText: "Why it's in" }).first().boundingBox();
+  const article = page.locator('article').filter({ hasText: "Why it's in" }).first();
+  const pane = await article.boundingBox();
+  // End below the safety check, halfway to the next heading, so the picture
+  // stops at a clean boundary instead of cutting "Their message" in half.
+  const safety = await article.getByText('Safety check:').locator('xpath=..').boundingBox();
+  const next = await article.getByText('Their message').first().boundingBox();
+  const bottom = (safety.y + safety.height + next.y) / 2;
   await page.screenshot({
     path: `${out}email-triage.png`,
-    clip: { x: pane.x, y: pane.y, width: pane.width, height: Math.round(pane.width / 1.6) },
+    clip: { x: pane.x, y: pane.y, width: pane.width, height: Math.round(bottom - pane.y) },
   });
 }
 

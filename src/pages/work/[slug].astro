@@ -6,7 +6,6 @@
  * the MDX file of the same name in content/work/.
  */
 import { getCollection, render } from 'astro:content';
-import type { ImageMetadata } from 'astro';
 import Base from '../../layouts/Base.astro';
 import DashboardPreview from '../../components/DashboardPreview.astro';
 import Icon from '../../components/Icon.astro';
@@ -22,6 +21,7 @@ import Pending from '../../components/Pending.astro';
 import BrowserFrame from '../../components/BrowserFrame.astro';
 import { project, showTodos } from '../../lib/resume';
 import { article, breadcrumbs } from '../../lib/seo';
+import { workImage, workImageMobile } from '../../lib/images';
 
 export async function getStaticPaths() {
   const entries = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
@@ -63,8 +63,7 @@ const sections = [
 const pendingIds = headings.filter((h) => pending.includes(h.text)).map((h) => h.slug);
 
 const minutes = Math.max(1, Math.round((entry.body ?? '').replace(/<[^>]+>|[`*_#>{}\[\]()]/g, ' ').split(/\s+/).length / 220));
-const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/work/*.png', { eager: true });
-const image = item.image ? images[`../../assets/work/${item.image}`]?.default : undefined;
+const image = workImage(item.image);
 const path = `/work/${entry.id}/`;
 
 // A fact with no value yet is only listed in draft builds, where its TODO shows.
@@ -139,7 +138,7 @@ const tldr = [
         entry.id === 'clinic-platform' ? (
           <div class="night mt-32 grid place-items-center overflow-clip rounded-md p-12 sm:p-32 lg:mt-48 lg:p-64">
             <div class="night-glow" aria-hidden="true" />
-            <div class="scheme-page w-full max-w-card-wide" style={`view-transition-name: work-${entry.id}`}>
+            <div class="scheme-light w-full max-w-card-wide" style={`view-transition-name: work-${entry.id}`}>
               <DashboardPreview />
             </div>
           </div>
@@ -147,6 +146,7 @@ const tldr = [
           image && (
             <BrowserFrame
               src={image}
+              mobile={workImageMobile(item.image)}
               alt={item.imageAlt ?? ''}
               caption={item.imageCaption}
               maxWidth={1104}

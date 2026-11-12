@@ -259,6 +259,27 @@
     --shadow-e2: none;
     --shadow-e3: none;
   }
+  /* …except the product pictures inside it, which stay light. */
+  .night .scheme-light {
+    --color-n1: oklch(0.99 0.002 250);
+    --color-n4: oklch(0.935 0.005 250);
+    --color-n5: oklch(0.91 0.006 250);
+    --color-n7: oklch(0.83 0.008 250);
+    --color-n11: oklch(0.45 0.01 250);
+    --color-n12: oklch(0.2 0.01 250);
+    --color-surface: oklch(1 0 0);
+    --color-well: oklch(0.965 0.004 250);
+    --color-accent: oklch(0.52 0.085 200);
+    --color-accent-strong: oklch(0.45 0.078 200);
+    --color-accent-ink: oklch(1 0 0);
+    --color-ok: oklch(0.4 0.08 160);
+    --color-ok-soft: oklch(0.95 0.035 160);
+    --color-warn: oklch(0.42 0.09 70);
+    --color-warn-soft: oklch(0.95 0.055 85);
+    --shadow-e1: 0 1px 2px oklch(0 0 0 / 0.06);
+    --shadow-e2: 0 4px 16px -4px oklch(0 0 0 / 0.12);
+    --shadow-e3: 0 16px 48px -12px oklch(0 0 0 / 0.2);
+  }
 }
 
 /* Durations live outside @theme so reduced motion can retune them in one place.
