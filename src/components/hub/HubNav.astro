@@ -31,7 +31,7 @@ const { items } = Astro.props;
     let current: HTMLAnchorElement | undefined;
     const mark = () => {
       // The current section is the last one whose top has passed under the two navs.
-      const line = nav.getBoundingClientRect().bottom + 24;
+      const line = nav.getBoundingClientRect().bottom + 48;
       const at = sections.filter((section) => section.getBoundingClientRect().top <= line).pop();
       const link = at && links.find((l) => l.hash === `#${at.id}`);
       if (link === current) return;

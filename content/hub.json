@@ -534,6 +534,8 @@
   "hero": {
     "image": "hub-home.png",
     "alt": "The Hub’s home screen in the public demo, signed in as the owner of a fictional clinic: a list of areas starting with Appointments, Online bookings, Waitlist and Machine clashes.",
-    "caption": "The Hub’s home screen, in the public demo. The clinic and everyone in it are made up."
+    "caption": "The Hub in the public demo. The clinic and everyone in it are made up.",
+    "video": "/media/hub-walkthrough",
+    "videoLabel": "A silent walkthrough of the demo: the Hub’s home screen, online bookings, the waitlist, the KPI dashboard and a patient booking."
   }
 }

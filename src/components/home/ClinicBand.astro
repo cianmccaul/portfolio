@@ -249,8 +249,20 @@ const facts = [
     padding-block: var(--spacing-20);
   }
   .stats > div + div {
-    padding-left: var(--spacing-16);
+    padding-left: var(--spacing-12);
     border-left: 1px solid var(--color-line);
+  }
+  /* On a phone the last label is the longest ("scheduled jobs"), so its
+     column gets the spare width and the labels drop a size. */
+  @media (max-width: 639px) {
+    .stats {
+      grid-template-columns: 1fr 1fr 1.35fr;
+    }
+    .stats dt {
+      font-size: var(--text-small);
+      line-height: var(--text-small--line-height);
+      white-space: nowrap;
+    }
   }
   @media (min-width: 640px) {
     .stats > div + div {

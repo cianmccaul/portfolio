@@ -19,7 +19,14 @@ const schema = z.object({
   description: z.string(),
   /** Sign-off still needed before launch. Shown in draft builds only. */
   approvalTodo: z.string().optional(),
-  hero: z.object({ image: z.string(), alt: z.string(), caption: z.string() }),
+  hero: z.object({
+    image: z.string(),
+    alt: z.string(),
+    caption: z.string(),
+    /** The walkthrough in public/media/ (.webm and .mp4), recorded by scripts/record-hub.mjs. */
+    video: z.string(),
+    videoLabel: z.string(),
+  }),
   stats: z.array(z.object({ value: z.string(), unit: z.string() })).length(3),
   smallStats: z.array(z.string()),
   replaced: z.object({

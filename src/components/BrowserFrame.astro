@@ -70,6 +70,7 @@ const art = mobile
       <span class="size-8 rounded-pill bg-n7"></span>
       <span class="size-8 rounded-pill bg-n7"></span>
     </div>
+    <div class="relative">
     {
       art && mobile ? (
         <picture>
@@ -104,6 +105,9 @@ const art = mobile
         />
       )
     }
+      {/* Anything laid over the picture, such as the walkthrough video on the Hub's hero. */}
+      <slot />
+    </div>
   </div>
   {caption && <figcaption class="mt-8 text-small text-muted">{caption}</figcaption>}
 </figure>
