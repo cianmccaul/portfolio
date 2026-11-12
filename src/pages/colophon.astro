@@ -13,7 +13,7 @@ import { breadcrumbs } from '../lib/seo';
 const stack = [
   { part: 'Framework', choice: 'Astro, static output', why: 'Every page is plain HTML built ahead of time. There is no server to maintain and no client-side framework to download.' },
   { part: 'Interaction', choice: 'Native elements and a few kilobytes of script', why: 'The command palette is a dialog, the appearance panel is a popover, and page transitions are the browser’s own. No interface library.' },
-  { part: 'Content', choice: 'One JSON file and three MDX files', why: 'The home page, CV, PDF, structured data and social images are all generated from content/resume.json, so they can’t disagree.' },
+  { part: 'Content', choice: 'One JSON file of facts, and a file for each case study', why: 'The home page, CV, PDF, structured data and social images are all generated from content/resume.json, so they can’t disagree.' },
   { part: 'Styling', choice: 'Tailwind CSS 4 on custom tokens', why: 'Tailwind’s defaults are switched off. A size, gap or colour that isn’t in the token file doesn’t exist as a class.' },
   { part: 'CV', choice: 'Playwright prints the CV page to PDF', why: 'The PDF is the web page’s print stylesheet, checked on every build to be exactly one page of extractable text.' },
   { part: 'Images', choice: 'AVIF and WebP at build time', why: 'Screenshots are captured from the public demos by a script and resized for each screen.' },

@@ -353,7 +353,7 @@
       "suite": "clinic",
       "featured": true,
       "caseStudy": false,
-      "tagline": "Works out each self-employed therapist’s monthly rent and produces a PDF statement for each.",
+      "tagline": "Monthly rent statements for self-employed therapists.",
       "description": "Works out each self-employed therapist’s monthly rent across different deals (percentage, fixed, capacity tiers, hybrid, weekend rates, caps, minimums, equipment fees) from booking exports, and produces a PDF statement for each.",
       "outcome": "Works out each self-employed therapist’s monthly rent across different deals (percentage, fixed, capacity tiers, hybrid, weekend rates, caps, minimums, equipment fees) from booking exports, and produces a PDF statement for each.",
       "fact": "A separate tool, built July to October 2026. The real one is private; the demo runs as a fictional clinic, with PDF statements and 122 tests.",

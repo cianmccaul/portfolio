@@ -1,8 +1,9 @@
 ---
 /**
- * The centrepiece: the clinic platform on the one dark band of the site.
- * A phone steps through the patient's side of a booking, then the booking
- * lands on reception's dashboard.
+ * The centrepiece: BodyMed Hub on the one dark band of the home page. Its
+ * three numbers, then a phone steps through the patient's side of a booking
+ * and the booking lands on reception's dashboard. "Explore the Hub" leads to
+ * the full case study.
  *
  * The three phone screenshots are plain files in src/assets/work/. To update
  * them, replace the files (any height: the frame crops from the top). Nothing
@@ -19,9 +20,10 @@ import stepPractitioner from '../../assets/work/clinic-step-practitioner.png';
 import stepTime from '../../assets/work/clinic-booking-phone.png';
 import { project, resume, type Line } from '../../lib/resume';
 import { formatDate } from '../../lib/dates';
+import { hub } from '../../lib/hub';
 
 const suite = resume.suites.find((s) => s.id === 'clinic')!;
-const platform = project('bodymed-hub');
+const platform = project(hub.slug);
 const outcome = platform.outcome as Line | undefined;
 const pending = typeof outcome === 'object' && outcome?.approval ? outcome : undefined;
 
@@ -55,6 +57,9 @@ const facts = [
         <div class="lg:col-span-7">
           <p class="max-w-prose text-body-lg">{platform.tagline} <span class="text-muted">{platform.fact}</span></p>
           <p class="mt-16 max-w-prose text-small text-muted">{suite.summary}</p>
+          <a class="btn btn-primary mt-24" href={`/work/${platform.slug}/`}>
+            Explore the Hub<Icon name="arrow-right" />
+          </a>
           {
             pending && (
               <Pending approval={pending.approval!} class="mt-16 max-w-prose">
@@ -65,6 +70,17 @@ const facts = [
         </div>
         <SpecSheet items={facts} compact class="lg:col-span-5" />
       </div>
+
+      <dl class="stats mt-32 border-y border-line lg:mt-48">
+        {
+          hub.stats.map((stat) => (
+            <div>
+              <dt class="mt-4 text-body-lg text-muted">{stat.unit}</dt>
+              <dd class="text-display tabular-nums">{stat.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
 
       <div class="stage mt-48 lg:mt-64" data-stage>
         <div class="phone">
@@ -108,7 +124,7 @@ const facts = [
             <Icon name="corner-down-right" class="mt-4 text-accent" />
             <span>Then they pay, the appointment is created in the diary, and reception sees it.</span>
           </p>
-          <WorkLinks project={platform} class="mt-24" />
+          <WorkLinks project={platform} caseStudyLink={false} class="mt-16" />
         </div>
 
         <div class="desk">
@@ -221,6 +237,25 @@ const facts = [
 <style>
   .band {
     overflow: clip;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .stats > div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding-block: var(--spacing-20);
+  }
+  .stats > div + div {
+    padding-left: var(--spacing-16);
+    border-left: 1px solid var(--color-line);
+  }
+  @media (min-width: 640px) {
+    .stats > div + div {
+      padding-left: var(--spacing-32);
+    }
   }
   .stage {
     display: grid;
