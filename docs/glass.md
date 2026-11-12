@@ -28,8 +28,8 @@ The tint is what guarantees legibility, because anything can scroll under the na
 | --- | --- | --- | --- |
 | Light nav pill, tint 72% | Ink | Black | 9.1:1 |
 | Dark nav pill, tint 76% | Ink | White | 6.5:1 |
-| Light panel, tint 90% | Muted | Black | 5.9:1 |
-| Dark panel, tint 90% | Muted | White | 5.1:1 |
+| Light panel, tint 92% | Muted | Black | 6.2:1 |
+| Dark panel, tint 94% | Muted | White | 5.8:1 |
 | Clear note, tint 70%, always dark | Ink | White | 6.0:1 |
 
 Muted text is not used on the nav pill: at a 72% tint it would drop to 3.7:1 over a dark screenshot. Accent-coloured text is not used on glass at all.
@@ -38,4 +38,5 @@ Muted text is not used on the nav pill: at a 72% tint it would drop to 3.7:1 ove
 
 - At most two glass surfaces are on screen at rest (the nav and, in the band, the note on the dashboard). Panels and toasts are transient.
 - Motion on glass is 180 ms or less; the palette opens with no animation.
+- Panels are tinted more heavily than they need to be for contrast alone. Chromium blurs a backdrop less near a panel's edge, and at a lighter tint the home page's masthead showed through as a ghost.
 - New chrome gets `glass` plus an elevation class. If it needs muted text, give it the panel tint.

@@ -33,7 +33,7 @@
 }
 @supports not (color: light-dark(white, black)) {
   .glass-3 {
-    --glass-tint: oklch(1 0 0 / 0.9);
+    --glass-tint: oklch(1 0 0 / 0.92);
   }
   :root {
     --glass-tint: oklch(1 0 0 / 0.72);
@@ -68,7 +68,7 @@
 .glass-3 {
   --glass-blur: 32px;
   --glass-lift: 48px;
-  --glass-tint: light-dark(oklch(1 0 0 / 0.9), oklch(0.25 0.012 250 / 0.9));
+  --glass-tint: light-dark(oklch(1 0 0 / 0.92), oklch(0.25 0.012 250 / 0.94));
   box-shadow: var(--shadow-e3);
 }
 /* Chrome that sits over the night band takes the dark half of the tokens. */
