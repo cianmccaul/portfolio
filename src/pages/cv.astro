@@ -61,9 +61,12 @@ const projects = resume.projects.filter((p) => p.caseStudy);
   og="cv"
   schema={[breadcrumbs([{ name: 'Home', path: '/' }, { name: 'CV', path: '/cv/' }])]}
 >
-  <div class="mx-auto max-w-sheet px-gutter pt-64 lg:pt-96 print:max-w-none print:p-0">
-    <div class="flex flex-wrap items-center justify-between gap-12 print:hidden">
-      <p class="text-small text-muted">One page, A4. The PDF is generated from this page.</p>
+  <div class="relative isolate">
+  {/* Screen only. It never prints: the PDF is the sheet below and nothing else. */}
+  <div class="aurora print:hidden" aria-hidden="true"></div>
+  <div class="mx-auto max-w-sheet px-gutter pt-32 lg:pt-48 print:max-w-none print:p-0">
+    <div class="flex flex-wrap items-center justify-between gap-12 border-b border-ink pb-16 print:hidden">
+      <p class="text-small font-medium text-muted lg:text-body">One page, A4. The PDF is generated from this page.</p>
       <div class="flex gap-12">
         <a class="btn btn-primary" href={pdf} download><Icon name="download" />Download PDF</a>
         <button class="btn btn-secondary" type="button" id="print"><Icon name="printer" />Print</button>
@@ -223,6 +226,7 @@ const projects = resume.projects.filter((p) => p.caseStudy);
         )
       }
     </article>
+  </div>
   </div>
 </Base>
 

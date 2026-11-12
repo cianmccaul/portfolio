@@ -247,6 +247,8 @@
   .aurora {
     position: absolute;
     inset: calc(var(--nav-h) * -1) 0 0;
+    /* On a long page it stays a headline wash, not a tint down the whole column. */
+    max-height: 880px;
     z-index: -1;
     overflow: hidden;
     pointer-events: none;

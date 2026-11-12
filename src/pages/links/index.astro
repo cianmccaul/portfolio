@@ -6,10 +6,12 @@
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
+import SpecSheet from '../../components/SpecSheet.astro';
 import portrait from '../../assets/cian.jpg';
 import { profile, project, resume } from '../../lib/resume';
 import { formatRange, status } from '../../lib/dates';
 import { now } from '../../lib/site';
+import { logisticsSpecs } from '../../lib/specs';
 
 const { basics, logistics } = resume;
 const linkedin = profile('LinkedIn');
@@ -59,6 +61,8 @@ const vcard = [
   description={`Portfolio, LinkedIn, GitHub and email for ${basics.name}.`}
   chrome={false}
 >
+  <div class="relative isolate">
+  <div class="aurora" aria-hidden="true"></div>
   <div class="mx-auto max-w-card px-gutter py-40">
     <div class="rounded-lg border border-line bg-surface p-16 shadow-e2">
       <div class="px-8 pt-16 pb-24 text-center">
@@ -73,14 +77,8 @@ const vcard = [
         />
         <h1 class="mt-16 text-h2">{basics.name}</h1>
         <p class="mx-auto mt-8 max-w-prose text-muted">{basics.label}. {basics.headline}</p>
-        {
-          available && (
-            <p class="mt-16">
-              <span class="chip">{available}</span>
-            </p>
-          )
-        }
       </div>
+      {available && <SpecSheet items={logisticsSpecs.slice(0, 2)} compact label="At a glance" class="mx-8 mb-24 border-t border-line-strong text-left [&>div:first-child]:pt-8" />}
 
       <ul class="grid gap-8">
         {
@@ -125,5 +123,6 @@ const vcard = [
       </div>
     </div>
     <p class="mt-24 text-center text-small text-muted">{basics.name} · {basics.location.city}</p>
+  </div>
   </div>
 </Base>

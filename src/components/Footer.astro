@@ -22,12 +22,12 @@ const updated = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long'
 ---
 
 <footer id="contact" aria-labelledby="contact-title" class="mx-auto max-w-page px-gutter pt-section pb-48 print:hidden">
-  <div class="grid gap-x-24 gap-y-24 lg:grid-cols-12">
+  <div class="grid gap-x-24 gap-y-24 border-t border-ink pt-24 lg:grid-cols-12">
     <h2 id="contact-title" class="text-h2 lg:col-span-3">Contact</h2>
     <div class="lg:col-span-9">
       {open && <p class="max-w-prose text-body-lg text-muted">{open}</p>}
       <p class="mt-16 flex flex-wrap items-center gap-x-16 gap-y-12">
-        <a href={`mailto:${basics.email}`} class="inline-flex min-h-tap items-center text-h2 break-all underline decoration-line-strong decoration-1 underline-offset-8 transition-colors duration-(--dur-micro) hover:decoration-ink">
+        <a href={`mailto:${basics.email}`} class="inline-flex min-h-tap items-center text-h2 break-all sm:text-h1 underline decoration-line-strong decoration-1 underline-offset-8 transition-colors duration-(--dur-micro) hover:decoration-ink">
           {basics.email}
         </a>
         <button type="button" class="btn btn-secondary" data-copy={basics.email} data-copied="Email copied">

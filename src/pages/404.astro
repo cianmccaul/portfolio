@@ -10,23 +10,31 @@ const links = [
 ---
 
 <Base title="Page not found" description="This page doesn’t exist." noindex>
-  <div class="mx-auto max-w-page px-gutter pt-64 lg:pt-96">
-    <p class="text-display text-muted tabular-nums" aria-hidden="true">404</p>
-    <h1 class="mt-16 text-h1">This page doesn’t exist.</h1>
-    <p class="mt-12 max-w-prose text-body-lg text-muted">
-      If this were the booking system, you’d already have your refund. Here, the best I can offer is a way back.
-    </p>
-    <ul class="mt-32 flex flex-wrap gap-12">
-      {
-        links.map((link, i) => (
-          <li>
-            <a class:list={['btn', i === 0 ? 'btn-primary' : 'btn-secondary']} href={link.href}>
-              {link.label}
-              {i > 0 && <Icon name="arrow-right" />}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+  <div class="relative isolate">
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="mx-auto max-w-page px-gutter pt-32 lg:pt-48">
+      <p class="text-small font-medium text-muted lg:text-body">Page not found</p>
+      <div class="masthead-box mt-8 lg:mt-12" style="--masthead-ems: 5.17">
+        <p class="masthead tabular-nums" aria-hidden="true">404</p>
+      </div>
+      <div class="mt-16 border-t border-ink pt-20 lg:mt-32 lg:pt-32">
+        <h1 class="text-h1">This page doesn’t exist.</h1>
+        <p class="mt-12 max-w-prose text-body-lg text-muted">
+          If this were the booking system, you’d already have your refund. Here, the best I can offer is a way back.
+        </p>
+        <ul class="mt-32 flex flex-wrap gap-12">
+          {
+            links.map((link, i) => (
+              <li>
+                <a class:list={['btn', i === 0 ? 'btn-primary' : 'btn-secondary']} href={link.href}>
+                  {link.label}
+                  {i > 0 && <Icon name="arrow-right" />}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
   </div>
 </Base>

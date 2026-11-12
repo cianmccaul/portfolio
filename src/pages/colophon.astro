@@ -12,6 +12,7 @@ import { breadcrumbs } from '../lib/seo';
 
 const stack = [
   { part: 'Framework', choice: 'Astro, static output', why: 'Every page is plain HTML built ahead of time. There is no server to maintain and no client-side framework to download.' },
+  { part: 'Interaction', choice: 'Native elements and a few kilobytes of script', why: 'The command palette is a dialog, the appearance panel is a popover, and page transitions are the browser’s own. No interface library.' },
   { part: 'Content', choice: 'One JSON file and three MDX files', why: 'The home page, CV, PDF, structured data and social images are all generated from content/resume.json, so they can’t disagree.' },
   { part: 'Styling', choice: 'Tailwind CSS 4 on custom tokens', why: 'Tailwind’s defaults are switched off. A size, gap or colour that isn’t in the token file doesn’t exist as a class.' },
   { part: 'CV', choice: 'Playwright prints the CV page to PDF', why: 'The PDF is the web page’s print stylesheet, checked on every build to be exactly one page of extractable text.' },
@@ -29,6 +30,11 @@ const roles = [
   { name: 'Ink', swatch: 'bg-ink', use: 'Text' },
   { name: 'Muted', swatch: 'bg-muted', use: 'Secondary text' },
   { name: 'Accent', swatch: 'bg-accent', use: 'Links, focus, the primary action' },
+];
+const glass = [
+  { tier: 'Solid', detail: 'The default: an opaque surface, a hairline and a shadow. Used with Reduce glass on, when your system asks for less transparency or more contrast, and in browsers without backdrop blur.' },
+  { tier: 'Frosted', detail: 'A tinted layer over a blurred backdrop, with a soft dark rim, a bright top edge and a soft shadow. The blur grows with how far the surface floats above the page.' },
+  { tier: 'Refracted', detail: 'In Chromium browsers the navigation also bends what is behind it along its rim, like the edge of a lens.' },
 ];
 const motion = [
   { token: 'Micro', value: '120 ms', use: 'Hover and press' },
@@ -98,6 +104,10 @@ const measured = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long
       A 12-step cool neutral and one accent, defined in OKLCH and tuned separately for light and dark. The accent means
       one thing: this goes somewhere, or this has focus.
     </p>
+    <p class="mt-16 max-w-prose text-muted">
+      Two things sit outside that scale: a teal, green and blue wash behind each page’s title, and one dark band on the
+      home page for the clinic platform, which stays dark in both themes.
+    </p>
     <ul class="mt-24 grid grid-cols-6 overflow-hidden rounded-sm border border-line sm:grid-cols-12" aria-label="The neutral scale, lightest to darkest in light mode">
       {neutrals.map((step, i) => <li class:list={['h-64', step]}><span class="sr-only">Neutral {i + 1}</span></li>)}
     </ul>
@@ -116,10 +126,38 @@ const measured = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long
     </ul>
   </SectionRail>
 
+  <SectionRail id="glass" title="Glass">
+    <p class="max-w-prose">
+      Glass is a material for floating controls only: the navigation, the command palette, the appearance panel and
+      toasts. It never sits behind body text, and the site is complete without it.
+    </p>
+    <dl class="mt-24">
+      {
+        glass.map((row) => (
+          <div class="grid gap-x-24 gap-y-4 border-t border-line py-16 lg:grid-cols-9">
+            <dt class="font-medium lg:col-span-2">{row.tier}</dt>
+            <dd class="max-w-prose text-muted lg:col-span-7">{row.detail}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="mt-16 max-w-prose text-small text-muted">
+      The tint is heavy enough that text on glass keeps at least 4.5:1 whatever scrolls underneath. Reduce glass is in
+      the appearance panel in the navigation, and is applied before the page first paints.
+    </p>
+  </SectionRail>
+
   <SectionRail id="motion" title="Motion">
     <p class="max-w-prose">
-      Motion is short and only used for feedback and continuity. Nothing fades in on scroll. With reduced motion switched
-      on in your system settings, the two shortest durations drop to zero and the rest become quick cross-fades.
+      Motion is short and only used for feedback and continuity. No interface motion runs longer than 300 ms, and nothing
+      fades in on scroll.
+    </p>
+    <p class="mt-16 max-w-prose text-muted">
+      A few things move by themselves, and each does it once: the booking story on the home page (under five seconds,
+      with a replay button), a picture travelling from the home page to its case study, and the new theme opening from
+      the control that asked for it. The line through a case study’s pipeline is drawn by your own scrolling. With
+      reduced motion switched on in your system settings none of these run, the two shortest durations drop to zero and
+      the rest become quick cross-fades.
     </p>
     <dl class="mt-24">
       {

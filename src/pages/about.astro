@@ -4,11 +4,14 @@
  */
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
 import SectionRail from '../components/SectionRail.astro';
+import SpecSheet from '../components/SpecSheet.astro';
 import Todo from '../components/Todo.astro';
 import Icon from '../components/Icon.astro';
 import portrait from '../assets/cian.jpg';
 import { resume } from '../lib/resume';
+import { logisticsSpecs } from '../lib/specs';
 import { profilePage, breadcrumbs } from '../lib/seo';
 
 const { basics } = resume;
@@ -21,34 +24,35 @@ const beyond = resume.interests.filter((interest) => interest.featured);
   og="about"
   schema={[profilePage(), breadcrumbs([{ name: 'Home', path: '/' }, { name: 'About', path: '/about/' }])]}
 >
-  <div class="mx-auto grid max-w-page gap-x-24 gap-y-32 px-gutter pt-64 lg:grid-cols-12 lg:pt-96">
-    <div class="lg:col-span-3">
-      <Image
-        src={portrait}
-        alt={`${basics.name} in a navy suit outside O’Reilly Hall, UCD`}
-        width={240}
-        height={240}
-        loading="eager"
-        class="size-128 rounded-md object-cover lg:size-160"
-      />
-      <Todo
-        block
-        text="A high-resolution portrait, 4:5. This one is 240 px square, so it is shown small."
-        class="mt-16"
-      />
-    </div>
-    <div class="lg:col-span-9">
-      <h1 class="text-h1">{basics.name}</h1>
-      <p class="mt-12 text-body-lg text-muted">{basics.label}</p>
-      <div class="mt-32 grid max-w-prose gap-16 text-body-lg">
-        {basics.bio.map((paragraph) => <p>{paragraph}</p>)}
+  <PageHeader title={basics.name} kicker={basics.label}>
+    <div class="grid gap-x-48 gap-y-32 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <div class="grid max-w-prose gap-16 text-body-lg">
+          {basics.bio.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+        <div class="mt-32 flex flex-wrap gap-12">
+          <a class="btn btn-primary" href="/cv/">View CV</a>
+          <a class="btn btn-secondary" href="/#work">Selected work<Icon name="arrow-right" /></a>
+        </div>
       </div>
-      <div class="mt-32 flex flex-wrap gap-12">
-        <a class="btn btn-primary" href="/cv/">View CV</a>
-        <a class="btn btn-secondary" href="/#work">Selected work<Icon name="arrow-right" /></a>
-      </div>
+      <aside class="max-lg:order-first lg:col-span-5" aria-label="At a glance">
+        <Image
+          src={portrait}
+          alt={`${basics.name} in a navy suit outside O’Reilly Hall, UCD`}
+          width={240}
+          height={240}
+          loading="eager"
+          class="size-128 rounded-md object-cover lg:size-160"
+        />
+        <Todo
+          block
+          text="A high-resolution portrait, 4:5. This one is 240 px square, so it is shown small."
+          class="mt-16"
+        />
+        <SpecSheet items={logisticsSpecs} compact class="mt-24" />
+      </aside>
     </div>
-  </div>
+  </PageHeader>
 
   <SectionRail id="beyond" title="Beyond the code">
     <ul>

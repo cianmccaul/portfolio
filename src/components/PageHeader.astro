@@ -1,14 +1,24 @@
 ---
-/** The title block shared by the inner pages. */
+/**
+ * The masthead shared by the inner pages: a small line above, the title at
+ * hero size, a rule, then the lede. The aurora runs up behind the nav.
+ */
 interface Props {
   title: string;
+  kicker?: string;
   lede?: string;
 }
-const { title, lede } = Astro.props;
+const { title, kicker, lede } = Astro.props;
 ---
 
-<header class="mx-auto max-w-page px-gutter pt-64 lg:pt-96">
-  <h1 class="text-h1">{title}</h1>
-  {lede && <p class="mt-12 max-w-prose text-body-lg text-muted">{lede}</p>}
-  <slot />
+<header class="relative isolate">
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="mx-auto max-w-page px-gutter pt-32 lg:pt-48">
+    {kicker && <p class="text-small font-medium text-muted lg:text-body">{kicker}</p>}
+    <h1 class="mt-8 text-hero lg:mt-12">{title}</h1>
+    <div class="mt-24 border-t border-ink pt-20 lg:mt-32 lg:pt-32">
+      {lede && <p class="max-w-prose text-h2">{lede}</p>}
+      <slot />
+    </div>
+  </div>
 </header>
