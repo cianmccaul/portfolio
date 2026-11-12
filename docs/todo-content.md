@@ -1,6 +1,6 @@
 # Content to fill in
 
-What the site is still waiting on. Facts live in `content/resume.json`; the three case studies are the MDX files in `content/work/`. Change one, push, and the site, CV, PDF and metadata update together. Nothing on this list has been invented or estimated.
+What the site is still waiting on. Facts live in `content/resume.json`. The BodyMed Hub case study is `content/hub.json`; the other two case studies are the MDX files in `content/work/`. Change one, push, and the site, CV, PDF and metadata update together. Nothing on this list has been invented or estimated.
 
 Run `npm run todos` to list what is outstanding.
 
@@ -17,23 +17,26 @@ How unfinished content behaves:
 
 One conversation covers all of this.
 
-- [ ] **The clinic platform case study.** It names BodyMed. It has no revenue figures and no patient data, and everything in it is already in the public demo's README and `docs/architecture.md`, apart from the facts below. Show the owner the whole page, and these in particular:
-  - the therapists are self-employed, and payments go to their own Stripe accounts;
-  - staff sign in with passkeys;
-  - the clinic previously took online bookings through Jane, with no payment at booking;
-  - the story of the therapists' feedback that led to the dropdowns on the patient booking site.
+- [ ] **The BodyMed Hub case study** (`/work/bodymed-hub/`; the old `/work/clinic-platform/` redirects to it). It names BodyMed. It has no revenue figures, no patient data, no therapist names or rent terms, no internal addresses and no security internals. Show the owner the whole page, and these in particular:
+  - the therapists are self-employed, and payments go to their own Stripe accounts (direct charges);
+  - what the Hub replaced: Jane online booking with no payment at booking, manual phone payments, the Kendlebell PDF and 7-page document, the shared admin key, and the Mailchimp sync that ignored consent;
+  - the module map, the architecture (the services by name: Cliniko, Stripe, Twilio, Resend, MailerLite, Upstash Redis, Postgres) and the shipping timeline;
+  - the four deep dives, including the 4 November fix and the refund bug and repair of older records;
+  - staff sign in with passkeys and approved computers (described at a high level only);
+  - the story of the therapists' feedback that led to the dropdowns.
+- [ ] **Tools the Hub was weighed against.** A waitlist add-on quoted at €150–200 a month, Vaoucher, HR Locker and ClinicExec. These sit behind the same `approvals.bodymedMetrics` switch, with a TODO: confirm with the owner which subscriptions were actually dropped, and correct the line in `content/hub.json` (`replaced.pending`) before switching it on.
 - [ ] **The launch figures.** Set `approvals.bodymedMetrics` to `true` once the owner agrees. That one switch publishes all of these at once:
-  - the proof strip's first two figures: 14.5% of appointments paid in advance (up from 0%), and 90% of new online bookings (43 of 48) through the new system, with online volume steady (46 → 48). They push "37 tests" and "15 min" out of the strip; "142 tests" stays;
+  - the proof strip's first two figures: 14.5% of appointments paid in advance (up from 0%), and 90% of new online bookings (43 of 48) through the Hub, with online volume steady (46 → 48). They take the first two places; "438 tests" stays;
   - the BodyMed highlight on the home page ("Moved payment from the end of the appointment to booking time…");
-  - the clinic platform's result line on its home card and in its case study's TL;DR;
-  - the clinic case study's Results block;
-  - the two CV lines ("Built a pay-at-booking system… 0% to 14.5%" and "Moved 90% of the clinic's new online bookings…"). The CV has been checked with them in: one page, 92% full.
+  - the result line in the home page's BodyMed Hub band;
+  - the Results block on the BodyMed Hub page, and the tools it was weighed against (above);
+  - the two CV lines ("Built a pay-at-booking system… 0% to 14.5%" and "Moved 90% of the clinic's new online bookings…"). The CV has been checked with them in: one page, 93% full.
 - [ ] **Not to be published** (the sample is too small): changes in total appointments, no-shows, late cancellations or fees. See `docs/project-followups.md` for the re-run in January 2027.
 - [ ] **A quote**, if the owner is willing: one or two sentences, with name and role, and their permission. It goes in `testimonials` with `"permission": true` and appears on the home page and in the case study.
 
 ## To confirm yourself
 
-- [ ] **The therapists' reaction to the dropdowns.** The dropdown version of the patient booking site went live on 12 November 2026. Once you know how the therapists found it, add a sentence to the BodyMed highlight in `resume.json` and to the dropdown decision in the clinic case study, then delete both TODOs.
+- [ ] **The therapists' reaction to the dropdowns.** The dropdown version of the patient booking site went live on 12 November 2026. Once you know how the therapists found it, add a sentence to the BodyMed highlight in `resume.json` and to the reflection in `content/hub.json`, then delete both TODOs.
 
 ## Testimonials
 
@@ -49,6 +52,10 @@ One conversation covers all of this.
 - [ ] **A fourth Jarvis image.** `src/assets/work/jarvis-ai-insight.png` is in the repo but not used: the case study already has three screenshots, and a fourth crowded it.
 
 ## Pictures
+
+- [ ] **The BodyMed Hub tour and hero** are captured from the public demo (fictional clinic) with `node scripts/capture-work.mjs hub`: `hub-*.png` at desktop size and `hub-*-mobile.png` on a phone. The demo still shows the older card-based treatment picker; the page says the live site uses dropdowns. Once the demo is updated, re-run the capture.
+- [ ] **The walkthrough video** on the BodyMed Hub page (`public/media/hub-walkthrough.webm` and `.mp4`, 25 seconds, about 0.6 MB each) is recorded from the demo with `node scripts/record-hub.mjs`. Re-record it when the demo changes.
+- [ ] **PulsePay's picture** (`pulsepay.png`) is the public demo's first screen: a fictional clinic and five made-up therapists. The real PulsePay is private and is never linked or shown.
 
 - [ ] **The three phone screenshots in the clinic band** still show the older card-based booking screens. To update them, replace these files in `src/assets/work/` with new phone screenshots of the same three steps. Nothing else needs to change: the frame crops each image from the top, and the alt text only names the step.
   - `clinic-step-treatment.png` (choose a treatment)

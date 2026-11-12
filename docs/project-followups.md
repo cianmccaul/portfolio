@@ -83,7 +83,7 @@ A recruiter is unlikely to open GitHub, but an engineer on the interview loop wi
 
 ## 8. Clinic platform demo: update to the dropdown booking flow
 
-- [ ] The live BodyMed patient booking site has used dropdowns for treatment and practitioner since 12 November 2026. `clinic-platform-demo` still shows the older card-based selection. Update the demo to match, so the case study, its screenshots and the demo agree. Then re-run `scripts/capture-work.mjs` here, and re-capture the four `clinic-booking-*` and `clinic-step-*` screenshots, which also show cards.
+- [ ] The live BodyMed patient booking site has used dropdowns for treatment and practitioner since 12 November 2026. `clinic-platform-demo` still shows the older card-based selection. Update the demo to match, so the case study, its screenshots and the demo agree. Then re-run `node scripts/capture-work.mjs hub` and `node scripts/record-hub.mjs` here, and re-capture the `clinic-booking-*` and `clinic-step-*` phone screenshots, which also show cards. Consider renaming the repo to `bodymed-hub-demo` to match the case study (the site links to whatever `repo` says in `resume.json`).
 
 ## 9. DEME House Painting: switch to the new domain
 
@@ -95,3 +95,7 @@ A recruiter is unlikely to open GitHub, but an engineer on the interview loop wi
 - [ ] **Email triage demo:** if the deployed demo has a Groq key, confirm `/api/triage` and `/api/learn` are rate-limited and the key has a spend cap. Without a key it falls back to rules, which is safe.
 - [ ] **The demos still use the purple colour wash** the portfolio has dropped (it shows in the email triage demo). Worth removing there too for consistency.
 - [ ] **LinkedIn** (`https://www.linkedin.com/in/cian-mccaul-7a9b01397`) blocks automated requests, so the link check can't verify it. Check it by hand now and then.
+
+## pulsepay-demo
+
+- [ ] The README says "my rent and payout tool" and the portfolio says the real tool is private. Keep both true: never link the real PulsePay, and keep every therapist, deal and figure in the demo fictional.
