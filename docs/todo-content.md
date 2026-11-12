@@ -29,7 +29,6 @@ One conversation covers all of this.
 
 ## To confirm yourself
 
-- [ ] **First Class Honours.** The site and CV now say "First Class Honours in first year (2025–26)". Check it against your transcript.
 - [ ] **The therapists' reaction to the dropdowns.** The dropdown version of the patient booking site went live on 12 November 2026. Once you know how the therapists found it, add a sentence to the BodyMed highlight in `resume.json` and to the dropdown decision in the clinic case study, then delete both TODOs.
 
 ## Testimonials

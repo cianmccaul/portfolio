@@ -77,10 +77,13 @@ A recruiter is unlikely to open GitHub, but an engineer on the interview loop wi
 
 - [ ] The live BodyMed patient booking site has used dropdowns for treatment and practitioner since 12 November 2026. `clinic-platform-demo` still shows the older card-based selection. Update the demo to match, so the case study, its screenshots and the demo agree. Then re-run `scripts/capture-work.mjs` here, and re-capture the four `clinic-booking-*` and `clinic-step-*` screenshots, which also show cards.
 
-## 9. Smaller items
+## 9. DEME House Painting: switch to the new domain
+
+- [ ] Switch DEME link to https://demehousepainting.ie once it's connected in Vercel. The portfolio links `https://deme-housepainting.vercel.app` until then: change `live` on the `deme-housepainting` project in `resume.json`.
+- [ ] In the `deme-housepainting` repo, the README still says the live site is `demehousepainting.com`. Point it, and the repo's homepage field, at the new domain at the same time.
+
+## 10. Smaller items
 
 - [ ] **Email triage demo:** if the deployed demo has a Groq key, confirm `/api/triage` and `/api/learn` are rate-limited and the key has a spend cap. Without a key it falls back to rules, which is safe.
 - [ ] **The demos still use the purple colour wash** the portfolio has dropped (it shows in the email triage demo). Worth removing there too for consistency.
-- [ ] **Links I couldn't reach from my network. Please check by hand:**
-  - `https://demehousepainting.com` (the connection failed; `deme-housepainting.vercel.app` works)
-  - `https://www.linkedin.com/in/cian-mccaul-7a9b01397` (LinkedIn blocks automated requests)
+- [ ] **LinkedIn** (`https://www.linkedin.com/in/cian-mccaul-7a9b01397`) blocks automated requests, so the link check can't verify it. Check it by hand now and then.

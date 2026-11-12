@@ -391,7 +391,7 @@
         "Vercel"
       ],
       "repo": "https://github.com/cianmccaul/site-monitor",
-      "demo": "https://jarvis-demo-sooty.vercel.app",
+      "demo": "https://cian-jarvis-demo.vercel.app",
       "guardRails": [
         {
           "title": "Never touches main",
@@ -464,7 +464,7 @@
         "Resend"
       ],
       "repo": "https://github.com/cianmccaul/deme-housepainting",
-      "live": "https://demehousepainting.com"
+      "live": "https://deme-housepainting.vercel.app"
     }
   ],
   "education": [
@@ -476,8 +476,7 @@
       "endDate": "2029-04",
       "durationYears": 4,
       "notes": [
-        "First Class Honours in first year (2025–26).",
-        "TODO: confirm First Class Honours in first year (2025–26) against your transcript."
+        "First Class Honours in first year (2025–26)."
       ]
     },
     {
