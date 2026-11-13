@@ -49,7 +49,7 @@ for (const role of roles) {
 }
 // One line on the CV; the About page has the detail.
 const interests = resume.interests
-  .filter((i) => i.featured)
+  .filter((i) => i.cv)
   .map((i, n) => (n === 0 ? i.name : i.name.toLowerCase()))
   .join(', ');
 const projects = resume.projects.filter((p) => p.caseStudy);
@@ -100,12 +100,13 @@ const projects = resume.projects.filter((p) => p.caseStudy);
                   <div class="cv-entry">
                     <div class="cv-row">
                       <h3>
-                        {title}, <span>{role.company}{role.location && `, ${role.location}`}</span>
+                        {title}, <span>{role.company}{role.recognition?.cv && ` (${role.recognition.cv})`}{role.location && `, ${role.location}`}</span>
                       </h3>
                       <p class="cv-date">{formatRange(span.startDate, span.endDate, now)}</p>
                     </div>
-                    {/* The description, unless there are enough results to stand on their own. */}
-                    {lines.filter((l) => !l.pending).length < 2 && <p>{role.brief ?? role.summary}</p>}
+                    {/* The short description when the role has one; otherwise the summary,
+                        unless there are enough results to stand on their own. */}
+                    {(role.brief || lines.filter((l) => !l.pending).length < 2) && <p>{role.brief ?? role.summary}</p>}
                     {lines.length > 0 && (
                       <ul>
                         {lines.map((line) => (
@@ -341,7 +342,7 @@ const projects = resume.projects.filter((p) => p.caseStudy);
     .cv {
       color: #000;
       font-size: 9pt;
-      line-height: 1.34;
+      line-height: 1.32;
     }
     .cv h1 {
       font-size: 20pt;

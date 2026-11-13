@@ -74,6 +74,7 @@ for (const role of roles) {
                 </p>
               )}
               <p class="mt-12 max-w-prose">{role.summary}</p>
+              {role.recognition && <p class="mt-8 max-w-prose text-small text-muted">{role.recognition.text}</p>}
               {lines.length > 0 && (
                 <ul class="mt-12 max-w-prose list-disc pl-20 marker:text-muted">
                   {lines.map((line) => (

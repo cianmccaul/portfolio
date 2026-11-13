@@ -1,0 +1,66 @@
+---
+/**
+ * A photo from src/assets/photos/, set on the same neutral mat as the
+ * product screenshots, with a short caption under it. AVIF and WebP at the
+ * widths the layout needs; width and height come from the file, so nothing
+ * moves while it loads. Lazy unless it is above the fold.
+ *
+ * Only the About photos are found here (about-*.jpg). The BodyMed awards
+ * photo is behind an approval switch and is imported on its own, only when
+ * that switch is on, so it isn't built otherwise.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  file?: string;
+  /** Pass an image directly instead of a file name. */
+  src?: ImageMetadata;
+  alt: string;
+  caption?: string;
+  /** For `sizes`: the width the photo is shown at on wide screens. */
+  width: number;
+  eager?: boolean;
+  /** Just the picture, for a group that shares one mat (the About travel pair). */
+  bare?: boolean;
+  class?: string;
+}
+const { file, src: given, alt, caption, width, eager = false, bare = false, class: className } = Astro.props;
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/about-*.jpg', { eager: true });
+const src = given ?? (file ? photos[`../assets/photos/${file}`]?.default : undefined);
+if (!src) throw new Error(`No photo src/assets/photos/${file}`);
+const widths = [320, 480, 640, 800, 1000, 1280, 1600].filter((w) => w <= src.width);
+---
+
+{
+  bare ? (
+    <Picture
+      src={src}
+      alt={alt}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={widths}
+      sizes={`(min-width: 1296px) ${width}px, (min-width: 768px) ${Math.round((width / 1104) * 100)}vw, 46vw`}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      class:list={['block h-auto w-full rounded-sm', className]}
+    />
+  ) : (
+<figure class:list={['photo', className]}>
+  <div class="mat">
+    <Picture
+      src={src}
+      alt={alt}
+      formats={['avif', 'webp']}
+      fallbackFormat="jpg"
+      widths={widths}
+      sizes={`(min-width: 1296px) ${width}px, (min-width: 768px) ${Math.round((width / 1104) * 100)}vw, 92vw`}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      class="block h-auto w-full rounded-sm"
+    />
+  </div>
+  {caption && <figcaption class="mt-8 text-small text-muted">{caption}</figcaption>}
+</figure>
+  )
+}

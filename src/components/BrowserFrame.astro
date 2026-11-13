@@ -65,7 +65,7 @@ const art = mobile
 ---
 
 <figure class:list={['not-prose', className]}>
-  <div class:list={[mat && 'mat']}>
+  <div class:list={[mat && 'mat mat-frame']}>
   <div
     class="scheme-light overflow-hidden rounded-sm border border-line bg-surface shadow-e2"
     style={transitionName ? `view-transition-name: ${transitionName}` : undefined}
@@ -117,15 +117,3 @@ const art = mobile
   </div>
   {caption && <figcaption class="mt-8 text-small text-muted">{caption}</figcaption>}
 </figure>
-
-<style>
-  /* A neutral mat around the frame, one step off the page in either theme,
-     with the frame's corners kept concentric inside it. */
-  .mat {
-    padding: clamp(var(--spacing-12), 2.4vw, var(--spacing-32));
-    border-radius: calc(var(--radius-sm) + clamp(var(--spacing-12), 2.4vw, var(--spacing-32)));
-    background-color: var(--color-well);
-    box-shadow: inset 0 0 0 1px var(--color-line);
-  }
-</style>
-

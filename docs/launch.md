@@ -39,7 +39,14 @@ What happens next, by itself:
    - [ ] No amber TODO boxes and no "Pending approval" markers anywhere.
 3. Share a link in a private message to yourself (WhatsApp, LinkedIn or iMessage) to see the social image.
 
-### 3. Turn on the BodyMed figures, once the owner agrees
+### 3. Turn on what the owner approves
+
+There are two switches in `content/resume.json` under `approvals`, independent of each other. `npm run launch-check` lists each one that is still off as a pending approval.
+
+- `awardsPhoto`: the team photo from the 2026 Irish Healthcare Centre Awards in the BodyMed Hub case study. Change it to `true`, commit to `main`, and check the photo under the Reflection on /work/bodymed-hub/.
+- `bodymedMetrics`: the launch figures, below.
+
+#### The BodyMed figures
 
 The switch is `approvals.bodymedMetrics` in `content/resume.json`. One switch publishes everything listed in `docs/todo-content.md` under "The launch figures".
 

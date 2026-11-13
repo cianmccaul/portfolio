@@ -30,6 +30,7 @@ One conversation covers all of this.
   - the BodyMed highlight on the home page ("Moved payment from the end of the appointment to booking time…");
   - the Results block on the BodyMed Hub page, and the tools it was weighed against (above);
   - the two CV lines ("Built a pay-at-booking system… 0% to 14.5%" and "Moved 90% of the clinic's new online bookings…"). The CV has been checked with them in: one page, 93% full.
+- [ ] **The awards photo.** The team on stage at the 2026 Irish Healthcare Centre Awards (`src/assets/photos/bodymed-awards.jpg`; you're on the far right) goes in the BodyMed Hub case study, under the Reflection. Set `approvals.awardsPhoto` to `true` once the owner (and the people in it) are happy for it to be shown. Until then it isn't built at all: not on the site, not in the deployed files. The award itself is a public fact and is already on the site and the CV.
 - [ ] **Not to be published** (the sample is too small): changes in total appointments, no-shows, late cancellations or fees. See `docs/project-followups.md` for the re-run in January 2027.
 - [ ] **A quote**, if the owner is willing: one or two sentences, with name and role, and their permission. It goes in `testimonials` with `"permission": true` and appears on the home page and in the case study.
 

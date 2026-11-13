@@ -2,22 +2,22 @@
 
 Generated from `content/resume.json` by `npm run linkedin`. Don’t edit this file: change resume.json and run it again, then paste each section into LinkedIn. Lines marked **[Pending approval]** are hidden on the site until the BodyMed owner signs off; leave them off LinkedIn until then too.
 
-## Headline (147 of 220 characters)
+## Headline (128 of 220 characters)
 
 ```text
-Computer Science student at DCU · Built BodyMed Hub, the system BodyMed Healthcare runs on · Open to software engineering internships, Jan–Sep 2028
+Computer Science student at DCU · Built BodyMed Hub, the system BodyMed Healthcare runs on · Open to an internship, Jan–Sep 2028
 ```
 
-## About (1,373 of 2,600 characters)
+## About (1,517 of 2,600 characters)
 
 ```text
-I’m Cian and I live in Dublin. I spent my early years in Fall River, Nova Scotia, before my family moved to Clontarf in 2015. Starting again in a new country taught me to adapt quickly, and I still like being thrown into something new.
+I was born in Dublin in 2006. From 2007 to 2011 we lived in Donegal and Derry, where I went to school and where I still have family. Then came Canada, from 2011 to 2015, and we’ve been in Clontarf since. Starting again somewhere new taught me to adapt quickly, and I still like being thrown into something new.
 
-What I enjoy most is building things that make people’s day easier. At BodyMed Healthcare I’ve gone from admin work to building the booking, payments and staff platform the clinic runs on, working with the owner, reception and the therapists. Their feedback changed what I built, and taught me that the people who use a system every day know the job better than I do.
+I was the family’s tech support from early on, and the kid who took consoles apart to see how they worked. Now I build things that make people’s day easier. At BodyMed Healthcare I’ve gone from admin work to building the booking, payments and staff platform the clinic runs on, working with the owner, reception and the therapists. Their feedback changed what I built, and taught me that the people who use a system every day know the job better than I do.
 
 On Saturday mornings I coach at Rugbytots, where I went from assistant coach to head coach, running four classes for young children. My favourite moment is a child finally scoring their first conversion.
 
-Next, I want to keep building software that real people rely on, and to do it in a team of experienced engineers, where I can learn faster than I could on my own. That’s why I’m looking for a software engineering internship.
+Next, I want to keep building software that real people rely on, and to do it in a team of experienced engineers, where I can learn faster than I could on my own. That’s why I’m looking for an internship.
 
 I build with AI coding tools. I own the product decisions, the architecture, reviewing and testing every change, and running it in production.
 

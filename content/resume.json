@@ -24,18 +24,19 @@
       }
     ],
     "bio": [
-      "I’m Cian and I live in Dublin. I spent my early years in Fall River, Nova Scotia, before my family moved to Clontarf in 2015. Starting again in a new country taught me to adapt quickly, and I still like being thrown into something new.",
-      "What I enjoy most is building things that make people’s day easier. At BodyMed Healthcare I’ve gone from admin work to building the booking, payments and staff platform the clinic runs on, working with the owner, reception and the therapists. Their feedback changed what I built, and taught me that the people who use a system every day know the job better than I do.",
+      "I was born in Dublin in 2006. From 2007 to 2011 we lived in Donegal and Derry, where I went to school and where I still have family. Then came Canada, from 2011 to 2015, and we’ve been in Clontarf since. Starting again somewhere new taught me to adapt quickly, and I still like being thrown into something new.",
+      "I was the family’s tech support from early on, and the kid who took consoles apart to see how they worked. Now I build things that make people’s day easier. At BodyMed Healthcare I’ve gone from admin work to building the booking, payments and staff platform the clinic runs on, working with the owner, reception and the therapists. Their feedback changed what I built, and taught me that the people who use a system every day know the job better than I do.",
       "On Saturday mornings I coach at Rugbytots, where I went from assistant coach to head coach, running four classes for young children. My favourite moment is a child finally scoring their first conversion.",
-      "Next, I want to keep building software that real people rely on, and to do it in a team of experienced engineers, where I can learn faster than I could on my own. That’s why I’m looking for a software engineering internship."
+      "Next, I want to keep building software that real people rely on, and to do it in a team of experienced engineers, where I can learn faster than I could on my own. That’s why I’m looking for an internship."
     ],
     "buildNote": "I build with AI coding tools. I own the product decisions, the architecture, reviewing and testing every change, and running it in production."
   },
   "approvals": {
-    "bodymedMetrics": false
+    "bodymedMetrics": false,
+    "awardsPhoto": false
   },
   "logistics": {
-    "targetRole": "Software engineering intern",
+    "targetRole": "An internship",
     "programme": {
       "name": "DCU INTRA placement",
       "startDate": "2028-01",
@@ -86,8 +87,8 @@
       "position": "Systems and operations",
       "startDate": "2024-08",
       "endDate": null,
-      "summary": "Started on admin and grew into running the clinic’s digital side: automating the front desk, replacing the old online booking with pay-at-booking on Cliniko and Stripe, and building a central hub the whole team works from. I work with the owner, reception and the therapists.",
-      "brief": "Grew from admin into running the clinic’s digital side, replacing its old online booking with pay-at-booking on Cliniko and Stripe. I work with the owner, reception and therapists.",
+      "summary": "I work on reception and the clinic’s social media, and have grown from admin into running its digital side: automating the front desk, replacing the old online booking with pay-at-booking on Cliniko and Stripe, and building a central hub the whole team works from. I work with the owner, reception and the therapists.",
+      "brief": "Reception and the clinic’s social media, and grew from admin into running its digital side.",
       "highlights": [
         "Built a clinic operations platform with AI coding tools (Next.js, Stripe Connect, Cliniko, Twilio): booking, payments, waitlist, KPIs and team tools; 90 API routes, 438 tests; live since October 2026.",
         {
@@ -112,7 +113,11 @@
         "Cliniko API",
         "Twilio"
       ],
-      "caseStudy": "bodymed-hub"
+      "caseStudy": "bodymed-hub",
+      "recognition": {
+        "text": "BodyMed Healthcare was named Rehabilitation Clinic of the Year at the 2026 Irish Healthcare Centre Awards (22 May 2026, Dublin).",
+        "cv": "Rehabilitation Clinic of the Year 2026"
+      }
     },
     {
       "company": "Rugbytots Ireland",
@@ -502,23 +507,64 @@
   "interests": [
     {
       "name": "Football",
-      "summary": "Eight years with Clontarf FC. Coached kids at Howth Road National School.",
-      "featured": true
+      "summary": "Manchester United, and Derry City in the League of Ireland: home games in Derry, away games in Dublin. I played for Clontarf FC for eight years.",
+      "featured": true,
+      "cv": true,
+      "photos": [
+        {
+          "file": "about-derry-full.jpg",
+          "alt": "Cian and a friend, one of them in a red-and-white striped shirt, in the stand at the Aviva Stadium on FAI Cup final day, with the pitch and the floodlit roof behind them.",
+          "caption": "FAI Cup final, Aviva Stadium"
+        }
+      ]
+    },
+    {
+      "name": "Cricket",
+      "summary": "Won the Leinster Schoolboy Cup in 2019, in 6th class.",
+      "featured": true,
+      "cv": true
+    },
+    {
+      "name": "Running and the gym",
+      "summary": "I run, and train at Westwood Clontarf about four times a week. Work-life balance matters to me, and this is how I keep it.",
+      "featured": true,
+      "cv": true
+    },
+    {
+      "name": "Travel",
+      "summary": "Three weeks Interrailing in summer 2026: Amsterdam, Berlin, Prague, Budapest, Lake Bled and Vienna. Six weeks in Asia is planned next.",
+      "featured": true,
+      "cv": true,
+      "photos": [
+        {
+          "file": "about-budapest-wide.jpg",
+          "alt": "Cian from behind at night, looking across the Danube at the Hungarian Parliament lit up in gold.",
+          "caption": "Budapest, Interrail 2026"
+        },
+        {
+          "file": "about-bled-tall.jpg",
+          "alt": "Cian from behind, sitting on a wooden jetty above clear turquoise water at Lake Bled, with forested hills beyond.",
+          "caption": "Lake Bled, Interrail 2026"
+        }
+      ]
+    },
+    {
+      "name": "Phoebe",
+      "summary": "Our dog, named after Phoebe from Friends. She’s 8 and still acts like a puppy.",
+      "featured": true,
+      "photos": [
+        {
+          "file": "about-phoebe.jpg",
+          "alt": "Phoebe, a fluffy cream-coloured dog in a red harness, sitting on wood chips with her tongue out.",
+          "caption": "Phoebe"
+        }
+      ]
     },
     {
       "name": "Volunteering",
-      "summary": "Marshal at St Anne’s Junior Parkrun. Ran the first-year breakfast club.",
-      "featured": true
-    },
-    {
-      "name": "Gym",
-      "summary": "Strength training most weeks.",
-      "featured": false
-    },
-    {
-      "name": "Photography",
-      "summary": "Took the class photos for every year group in school.",
-      "featured": true
+      "summary": "The school breakfast club, and marshalling at St Anne’s parkrun. I also took the class photos for every year group in school.",
+      "featured": true,
+      "cv": true
     },
     {
       "name": "On stage",

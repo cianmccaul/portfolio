@@ -10,8 +10,11 @@ import Todo from '../Todo.astro';
 import { hub, hubProject, moduleCount } from '../../lib/hub';
 import { workImage, workImageMobile } from '../../lib/images';
 import { formatDate } from '../../lib/dates';
+import { resume } from '../../lib/resume';
 
 const item = hubProject;
+// The clinic's own award, from its experience entry in resume.json.
+const recognition = resume.work.find((role) => item.client?.startsWith(role.company))?.recognition?.text;
 const image = workImage(hub.hero.image);
 const small = [...hub.smallStats, `${moduleCount.live} modules live`];
 const host = (url: string) => new URL(url).host;
@@ -36,6 +39,7 @@ const host = (url: string) => new URL(url).host;
         </p>
       )
     }
+    {recognition && <p class="mt-8 max-w-prose text-body-lg text-muted">{recognition}</p>}
 
     <dl class="stats mt-32 border-y border-line lg:mt-48">
       {

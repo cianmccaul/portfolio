@@ -16,7 +16,12 @@ const step = z.object({ title: z.string(), detail: z.string() });
  * switch is marked "pending approval" in draft builds and left out of
  * production and the PDF until it is true.
  */
-const approvals = z.object({ bodymedMetrics: z.boolean() });
+const approvals = z.object({
+  /** The BodyMed launch figures. */
+  bodymedMetrics: z.boolean(),
+  /** The photo of the BodyMed team at the 2026 Irish Healthcare Centre Awards. Off: not built at all. */
+  awardsPhoto: z.boolean(),
+});
 const approvalKey = approvals.keyof();
 
 /**
@@ -91,6 +96,9 @@ const schema = z.object({
       summary: z.string(),
       /** A shorter form, for the CV, where related roles share one entry. */
       brief: z.string().optional(),
+      /** Recognition for the employer, not a personal achievement: a line in the site's entry; on the
+          CV, `cv` follows the employer's name in brackets. */
+      recognition: z.object({ text: z.string(), cv: z.string().optional() }).optional(),
       highlights: z.array(line),
       /** Numbers behind the highlights. `approx` marks an estimate, not a measured figure. */
       metrics: z
@@ -154,7 +162,18 @@ const schema = z.object({
     z.object({ title: z.string(), awarder: z.string(), date: partialDate, role: z.string().optional(), summary: z.string() }),
   ),
   skills: z.array(z.object({ name: z.string(), keywords: z.array(z.string()).min(1) })),
-  interests: z.array(z.object({ name: z.string(), summary: z.string(), featured: z.boolean().optional() })),
+  interests: z.array(
+    z.object({
+      name: z.string(),
+      summary: z.string(),
+      /** Shown on the About page. */
+      featured: z.boolean().optional(),
+      /** Named in the CV's one-line Interests. */
+      cv: z.boolean().optional(),
+      /** Photos in src/assets/photos/, beside the line on the About page. */
+      photos: z.array(z.object({ file: z.string(), alt: z.string(), caption: z.string() })).optional(),
+    }),
+  ),
   testimonials: z.array(
     z.object({ quote: z.string(), name: z.string(), role: z.string(), company: z.string(), permission: z.literal(true) }),
   ),

@@ -20,6 +20,8 @@ import Replaced from '../../components/hub/Replaced.astro';
 import Tour from '../../components/hub/Tour.astro';
 import { hub, hubProject as item } from '../../lib/hub';
 import { isApproved, project, resume, showTodos } from '../../lib/resume';
+import Photo from '../../components/Photo.astro';
+import awards from 'virtual:approved-photo/awards';
 import { workImage, workImageMobile } from '../../lib/images';
 import { article, breadcrumbs } from '../../lib/seo';
 import { inline } from '../../lib/site';
@@ -29,6 +31,8 @@ const suite = resume.projects.filter((p) => p.suite === item.suite && p.slug !==
 const next = project('email-triage');
 const { results } = hub;
 const showPending = results.pending && (isApproved(results.pending.approval) || showTodos);
+// The awards photo resolves to nothing unless approvals.awardsPhoto is on (see
+// astro.config.mjs), so with the switch off it isn't built at all.
 
 const sections = [
   { id: 'replaced', label: 'What it replaced' },
@@ -149,6 +153,25 @@ const sections = [
         {hub.reflection.map((paragraph) => <p>{paragraph}</p>)}
         {hub.reflectionTodo && <Todo block text={hub.reflectionTodo} />}
       </div>
+      {
+        awards && (
+          <Photo
+            src={awards}
+            alt="The BodyMed Healthcare team on stage in evening dress in front of the Irish Healthcare Centre Awards backdrop, celebrating. Cian is on the far right."
+            caption="The BodyMed team at the 2026 Irish Healthcare Centre Awards, where the clinic was named Rehabilitation Clinic of the Year. I’m on the far right."
+            width={720}
+            class="mt-32 max-w-card-wide lg:mt-48"
+          />
+        )
+      }
+      {
+        !awards && showTodos && (
+          <p class="todo mt-32 max-w-prose lg:mt-48">
+            Pending approval · The team photo from the 2026 Irish Healthcare Centre Awards goes here. It is not built at all until
+            approvals.awardsPhoto is on.
+          </p>
+        )
+      }
     </HubSection>
 
     <div class="mx-auto max-w-page px-gutter">

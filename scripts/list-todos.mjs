@@ -20,8 +20,12 @@ const found = [];
 if (resume.testimonials.length === 0) found.push(['testimonials', 'TODO: none yet']);
 
 // Sign-offs: everything tagged with a switch that is still false stays out of production.
+const covers = {
+  bodymedMetrics: 'the BodyMed launch figures, on the site and the CV',
+  awardsPhoto: 'the BodyMed team photo from the 2026 Irish Healthcare Centre Awards (not built at all until then)',
+};
 for (const [key, approved] of Object.entries(resume.approvals ?? {})) {
-  if (!approved) found.push([`approvals.${key}`, 'Waiting for sign-off. Set to true once approved to publish everything tagged with it.']);
+  if (!approved) found.push([`approvals.${key}`, `Pending approval: ${covers[key] ?? 'everything tagged with it'}. Set to true once approved.`]);
 }
 
 // The BodyMed Hub case study keeps its TODOs under keys named todo or …Todo.

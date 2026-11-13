@@ -9,8 +9,12 @@
 //   - a page without a title, description, canonical URL or social image
 //   - an image without alt text, a labelled SVG without a title, a video
 //     without a label
-//   - old names that must not come back, and an approval switched on while
-//     part of what it publishes still waits for a check
+//   - old names that must not come back, an approval switched on while part
+//     of what it publishes still waits for a check, and a photo whose
+//     approval is off turning up in the build
+//
+// Approval switches that are off are listed as warnings: they keep things
+// out of production on purpose, so they don't fail the check.
 //
 //   npm run launch-check
 //
@@ -27,6 +31,14 @@ const resume = JSON.parse(read('content/resume.json'));
 const hub = JSON.parse(read('content/hub.json'));
 const vercel = JSON.parse(read('vercel.json'));
 const site = /site:\s*'([^']+)'/.exec(read('astro.config.mjs'))[1].replace(/\/$/, '');
+
+// What each approval switch holds back, for the warnings at the end.
+const APPROVAL_NOTES = {
+  bodymedMetrics: 'The BodyMed launch figures (14.5%, 90%) are left out of the site and the CV.',
+  awardsPhoto: 'The BodyMed team photo from the 2026 Irish Healthcare Centre Awards is not built.',
+};
+// Photos that must not be in the build while their switch is off.
+const GATED_PHOTOS = { awardsPhoto: /bodymed-awards/ };
 
 const results = [];
 const check = (name, problems) => {
@@ -256,10 +268,25 @@ console.log(`${pages.length} pages built.\n`);
   // Turning an approval on publishes everything tagged with it at once.
   if (resume.approvals?.bodymedMetrics && hub.replaced?.pending?.todo)
     problems.push(`approvals.bodymedMetrics is on, but hub.json still asks: “${hub.replaced.pending.todo}” Confirm it and remove the todo first.`);
+  // A photo behind a switch that is off must not be in the build at all.
+  for (const [approval, pattern] of Object.entries(GATED_PHOTOS)) {
+    if (resume.approvals?.[approval]) continue;
+    const leaked = files.filter((f) => pattern.test(f)).map((f) => relative(out, f));
+    if (leaked.length) problems.push(`approvals.${approval} is off, but the build contains ${leaked.slice(0, 3).join(', ')}`);
+  }
   check('Retired names, shared figures and approval switches', problems);
+}
+
+// ── Pending approvals (warnings, not failures) ───────────────────────────
+// Each switch that is off keeps something out of production on purpose.
+const pending = Object.entries(resume.approvals ?? {}).filter(([, on]) => !on).map(([key]) => key);
+if (pending.length) {
+  console.log('');
+  for (const key of pending) console.log(`⚠ Pending approval: approvals.${key} is off. ${APPROVAL_NOTES[key] ?? 'What it covers stays out of production.'}`);
 }
 
 rmSync(out, { recursive: true, force: true });
 const failed = results.filter((r) => r.problems.length);
-console.log(failed.length ? `\nNot ready: ${failed.length} of ${results.length} checks failed.` : `\nReady to launch: all ${results.length} checks passed.`);
+const waiting = pending.length ? ` (${pending.length} approval${pending.length === 1 ? '' : 's'} pending)` : '';
+console.log(failed.length ? `\nNot ready: ${failed.length} of ${results.length} checks failed.` : `\nReady to launch: all ${results.length} checks passed${waiting}.`);
 process.exit(failed.length ? 1 : 0);

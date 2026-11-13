@@ -9,13 +9,23 @@ import SectionRail from '../components/SectionRail.astro';
 import SpecSheet from '../components/SpecSheet.astro';
 import Todo from '../components/Todo.astro';
 import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import type { ImageMetadata } from 'astro';
 import portrait from '../assets/cian.jpg';
 import { resume } from '../lib/resume';
 import { logisticsSpecs } from '../lib/specs';
 import { profilePage, breadcrumbs } from '../lib/seo';
 
 const { basics } = resume;
-const beyond = resume.interests.filter((interest) => interest.featured);
+const outside = resume.interests.filter((interest) => interest.featured);
+// The photo pair sits at one height: each column is as wide as its photo's
+// aspect ratio, so a wide and a tall photo line up top and bottom.
+const photoFiles = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/about-*.jpg', { eager: true });
+const ratio = (file: string) => {
+  const image = photoFiles[`../assets/photos/${file}`]?.default;
+  return image ? image.width / image.height : 1;
+};
+const pairColumns = (outside.find((i) => (i.photos?.length ?? 0) > 1)?.photos ?? []).map((p) => `${ratio(p.file).toFixed(4)}fr`).join(' ');
 ---
 
 <Base
@@ -55,16 +65,96 @@ const beyond = resume.interests.filter((interest) => interest.featured);
     </div>
   </PageHeader>
 
-  <SectionRail id="beyond" title="Beyond the code">
-    <ul>
+  <SectionRail id="outside" title="Outside work">
+    <ul class="outside">
       {
-        beyond.map((interest) => (
-          <li class="grid gap-x-24 gap-y-4 border-line py-24 not-first:border-t first:pt-0 lg:grid-cols-9">
-            <h3 class="text-h3 lg:col-span-3">{interest.name}</h3>
-            <p class="max-w-prose lg:col-span-6">{interest.summary}</p>
-          </li>
-        ))
+        outside.map((interest) => {
+          const photos = interest.photos ?? [];
+          return (
+            <li class:list={['row', photos.length === 1 && 'with-photo', photos.length > 1 && 'with-pair']}>
+              <h3 class="text-h3">{interest.name}</h3>
+              <p class="text max-w-prose">{interest.summary}</p>
+              {photos.length === 1 && (
+                <Photo file={photos[0]!.file} alt={photos[0]!.alt} caption={photos[0]!.caption} width={300} class="single" />
+              )}
+              {photos.length > 1 && (
+                <figure class="pair">
+                  {/* One mat for the pair, so the two photos share an exact height. */}
+                  <div class="mat">
+                    <div class="pair-grid">
+                      {photos.map((photo, i) => (
+                        <Photo bare file={photo.file} alt={photo.alt} width={i === 0 ? 380 : 230} />
+                      ))}
+                    </div>
+                  </div>
+                  <figcaption class="pair-grid mt-8 text-small text-muted">
+                    {photos.map((photo) => (
+                      <span>{photo.caption}</span>
+                    ))}
+                  </figcaption>
+                </figure>
+              )}
+            </li>
+          );
+        })
       }
     </ul>
   </SectionRail>
 </Base>
+
+<style define:vars={{ pairColumns }}>
+  .row {
+    display: grid;
+    gap: var(--spacing-8) var(--spacing-24);
+    padding-block: var(--spacing-24);
+    border-top: 1px solid var(--color-line);
+  }
+  .row:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .row :global(.single) {
+    max-width: 280px;
+    margin-top: var(--spacing-8);
+  }
+  .pair {
+    margin-top: var(--spacing-8);
+  }
+  /* Captions start where their photo does, inside the mat's padding. */
+  .pair figcaption {
+    padding-inline: clamp(var(--spacing-8), 1.6vw, var(--spacing-16));
+  }
+  .pair-grid {
+    display: grid;
+    grid-template-columns: var(--pairColumns);
+    gap: var(--spacing-12);
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .row {
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      align-items: start;
+    }
+    .row h3 {
+      grid-column: span 3;
+    }
+    .row .text {
+      grid-column: span 6;
+    }
+    /* One photo: the line, then the photo beside it. */
+    .with-photo .text {
+      grid-column: span 3;
+    }
+    .with-photo :global(.single) {
+      grid-column: span 3;
+      max-width: none;
+      margin-top: 0;
+    }
+    /* Two photos: a row of their own under the line. */
+    .with-pair .pair {
+      grid-column: 4 / span 6;
+      margin-top: var(--spacing-8);
+    }
+  }
+</style>
+
