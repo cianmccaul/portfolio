@@ -7,7 +7,7 @@ import ExternalLink from './ExternalLink.astro';
 import Icon from './Icon.astro';
 import { resume } from '../lib/resume';
 import { formatDate, status } from '../lib/dates';
-import { lastUpdated, now } from '../lib/site';
+import { cvPdf, lastUpdated, now } from '../lib/site';
 
 const { basics, logistics } = resume;
 const window = status(logistics.availableFrom, logistics.availableUntil, now);
@@ -23,7 +23,7 @@ const updated = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long'
 
 <footer id="contact" aria-labelledby="contact-title" class="mx-auto max-w-page px-gutter pt-section pb-48 print:hidden">
   <div class="grid gap-x-24 gap-y-24 border-t border-ink pt-24 lg:grid-cols-12">
-    <h2 id="contact-title" class="text-h2 lg:col-span-3">Contact</h2>
+    <h2 id="contact-title" class="text-h1 lg:col-span-3">Contact</h2>
     <div class="lg:col-span-9">
       {open && <p class="max-w-prose text-body-lg text-muted">{open}</p>}
       <p class="mt-16 flex flex-wrap items-center gap-x-16 gap-y-12">
@@ -33,6 +33,10 @@ const updated = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long'
         <button type="button" class="btn btn-secondary" data-copy={basics.email} data-copied="Email copied">
           <Icon name="copy" />Copy
         </button>
+      </p>
+      <p class="mt-24 flex flex-wrap gap-12">
+        <a class="btn btn-primary" href="/cv/">View CV</a>
+        <a class="btn btn-secondary" href={cvPdf(basics.name)} download><Icon name="download" />Download the PDF</a>
       </p>
       <ul class="mt-16 flex flex-wrap gap-x-24">
         {

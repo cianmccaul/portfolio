@@ -98,6 +98,12 @@
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
+  /* Elements with no shape of their own (text links, list rows) get a soft
+     corner, so their focus ring matches the buttons' instead of a hard box. */
+  a:not([class*='rounded']):not(.btn),
+  button:not([class*='rounded']):not(.btn) {
+    border-radius: var(--radius-xs);
+  }
 
   a,
   button {

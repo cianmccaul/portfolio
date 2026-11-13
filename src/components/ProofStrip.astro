@@ -14,8 +14,8 @@ import { proof } from '../lib/specs';
       <ul class="grid border-y border-line-strong md:grid-cols-3">
         {proof.map((item) => (
           <li class="border-line py-24 not-first:border-t md:px-32 md:not-first:border-t-0 md:not-first:border-l md:first:pl-0 md:last:pr-0">
-            <p class="flex items-baseline gap-8">
-              <span class="text-h1 tabular-nums">{item.value}</span>
+            <p class="flex flex-wrap items-baseline gap-x-8">
+              <span class="text-h1 whitespace-nowrap tabular-nums">{item.value}</span>
               <span class="text-h3 text-muted">{item.unit}</span>
             </p>
             <p class="mt-8 max-w-prose text-small text-muted">{item.label}</p>

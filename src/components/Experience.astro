@@ -1,6 +1,8 @@
 ---
 /**
  * Experience, newest first. Dates and "Present" are computed from resume.json.
+ * Roles that share a context (the three Transition Year placements) are one
+ * entry, as on the CV, with a line for each.
  * Hovering a row dims its siblings, so the eye stays on one role at a time.
  */
 import SectionRail from './SectionRail.astro';
@@ -9,20 +11,50 @@ import { resume, roleSpan, shown, todos } from '../lib/resume';
 import { byRecency, formatRange } from '../lib/dates';
 import { now } from '../lib/site';
 
+type Role = (typeof resume.work)[number];
 const roles = [...resume.work].sort((a, b) => byRecency(roleSpan(a), roleSpan(b)));
+const entries: ({ role: Role } | { context: string; roles: Role[] })[] = [];
+for (const role of roles) {
+  const last = entries.at(-1);
+  if (role.context && last && 'context' in last && last.context === role.context) last.roles.push(role);
+  else entries.push(role.context ? { context: role.context, roles: [role] } : { role });
+}
 ---
 
 <SectionRail id="experience" title="Experience">
   <ol class="rows">
     {
-      roles.map((role) => {
+      entries.map((entry) => {
+        if ('context' in entry) {
+          const first = entry.roles[0]!;
+          return (
+            <li class="grid gap-x-24 gap-y-4 border-line py-24 not-first:border-t first:pt-0 lg:grid-cols-9">
+              <p class="text-small text-muted tabular-nums lg:col-span-2 lg:pt-4">{formatRange(first.startDate, first.endDate, now)}</p>
+              <div class="lg:col-span-7">
+                <h3 class="text-h3">{entry.context}</h3>
+                <ul class="mt-12 grid max-w-prose gap-16">
+                  {entry.roles.map((role) => (
+                    <li>
+                      <p class="font-medium">
+                        {role.company}
+                        <span class="font-normal text-muted">
+                          {role.location && `, ${role.location}`} · {role.position}
+                        </span>
+                      </p>
+                      <p class="mt-2 text-muted">{role.summary}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          );
+        }
+        const role = entry.role;
         const span = roleSpan(role);
         const lines = shown(role.highlights);
         return (
           <li class="grid gap-x-24 gap-y-4 border-line py-24 not-first:border-t first:pt-0 lg:grid-cols-9">
-            <p class="text-small text-muted tabular-nums lg:col-span-2 lg:pt-4">
-              {formatRange(span.startDate, span.endDate, now)}
-            </p>
+            <p class="text-small text-muted tabular-nums lg:col-span-2 lg:pt-4">{formatRange(span.startDate, span.endDate, now)}</p>
             <div class="lg:col-span-7">
               <h3 class="text-h3">{role.position}</h3>
               <p class="text-muted">
@@ -45,7 +77,7 @@ const roles = [...resume.work].sort((a, b) => byRecency(roleSpan(a), roleSpan(b)
               {lines.length > 0 && (
                 <ul class="mt-12 max-w-prose list-disc pl-20 marker:text-muted">
                   {lines.map((line) => (
-                    <li class:list={[line.pending && 'print:hidden']}>
+                    <li class:list={['mt-4 first:mt-0', line.pending && 'print:hidden']}>
                       {line.pending && <span class="todo mr-4 align-[0.1em]">Pending approval</span>}
                       {line.text}
                     </li>
