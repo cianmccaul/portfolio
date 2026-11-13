@@ -1,8 +1,8 @@
 {
-  "measured": "2026-11-12",
+  "measured": "2026-11-13",
   "conditions": "Lighthouse mobile emulation and axe-core, run against a local production build served with gzip, as the host serves it. Lighthouse figures are the worst result across all pages, except the 404 page’s SEO score, which is lower by design because that page asks not to be indexed. JavaScript is the home page’s total, gzipped.",
   "lighthouse": {
-    "performance": 97,
+    "performance": 99,
     "accessibility": 100,
     "bestPractices": 100,
     "seo": 100
