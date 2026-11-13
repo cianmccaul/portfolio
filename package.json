@@ -13,7 +13,9 @@
     "check": "astro check",
     "test": "vitest run",
     "todos": "node scripts/list-todos.mjs",
-    "cv": "node scripts/build-cv-pdf.mjs"
+    "cv": "node scripts/build-cv-pdf.mjs",
+    "launch-check": "node scripts/launch-check.mjs",
+    "linkedin": "node scripts/linkedin.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.4",
