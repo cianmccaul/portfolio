@@ -34,7 +34,7 @@ const links = [
   clinic.live && {
     href: clinic.live,
     icon: 'calendar-check',
-    title: 'Clinic booking system',
+    title: clinic.name,
     detail: 'The live booking site I built for BodyMed',
   },
 ].filter((link) => !!link) as { href: string; icon: 'layout'; title: string; detail: string; primary?: boolean }[];

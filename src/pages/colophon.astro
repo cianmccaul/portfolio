@@ -105,8 +105,8 @@ const measured = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long
       one thing: this goes somewhere, or this has focus.
     </p>
     <p class="mt-16 max-w-prose text-muted">
-      Two things sit outside that scale: a teal, green and blue wash behind each page’s title, and one dark band on the
-      home page for the clinic platform, which stays dark in both themes.
+      Two things sit outside that scale: a teal, green and blue wash behind each page’s title, and the dark band for
+      BodyMed Hub, on the home page and at the top of its case study, which stays dark in both themes.
     </p>
     <ul class="mt-24 grid grid-cols-6 overflow-hidden rounded-sm border border-line sm:grid-cols-12" aria-label="The neutral scale, lightest to darkest in light mode">
       {neutrals.map((step, i) => <li class:list={['h-64', step]}><span class="sr-only">Neutral {i + 1}</span></li>)}
@@ -153,11 +153,12 @@ const measured = new Intl.DateTimeFormat('en-IE', { day: 'numeric', month: 'long
       fades in on scroll.
     </p>
     <p class="mt-16 max-w-prose text-muted">
-      A few things move by themselves, and each does it once: the booking story on the home page (under five seconds,
-      with a replay button), a picture travelling from the home page to its case study, and the new theme opening from
-      the control that asked for it. The line through a case study’s pipeline is drawn by your own scrolling. With
-      reduced motion switched on in your system settings none of these run, the two shortest durations drop to zero and
-      the rest become quick cross-fades.
+      A few things move by themselves. Three do it once: the booking story on the home page (under five seconds, with a
+      replay button), a picture travelling from the home page to its case study, and the new theme opening from the
+      control that asked for it. One loops: the silent walkthrough at the top of the BodyMed Hub case study, on screens
+      wide enough for it, with a pause button beside it. The line through a case study’s pipeline is drawn by your own
+      scrolling. With reduced motion switched on in your system settings none of these run, the two shortest
+      durations drop to zero and the rest become quick cross-fades.
     </p>
     <dl class="mt-24">
       {
