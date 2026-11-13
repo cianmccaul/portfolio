@@ -53,7 +53,7 @@ One conversation covers all of this.
 ## Pictures
 
 - [ ] **The BodyMed Hub tour and hero** are captured from the public demo (fictional clinic) with `node scripts/capture-work.mjs hub`: `hub-*.png` at desktop size and `hub-*-mobile.png` on a phone. The demo still shows the older card-based treatment picker; the page says the live site uses dropdowns. Once the demo is updated, re-run the capture.
-- [ ] **The walkthrough video** on the BodyMed Hub page (`public/media/hub-walkthrough.webm` and `.mp4`, 25 seconds, about 0.6 MB each) is recorded from the demo with `node scripts/record-hub.mjs`. Re-record it when the demo changes.
+- [ ] **The walkthrough video** on the BodyMed Hub page (`public/media/hub-walkthrough.webm` and `.mp4`, about 26 seconds, 0.7–0.8 MB each) is recorded from the demo with `node scripts/record-hub.mjs`. It shows the waitlist at work (offers sent, one booked) and never the demo's "texts are switched off" notice. Re-record it when the demo changes, and watch the waitlist part before committing.
 - [ ] **PulsePay's picture** (`pulsepay.png`) is the public demo's first screen: a fictional clinic and five made-up therapists. The real PulsePay is private and is never linked or shown.
 
 - [ ] **The three phone screenshots in the clinic band** still show the older card-based booking screens. To update them, replace these files in `src/assets/work/` with new phone screenshots of the same three steps. Nothing else needs to change: the frame crops each image from the top, and the alt text only names the step.
