@@ -98,4 +98,5 @@ A recruiter is unlikely to open GitHub, but an engineer on the interview loop wi
 
 ## pulsepay-demo
 
+- [ ] **Security wording in the README.** The real PulsePay now has server-side sign-in and a protected API. The README's "What's real vs simulated" table still describes it as "A sign-in screen" (Login row) and mentions "the password screen" (Look and layout row), which reads like a client-side password. Change the Login row to "Server-side sign-in" and the Storage row to "A protected API on Vercel with Blob storage", and drop "the password screen" from the stylesheet note. The portfolio itself only says the real tool is private, and needs no change.
 - [ ] The README says "my rent and payout tool" and the portfolio says the real tool is private. Keep both true: never link the real PulsePay, and keep every therapist, deal and figure in the demo fictional.

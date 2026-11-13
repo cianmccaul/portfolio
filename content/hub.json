@@ -506,7 +506,7 @@
   },
   "built": {
     "statement": "Built with AI coding tools. I owned the product decisions with the clinic, the architecture (8 written decision records), reviewing and testing every change, and running it in production.",
-    "detail": "Before launch I wrote the requirements, a failure modes and effects analysis of everything that could go wrong with money and bookings, a test plan, a go/no-go checklist and a runbook. The production code is private because it is tied to the clinic’s accounts."
+    "detail": "Before launch I wrote the requirements, a failure modes and effects analysis of everything that could go wrong with money and bookings, a test plan, a go/no-go checklist and a runbook. Every requirement has an ID, and the unit test that proves it is named after that ID, so each requirement traces straight to its test. The production code is private because it is tied to the clinic’s accounts."
   },
   "results": {
     "lines": [
