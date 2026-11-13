@@ -33,6 +33,7 @@ const approval = (line: Line | undefined) => (typeof line === 'string' ? undefin
             <BrowserFrame
               src={src}
               alt={item.imageAlt ?? ''}
+              mat={item.imageMat}
               mobile={workImageMobile(item.image)}
               sizes="(min-width: 1296px) 620px, (min-width: 1024px) 52vw, 92vw"
               transitionName={item.caseStudy ? `work-${item.slug}` : undefined}
@@ -67,6 +68,7 @@ const approval = (line: Line | undefined) => (typeof line === 'string' ? undefin
           src={image(jarvis.image)!}
           mobile={workImageMobile(jarvis.image)}
           alt={jarvis.imageAlt ?? ''}
+              mat={jarvis.imageMat}
           maxWidth={1104}
           transitionName="work-jarvis"
         />

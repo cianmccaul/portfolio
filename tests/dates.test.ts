@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { availabilityLabel, byRecency, formatDate, formatRange, graduationLabel, lowerFirst, status, yearOfStudy, yearOfStudyLabel } from '../src/lib/dates';
+import { availabilityLabel, byRecency, formatDate, formatRange, graduationLabel, lowerFirst, status, yearOfStudy, yearOfStudyLabel, fullYearsSince } from '../src/lib/dates';
 
 const at = (iso: string) => new Date(`${iso}T12:00:00`);
 const plain = (s: string | null) => s?.replace(/ /g, ' ');
@@ -92,3 +92,16 @@ describe('byRecency', () => {
     expect(roles.sort(byRecency).map((r) => r.id)).toEqual(['now', 'ty', 'old']);
   });
 });
+
+describe('fullYearsSince', () => {
+  it('counts whole years only', () => {
+    expect(fullYearsSince('2024-08', new Date(2026, 10, 13))).toBe(2);
+    expect(fullYearsSince('2024-08', new Date(2026, 6, 31))).toBe(1);
+    expect(fullYearsSince('2024-08', new Date(2026, 7, 1))).toBe(2);
+    expect(fullYearsSince('2024', new Date(2026, 0, 1))).toBe(2);
+  });
+  it('never goes below zero', () => {
+    expect(fullYearsSince('2030-01', new Date(2026, 10, 13))).toBe(0);
+  });
+});
+

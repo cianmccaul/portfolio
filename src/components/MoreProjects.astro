@@ -24,6 +24,7 @@ const projects = resume.projects.filter((p) => !p.featured);
               <BrowserFrame
                 src={src}
                 alt={item.imageAlt ?? ''}
+              mat={item.imageMat}
                 sizes="(min-width: 1296px) 350px, (min-width: 640px) 40vw, 92vw"
                 class="sm:col-span-4"
               />

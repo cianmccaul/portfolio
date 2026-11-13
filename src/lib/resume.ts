@@ -129,6 +129,8 @@ const schema = z.object({
       image: z.string().optional(),
       imageAlt: z.string().optional(),
       imageCaption: z.string().optional(),
+      /** Set the screenshot on a neutral mat: for products with strong colours of their own. */
+      imageMat: z.boolean().optional(),
       flow: z.array(step).optional(),
       failure: z.string().optional(),
       modules: z.array(step).optional(),

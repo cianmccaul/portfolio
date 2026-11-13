@@ -36,6 +36,11 @@ const floor = (d: Parts) => d.year * 12 + ((d.month ?? 1) - 1);
 const ceil = (d: Parts) => d.year * 12 + ((d.month ?? 12) - 1);
 const monthIndex = (now: Date) => now.getFullYear() * 12 + now.getMonth();
 
+/** Whole years from a start date to now (a role that began in August 2024 is 2 years old in November 2026). */
+export function fullYearsSince(start: PartialDate, now: Date): number {
+  return Math.max(0, Math.floor((monthIndex(now) - floor(parse(start))) / 12));
+}
+
 /** Where a start/end pair sits relative to now. A missing end means ongoing. */
 export function status(start: PartialDate, end: PartialDate | null | undefined, now: Date): Status {
   const today = monthIndex(now);

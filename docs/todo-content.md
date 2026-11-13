@@ -26,9 +26,8 @@ One conversation covers all of this.
   - the story of the therapists' feedback that led to the dropdowns.
 - [ ] **Tools the Hub was weighed against.** A waitlist add-on quoted at €150–200 a month, Vaoucher, HR Locker and ClinicExec. These sit behind the same `approvals.bodymedMetrics` switch, with a TODO: confirm with the owner which subscriptions were actually dropped, and correct the line in `content/hub.json` (`replaced.pending`) before switching it on.
 - [ ] **The launch figures.** Set `approvals.bodymedMetrics` to `true` once the owner agrees. That one switch publishes all of these at once:
-  - the proof strip's first two figures: 14.5% of appointments paid in advance (up from 0%), and 90% of new online bookings (43 of 48) through the Hub, with online volume steady (46 → 48). They take the first two places; "438 tests" stays;
+  - the headline figure in the home page's BodyMed Hub band, under the Role / Client / Live since / Stack sheet: 14.5% of appointments paid in advance in the first 10 days, up from 0%;
   - the BodyMed highlight on the home page ("Moved payment from the end of the appointment to booking time…");
-  - the result line in the home page's BodyMed Hub band;
   - the Results block on the BodyMed Hub page, and the tools it was weighed against (above);
   - the two CV lines ("Built a pay-at-booking system… 0% to 14.5%" and "Moved 90% of the clinic's new online bookings…"). The CV has been checked with them in: one page, 93% full.
 - [ ] **Not to be published** (the sample is too small): changes in total appointments, no-shows, late cancellations or fees. See `docs/project-followups.md` for the re-run in January 2027.

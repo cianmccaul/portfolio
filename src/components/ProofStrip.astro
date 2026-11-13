@@ -1,56 +1,31 @@
 ---
 /**
- * Static proof: three numbers, each linked to its evidence. No marquee.
- * The figures stay at a modest size on purpose. The 96 px figure token
- * (--text-figure) is held back for owner-approved outcomes.
- * Measured outcomes marked `lead` take the first places once they can be
- * published; until then the verified facts fill the strip. Figures waiting
- * for a sign-off are listed underneath in draft builds only.
+ * Three facts under the hero, each linked to where the site backs it up. They
+ * are worked out from resume.json (see `proof` in src/lib/specs.ts) and are
+ * deliberately different from the BodyMed Hub numbers in the clinic band.
  */
-import ExternalLink from './ExternalLink.astro';
-import { pendingMetrics, publishedMetrics } from '../lib/resume';
-
-const published = publishedMetrics();
-const strip = [...published.filter((m) => m.lead), ...published.filter((m) => !m.lead)].slice(0, 3);
-const pending = pendingMetrics();
+import Icon from './Icon.astro';
+import { proof } from '../lib/specs';
 ---
 
 {
-  strip.length > 0 && (
-    <section aria-label="Proof" class="mx-auto mt-48 max-w-page px-gutter lg:mt-80">
+  proof.length > 0 && (
+    <section aria-label="At a glance" class="mx-auto mt-48 max-w-page px-gutter lg:mt-80">
       <ul class="grid border-y border-line-strong md:grid-cols-3">
-        {strip.map((metric) => (
+        {proof.map((item) => (
           <li class="border-line py-24 not-first:border-t md:px-32 md:not-first:border-t-0 md:not-first:border-l md:first:pl-0 md:last:pr-0">
             <p class="flex items-baseline gap-8">
-              <span class="text-h1 tabular-nums">{metric.value}</span>
-              {metric.unit && <span class="text-h3 text-muted">{metric.unit}</span>}
+              <span class="text-h1 tabular-nums">{item.value}</span>
+              <span class="text-h3 text-muted">{item.unit}</span>
             </p>
-            <p class="mt-8 text-small text-muted">{metric.label}</p>
-            {metric.source && (
-              <ExternalLink href={metric.source.url} action>
-                {metric.source.label}
-              </ExternalLink>
-            )}
+            <p class="mt-8 max-w-prose text-small text-muted">{item.label}</p>
+            <a href={item.link.href} class="link link-action">
+              {item.link.label}
+              <Icon name="arrow-down" />
+            </a>
           </li>
         ))}
       </ul>
-
-      {pending.length > 0 && (
-        <div class="mt-16 rounded-sm border border-dashed border-warn bg-warn-soft p-16 text-small text-warn print:hidden">
-          <p class="font-semibold">Pending approval · these lead the strip once the owner signs off</p>
-          <ul class="mt-8 grid gap-8 md:grid-cols-2 md:gap-32">
-            {pending.map((metric) => (
-              <li>
-                <span class="font-semibold">
-                  {metric.value}
-                  {metric.unit === '%' ? '%' : ` ${metric.unit ?? ''}`}
-                </span>{' '}
-                {metric.label}.{metric.note && <> {metric.note}</>}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </section>
   )
 }

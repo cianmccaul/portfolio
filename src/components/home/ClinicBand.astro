@@ -18,14 +18,14 @@ import Icon from '../Icon.astro';
 import stepTreatment from '../../assets/work/clinic-step-treatment.png';
 import stepPractitioner from '../../assets/work/clinic-step-practitioner.png';
 import stepTime from '../../assets/work/clinic-booking-phone.png';
-import { project, resume, type Line } from '../../lib/resume';
+import { project, resume } from '../../lib/resume';
 import { formatDate } from '../../lib/dates';
 import { hub } from '../../lib/hub';
 
 const suite = resume.suites.find((s) => s.id === 'clinic')!;
 const platform = project(hub.slug);
-const outcome = platform.outcome as Line | undefined;
-const pending = typeof outcome === 'object' && outcome?.approval ? outcome : undefined;
+// The lead result: hidden in production until the owner approves it.
+const lead = resume.metrics.find((metric) => metric.lead && metric.approval);
 
 const steps = [
   { shot: stepTreatment, title: 'Choose a treatment', detail: 'New or returning patient, then the treatment.' },
@@ -56,19 +56,26 @@ const facts = [
       <div class="mt-24 grid gap-x-48 gap-y-32 lg:mt-32 lg:grid-cols-12">
         <div class="lg:col-span-7">
           <p class="max-w-prose text-body-lg">{platform.tagline} <span class="text-muted">{platform.fact}</span></p>
-          <p class="mt-16 max-w-prose text-small text-muted">{suite.summary}</p>
           <a class="btn btn-primary mt-24" href={`/work/${platform.slug}/`}>
             Explore the Hub<Icon name="arrow-right" />
           </a>
+        </div>
+        <div class="lg:col-span-5">
+          <SpecSheet items={facts} compact />
+          {/* The headline result, once the owner has approved it. Until then it
+              shows in draft builds only, marked as pending. */}
           {
-            pending && (
-              <Pending approval={pending.approval!} class="mt-16 max-w-prose">
-                <p>{pending.text}</p>
+            lead && (
+              <Pending approval={lead.approval!} class="mt-16">
+                <p class="mt-20 flex items-baseline gap-4 first:mt-0">
+                  <span class="text-figure tabular-nums">{lead.value}</span>
+                  {lead.unit && <span class="text-h2 text-muted">{lead.unit}</span>}
+                </p>
+                <p class="mt-4 text-small text-muted">{lead.label}</p>
               </Pending>
             )
           }
         </div>
-        <SpecSheet items={facts} compact class="lg:col-span-5" />
       </div>
 
       <dl class="stats mt-32 border-y border-line lg:mt-48">
@@ -81,6 +88,7 @@ const facts = [
           ))
         }
       </dl>
+      <p class="mt-16 max-w-prose text-small text-muted">{suite.summary}</p>
 
       <div class="stage mt-48 lg:mt-64" data-stage>
         <div class="phone">

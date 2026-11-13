@@ -77,64 +77,6 @@
       "unit": "%",
       "label": "of new online bookings (43 of 48) came through the new system in its first 10 days, with online volume steady (46 → 48)",
       "note": "First 10 days after launch against a matched window before it."
-    },
-    {
-      "id": "hub-tests",
-      "status": "ready",
-      "value": "438",
-      "unit": "tests",
-      "label": "cover BodyMed Hub, the system the clinic runs on"
-    },
-    {
-      "id": "hub-routes",
-      "status": "ready",
-      "value": "90",
-      "unit": "API routes",
-      "label": "behind booking, payments, the waitlist, KPIs and the team tools"
-    },
-    {
-      "id": "hub-live",
-      "status": "ready",
-      "value": "Live",
-      "unit": "since 30 Oct 2026",
-      "label": "at book.bodymed.ie, taking real bookings and payments every day",
-      "source": {
-        "label": "book.bodymed.ie",
-        "url": "https://book.bodymed.ie"
-      }
-    },
-    {
-      "id": "clinic-tests",
-      "status": "ready",
-      "value": "142",
-      "unit": "tests",
-      "label": "pass across 21 test files in the public BodyMed Hub demo",
-      "source": {
-        "label": "clinic-platform-demo",
-        "url": "https://github.com/cianmccaul/clinic-platform-demo#tests"
-      }
-    },
-    {
-      "id": "triage-tests",
-      "status": "ready",
-      "value": "37",
-      "unit": "tests",
-      "label": "guard the email triage sorter, including its red-flag safety check",
-      "source": {
-        "label": "email-triage-demo",
-        "url": "https://github.com/cianmccaul/email-triage-demo#tests"
-      }
-    },
-    {
-      "id": "monitor-interval",
-      "status": "ready",
-      "value": "15",
-      "unit": "min",
-      "label": "between Jarvis health checks on every site I look after",
-      "source": {
-        "label": "site-monitor",
-        "url": "https://github.com/cianmccaul/site-monitor#what-it-does"
-      }
     }
   ],
   "work": [
@@ -365,7 +307,8 @@
       "repo": "https://github.com/cianmccaul/pulsepay-demo",
       "demo": "https://cian-pulsepay-demo.vercel.app",
       "image": "pulsepay.png",
-      "imageAlt": "The PulsePay demo for a fictional clinic: five made-up therapists, and a month overview listing each one’s rent model, sessions, takings and rent due."
+      "imageAlt": "The PulsePay demo for a fictional clinic: five made-up therapists, and a month overview listing each one’s rent model, sessions, takings and rent due.",
+      "imageMat": true
     },
     {
       "slug": "jarvis",
@@ -414,7 +357,8 @@
       ],
       "image": "jarvis-dashboard-approve.png",
       "imageAlt": "The Jarvis dashboard in dark blue. A list of incidents for the monitored sites, and an Ask Jarvis panel explaining a 500 error in plain English, with buttons to review the pull request on GitHub or approve and merge it.",
-      "imageCaption": "The Jarvis dashboard: incidents, a plain-English diagnosis, and one-tap approve & merge."
+      "imageCaption": "The Jarvis dashboard: incidents, a plain-English diagnosis, and one-tap approve & merge.",
+      "imageMat": true
     },
     {
       "slug": "designroom",
