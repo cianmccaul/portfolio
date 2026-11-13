@@ -39,7 +39,6 @@ const lines = (items = []) =>
 const todos = (items = []) => items.filter(isTodo);
 
 // ── Sections ─────────────────────────────────────────────────────────────
-const degree = resume.education.find((e) => e.durationYears);
 const availability = `${MONTHS[parse(logistics.availableFrom).month - 1]}–${MONTHS[parse(logistics.availableUntil).month - 1]} ${parse(logistics.availableUntil).year}`;
 const hubProject = resume.projects.find((p) => p.slug === hub.slug);
 
