@@ -160,8 +160,38 @@ if (want('hub')) {
       else await bring(page, 'Review and take payment', 150);
       await shot(page, 'phone');
     }
-    // The staff home screen (for the case study's hero) and four areas shown from their headings.
-    for (const [name, path, heading] of [['home', '', 'Hello Demo'], ['waitlist', '/waitlist', 'Waitlist'], ['kpis', '/kpis', 'Clinic KPIs'], ['appointments', '/appointments', 'Appointments'], ['help', '/help', 'Guides']]) {
+    // The waitlist at work, using only the demo's own controls: "Look for
+    // times now" offers open times to the made-up patients waiting, then one
+    // of them books through the link in their offer email. The demo always
+    // has texts switched off (it sends nothing), so the frame starts at the
+    // waitlist's own figures, below that demo-only notice.
+    {
+      const page = await fresh();
+      await page.goto(`${DEMO}/dashboard/waitlist`, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(1200);
+      await page.getByRole('button', { name: 'Look for times now' }).click();
+      await page.waitForTimeout(2000);
+      await page.getByRole('button', { name: /^Inbox/ }).click();
+      await page.waitForTimeout(1200);
+      const link = await page.locator('a', { hasText: 'Book and pay' }).first().getAttribute('href');
+      await page.goto(DEMO + link, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(1200);
+      const boxes = page.locator('main input[type=checkbox]');
+      await boxes.nth(0).check(); // the cancellation policy
+      await boxes.nth(1).check(); // the privacy agreement
+      await page.getByRole('button', { name: /^Pay €/ }).click();
+      await page.waitForTimeout(1500);
+      // The demo's pretend checkout: test card already filled in, "Everything works".
+      await page.getByRole('button', { name: /^Pay €/ }).last().click();
+      await page.waitForURL(/booking\/confirmed/);
+      await page.goto(`${DEMO}/dashboard/waitlist`, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(1500);
+      await bring(page, 'Since this started', phone ? 24 : 104);
+      await shot(page, 'waitlist');
+    }
+
+    // The staff home screen (for the case study's hero) and three areas shown from their headings.
+    for (const [name, path, heading] of [['home', '', 'Hello Demo'], ['kpis', '/kpis', 'Clinic KPIs'], ['appointments', '/appointments', 'Appointments'], ['help', '/help', 'Guides']]) {
       const page = await fresh();
       await page.goto(`${DEMO}/dashboard${path}`, { waitUntil: 'networkidle' });
       await page.waitForTimeout(1500);

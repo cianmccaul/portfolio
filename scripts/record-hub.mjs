@@ -57,11 +57,13 @@ await pause(900);
 await glide(560, 1600);
 await pause(1500);
 
-// The waitlist.
+// The waitlist: look for open times, and offers go out to the patients waiting.
 await page.goto(`${DEMO}/dashboard/waitlist`, { waitUntil: 'networkidle' });
-await pause(1300);
-await glide(360, 1200);
 await pause(1100);
+await page.getByRole('button', { name: 'Look for times now' }).click();
+await pause(1400);
+await glide(420, 1300);
+await pause(1300);
 
 // The KPI dashboard.
 await page.goto(`${DEMO}/dashboard/kpis`, { waitUntil: 'networkidle' });

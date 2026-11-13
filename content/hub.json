@@ -219,7 +219,7 @@
         "image": "hub-waitlist.png",
         "title": "Waitlist",
         "caption": "Patients waiting for a time. When one opens that suits them they get a link to book it, held for 2 hours. If they don’t take it, it goes to the next person.",
-        "alt": "The demo’s Waitlist page: buttons to add a patient and look for times now, and a made-up patient waiting for a morning slot."
+        "alt": "The demo’s Waitlist page after a check for open times: 3 offers sent and 1 booked, and two made-up patients each holding an offered time with a button to take it back."
       },
       {
         "image": "hub-kpis.png",
@@ -510,8 +510,7 @@
   },
   "results": {
     "lines": [
-      "**Live since 30 October 2026**, taking real bookings and payments every day at book.bodymed.ie.",
-      "**142 tests pass across 21 files** in the public demo. Its end-to-end tests check that a repeated webhook gives one appointment and one charge, that a slot taken mid-payment keeps the payment, and that an unused rebook is refunded after 7 days."
+      "**Live since 30 October 2026**, taking real bookings and payments every day at book.bodymed.ie."
     ],
     "pending": {
       "approval": "bodymedMetrics",
@@ -528,7 +527,7 @@
   "reflection": [
     "The first version refunded a patient straight away when their slot was taken while they paid. Patients preferred not having to pay twice, so since 3 November 2026 the payment is kept and they choose another time instead.",
     "The dropdowns taught me the bigger lesson: the people who use a system every day know the job better than I do.",
-    "I’d give it more time. Twelve weeks was tight for something a working clinic depends on every day."
+    "About twelve weeks from first plans to launch was tight for something a working clinic depends on every day."
   ],
   "reflectionTodo": "Confirm how the therapists found the dropdown version after it went live on 12 November 2026, and add it here.",
   "hero": {
