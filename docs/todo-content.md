@@ -65,9 +65,9 @@ One conversation covers all of this.
 
 ## Before launch, not blocking the build
 
-- [ ] **Domain.** The site is at `cianmccaul.vercel.app` until you buy one. Then change `site` in `astro.config.mjs` and `basics.url` in `resume.json`.
-- [ ] **Email.** Once the domain exists, set up Cloudflare Email Routing (`hello@…` to your inbox) and change `basics.email`. Until then the site shows the Outlook address.
-- [ ] **LinkedIn.** Make the name, headline, dates and the two Rugbytots titles match the site exactly.
+- [ ] **Domain.** The site is at `cianmccaul.vercel.app` until you buy one. Step by step, including email and keeping the QR code working: `docs/launch.md`.
+- [ ] **Email.** Once the domain exists, Cloudflare Email Routing (`hello@…` to your Outlook), then change `basics.email`: `docs/launch.md`, section B. Until then the site shows the Outlook address.
+- [ ] **LinkedIn.** Paste the sections of `docs/linkedin.md` (generated from `resume.json` by `npm run linkedin`), so the profile matches the site exactly. Leave the line marked Pending approval off until the owner signs off.
 
 ## Please confirm
 

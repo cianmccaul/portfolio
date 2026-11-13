@@ -63,6 +63,11 @@ jobs:
       - name: Generate and check the CV PDF
         run: npm run cv
 
+      # The production build, checked as a visitor would see it: no TODOs,
+      # no broken links, one-page CV, valid JSON-LD, titles and alt text.
+      - name: Launch check
+        run: npm run launch-check
+
       - uses: actions/upload-artifact@v4
         if: always() # keep the PDF even when its checks fail, to see why
         with:
