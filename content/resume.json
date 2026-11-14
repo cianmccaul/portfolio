@@ -3,7 +3,7 @@
     "name": "Cian McCaul",
     "label": "Computer Science student at DCU",
     "headline": "I build software that runs real businesses.",
-    "summary": "I built the booking, payments and staff platform that **BodyMed Healthcare**, a clinic in Clontarf, runs on. Patients book and pay online, and staff run the clinic from one hub.",
+    "summary": "I built the booking, payments and staff platform that **BodyMed Healthcare**, a Dublin clinic, runs on. Patients book and pay online, and staff run the clinic from one hub.",
     "email": "cian.mccaul@outlook.com",
     "url": "https://cianmccaul.vercel.app",
     "location": {
@@ -83,7 +83,7 @@
   "work": [
     {
       "company": "BodyMed Healthcare",
-      "location": "Clontarf, Dublin",
+      "location": "Dublin",
       "position": "Systems and operations",
       "startDate": "2024-08",
       "endDate": null,
@@ -121,7 +121,7 @@
     },
     {
       "company": "Rugbytots Ireland",
-      "location": "Clontarf, Dublin",
+      "location": "Dublin",
       "position": "Head Coach",
       "startDate": "2026-01",
       "endDate": null,
@@ -226,7 +226,7 @@
         "Wrote a failure-mode analysis, test plan, runbook and 8 architecture decision records before launch."
       ],
       "role": "Sole developer",
-      "client": "BodyMed Healthcare, Clontarf",
+      "client": "BodyMed Healthcare, Dublin",
       "liveSince": "2026-10-30",
       "stack": [
         "Next.js 15",
@@ -507,7 +507,7 @@
   "interests": [
     {
       "name": "Football",
-      "summary": "Manchester United, and Derry City in the League of Ireland: home games in Derry, away games in Dublin. I played for Clontarf FC for eight years.",
+      "summary": "Manchester United, and Derry City in the League of Ireland: home games in Derry, away games in Dublin. I played for a local club for eight years.",
       "featured": true,
       "cv": true,
       "photos": [
@@ -526,7 +526,7 @@
     },
     {
       "name": "Running and the gym",
-      "summary": "I run and go to the gym. Work-life balance matters to me, and this is how I keep it.",
+      "summary": "I run, and train at Westwood about four times a week. Work-life balance matters to me, and this is how I keep it.",
       "featured": true,
       "cv": true
     },
