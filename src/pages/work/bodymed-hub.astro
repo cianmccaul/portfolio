@@ -21,6 +21,7 @@ import Tour from '../../components/hub/Tour.astro';
 import { hub, hubProject as item } from '../../lib/hub';
 import { isApproved, project, resume, showTodos } from '../../lib/resume';
 import Photo from '../../components/Photo.astro';
+import hubGraph from '../../assets/hub-graph.png';
 import awards from 'virtual:approved-photo/awards';
 import { workImage, workImageMobile } from '../../lib/images';
 import { article, breadcrumbs } from '../../lib/seo';
@@ -78,6 +79,13 @@ const sections = [
 
     <HubSection id="architecture" title="Architecture" lede={hub.architecture.lede}>
       <Architecture />
+      <Photo
+        src={hubGraph}
+        width={1104}
+        class="mt-48"
+        alt="A map of the Hub's production code drawn by the Graphify code-graph tool: thousands of small coloured dots, one per file, function or setting, joined by fine lines where one uses another, forming a dense glowing cluster on a dark background. Names are removed."
+        caption="The same system at full scale: the Hub's production code mapped by Graphify, 3,306 parts and 11,681 connections, coloured by area. Names removed, as the code is private."
+      />
     </HubSection>
 
     <HubSection id="timeline" title="How it shipped" lede={hub.timeline.lede}>
