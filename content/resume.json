@@ -32,8 +32,8 @@
     "buildNote": "I build with AI coding tools. I own the product decisions, the architecture, reviewing and testing every change, and running it in production."
   },
   "approvals": {
-    "bodymedMetrics": false,
-    "awardsPhoto": false
+    "bodymedMetrics": true,
+    "awardsPhoto": true
   },
   "logistics": {
     "targetRole": "An internship",
