@@ -8,7 +8,7 @@
     "url": "https://cianmccaul.vercel.app",
     "location": {
       "city": "Dublin",
-      "area": "Clontarf",
+      "area": "Dublin",
       "country": "IE"
     },
     "profiles": [
@@ -526,7 +526,7 @@
     },
     {
       "name": "Running and the gym",
-      "summary": "I run, and train at Westwood about four times a week. Work-life balance matters to me, and this is how I keep it.",
+      "summary": "I run and go to the gym. Work-life balance matters to me, and this is how I keep it.",
       "featured": true,
       "cv": true
     },
