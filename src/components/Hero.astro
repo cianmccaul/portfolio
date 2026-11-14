@@ -30,10 +30,12 @@ const { basics } = resume;
       <p class="lede max-w-prose text-body-lg text-muted [&_strong]:text-ink" set:html={inline(basics.summary)} />
       <div class="actions flex flex-wrap gap-12">
         <a class="btn btn-primary" href="/cv/">View CV</a>
-        <a class="btn btn-secondary" href="#work">
+        {/* On a phone the three don't fit on one row at 360 px, and scrolling
+            already does this one's job, so it gives way to Copy email. */}
+        <a class="btn btn-secondary max-sm:hidden" href="#work">
           Selected work<Icon name="arrow-down" />
         </a>
-        <a class="btn btn-secondary max-sm:hidden" href="#contact" data-copy={basics.email} data-copied="Email copied">
+        <a class="btn btn-secondary" href="#contact" data-copy={basics.email} data-copied="Email copied">
           <Icon name="copy" />Copy email
         </a>
       </div>
@@ -50,7 +52,10 @@ const { basics } = resume;
                 <a href={item.link.href} class="cell">
                   <span class="figure">
                     <span class="value">{item.value}</span>
-                    <span class="unit">{item.unit}</span>
+                    <span class="unit">
+                      {item.unit}
+                      {item.phoneUnit && <span class="sm:hidden">{` ${item.phoneUnit}`}</span>}
+                    </span>
                   </span>
                   <span class="label">
                     {item.label}

@@ -4,7 +4,12 @@
 //
 //   node scripts/capture-work.mjs                 everything
 //   node scripts/capture-work.mjs hub pulsepay    only the named groups
+//   node scripts/capture-work.mjs --mobile more   only the phone captures
 //   (groups: triage, chatbot, more, hub, pulsepay)
+//
+// The chatbot, PulsePay, More projects and Hub groups are also taken on a
+// phone (390 × 520 at 3×) and saved as NAME-mobile.png, which the site shows
+// below 640 px (see src/lib/images.ts).
 //
 // Needs Playwright with Chromium. Images are 16:10 unless noted.
 //
@@ -15,13 +20,21 @@
 import { chromium } from 'playwright';
 
 const out = new URL('../src/assets/work/', import.meta.url).pathname;
-const only = process.argv.slice(2);
+const args = process.argv.slice(2);
+const mobileOnly = args.includes('--mobile');
+const only = args.filter((arg) => arg !== '--mobile');
+// Each size as [suffix, width, height, scale]; the phone is NAME-mobile.png.
+const PHONE = ['-mobile', 390, 520, 3];
+const sizes = (desktop) => (mobileOnly ? [PHONE] : [['', ...desktop], PHONE]);
 const want = (group) => only.length === 0 || only.includes(group);
 const browser = await chromium.launch();
 const open = async (width, height, deviceScaleFactor) => {
+  const phone = width < 640;
   const context = await browser.newContext({
     viewport: { width, height },
     deviceScaleFactor,
+    isMobile: phone,
+    hasTouch: phone,
     colorScheme: 'light',
     reducedMotion: 'reduce',
   });
@@ -29,7 +42,7 @@ const open = async (width, height, deviceScaleFactor) => {
 };
 
 // AI email triage: an email that tripped the red-flag safety check.
-if (want('triage')) {
+if (want('triage') && !mobileOnly) {
   const page = await open(1240, 760, 3);
   await page.goto('https://cian-email-triage.vercel.app', { waitUntil: 'networkidle' });
   await page.waitForTimeout(6000); // the sample inbox sorts itself on load
@@ -54,15 +67,17 @@ if (want('triage')) {
 // Clinic chatbot: asked who is best for a back injury. The whole page is
 // kept so the "made-up clinic" banner stays in shot.
 if (want('chatbot')) {
-  const page = await open(1120, 700, 2);
-  await page.goto('https://physio-chatbot.vercel.app', { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'Chat with us' }).first().click();
-  await page.waitForTimeout(1200);
-  await page.getByText("Who's best for my injury?").click();
-  await page.waitForTimeout(2500);
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
-  await page.waitForTimeout(3500);
-  await page.screenshot({ path: `${out}clinic-chatbot.png` });
+  for (const [suffix, ...size] of sizes([1120, 700, 2])) {
+    const page = await open(...size);
+    await page.goto('https://physio-chatbot.vercel.app', { waitUntil: 'networkidle' });
+    await page.getByRole('button', { name: 'Chat with us' }).first().click();
+    await page.waitForTimeout(1200);
+    await page.getByText("Who's best for my injury?").click();
+    await page.waitForTimeout(2500);
+    await page.getByRole('button', { name: 'Back', exact: true }).click();
+    await page.waitForTimeout(3500);
+    await page.screenshot({ path: `${out}clinic-chatbot${suffix}.png` });
+  }
 }
 
 // More projects: the first screen of each live site, 16:10, saved at 1920 px.
@@ -76,11 +91,14 @@ if (want('more')) {
     ['deme-housepainting', 'https://deme-housepainting.vercel.app'],
   ];
   for (const [name, url, prepare] of sites) {
-    const page = await open(1280, 800, 2);
-    await page.goto(url, { waitUntil: 'networkidle' });
-    if (prepare) await prepare(page).catch(() => {});
-    await page.waitForTimeout(3000);
-    await sharp(await page.screenshot()).resize(1920, 1200).png({ compressionLevel: 9 }).toFile(`${out}${name}.png`);
+    for (const [suffix, ...size] of sizes([1280, 800, 2])) {
+      const page = await open(...size);
+      await page.goto(url, { waitUntil: 'networkidle' });
+      if (prepare) await prepare(page).catch(() => {});
+      await page.waitForTimeout(3000);
+      const shot = sharp(await page.screenshot());
+      await (suffix ? shot : shot.resize(1920, 1200)).png({ compressionLevel: 9 }).toFile(`${out}${name}${suffix}.png`);
+    }
   }
 }
 
@@ -113,7 +131,7 @@ if (want('hub')) {
   // Every stop is taken twice: at desktop size, and on a phone (saved as
   // NAME-mobile.png, which the site shows below 640 px), so the tour is
   // readable on a small screen instead of a shrunken desktop.
-  for (const [suffix, size] of [['', [1200, 750, 2]], ['-mobile', [390, 520, 3]]]) {
+  for (const [suffix, size] of [['', [1200, 750, 2]], ['-mobile', [390, 520, 3]]].filter(([suffix]) => suffix || !mobileOnly)) {
     const phone = suffix !== '';
     const fresh = async () => {
       const context = await browser.newContext({
@@ -203,10 +221,12 @@ if (want('hub')) {
 
 // PulsePay: the demo's first screen, a fictional clinic with made-up therapists.
 if (want('pulsepay')) {
-  const page = await open(1200, 750, 2);
-  await page.goto('https://cian-pulsepay-demo.vercel.app', { waitUntil: 'networkidle' });
-  await page.waitForTimeout(1500);
-  await page.screenshot({ path: `${out}pulsepay.png` });
+  for (const [suffix, ...size] of sizes([1200, 750, 2])) {
+    const page = await open(...size);
+    await page.goto('https://cian-pulsepay-demo.vercel.app', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1500);
+    await page.screenshot({ path: `${out}pulsepay${suffix}.png` });
+  }
 }
 
 await browser.close();

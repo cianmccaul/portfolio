@@ -44,6 +44,8 @@ export const logisticsSpecs: Spec[] = [
 export interface Proof {
   value: string;
   unit: string;
+  /** Said after the unit on phones only, where the label is hidden. */
+  phoneUnit?: string;
   label: string;
   link: { label: string; href: string };
 }
@@ -63,6 +65,8 @@ export const proof: Proof[] = [
     years >= 1 && {
       value: String(years),
       unit: years === 1 ? 'year' : 'years',
+      // "BodyMed", the name the rest of the site uses for the clinic.
+      phoneUnit: `at ${bodymed.company.split(' ')[0]}`,
       label: `at ${bodymed.company}, from admin to building the system the clinic runs on`,
       link: { label: 'Experience', href: '#experience' },
     },

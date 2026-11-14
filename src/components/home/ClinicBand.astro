@@ -1,7 +1,7 @@
 ---
 /**
  * The centrepiece: BodyMed Hub on the one dark band of the home page. Its
- * three numbers, then a phone steps through the patient's side of a booking
+ * test count (the other engineering figures live on the case study), then a phone steps through the patient's side of a booking
  * and the booking lands on reception's dashboard. "Explore the Hub" leads to
  * the full case study.
  *
@@ -26,6 +26,8 @@ const suite = resume.suites.find((s) => s.id === 'clinic')!;
 const platform = project(hub.slug);
 // The lead result: hidden in production until the owner approves it.
 const lead = resume.metrics.find((metric) => metric.lead && metric.approval);
+// One figure a recruiter can weigh; API routes and scheduled jobs stay on the case study.
+const tests = hub.stats.find((stat) => stat.unit === 'tests');
 
 const steps = [
   { shot: stepTreatment, title: 'Choose a treatment', detail: 'New or returning patient, then the treatment.' },
@@ -46,8 +48,8 @@ const facts = [
     {/* A running head, as on a newspaper's section front: the section on the
         left, this story's group on the right, on one rule. */}
     <div class="flex flex-wrap items-baseline justify-between gap-x-24 border-b border-line pb-12 text-h3">
-      <h2 id="work-title" class="text-muted">Selected work</h2>
-      <p class="text-accent">{suite.name}</p>
+      <h2 id="work-title">Selected work</h2>
+      <p>{suite.name}</p>
     </div>
 
     <article aria-labelledby="clinic-title">
@@ -55,7 +57,7 @@ const facts = [
 
       <div class="mt-24 grid gap-x-48 gap-y-32 lg:mt-32 lg:grid-cols-12">
         <div class="lg:col-span-7">
-          <p class="max-w-prose text-body-lg">{platform.tagline} <span class="text-muted">{platform.fact}</span></p>
+          <p class="max-w-prose text-body-lg">{platform.tagline} {platform.fact}</p>
           <a class="btn btn-primary mt-24" href={`/work/${platform.slug}/`}>
             Explore the Hub<Icon name="arrow-right" />
           </a>
@@ -78,16 +80,16 @@ const facts = [
         </div>
       </div>
 
-      <dl class="stats mt-32 border-y border-line lg:mt-48">
-        {
-          hub.stats.map((stat) => (
+      {
+        tests && (
+          <dl class="stats mt-32 border-y border-line lg:mt-48">
             <div>
-              <dt class="mt-4 text-body-lg text-muted">{stat.unit}</dt>
-              <dd class="text-display tabular-nums">{stat.value}</dd>
+              <dt class="mt-4 text-body-lg text-muted">{tests.unit}</dt>
+              <dd class="text-display tabular-nums">{tests.value}</dd>
             </div>
-          ))
-        }
-      </dl>
+          </dl>
+        )
+      }
       <p class="mt-16 max-w-prose text-small text-muted">{suite.summary}</p>
 
       <div class="stage mt-48 lg:mt-64" data-stage>
@@ -246,36 +248,11 @@ const facts = [
   .band {
     overflow: clip;
   }
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
   .stats > div {
     display: flex;
     flex-direction: column-reverse;
     justify-content: flex-end;
     padding-block: var(--spacing-20);
-  }
-  .stats > div + div {
-    padding-left: var(--spacing-12);
-    border-left: 1px solid var(--color-line);
-  }
-  /* On a phone the last label is the longest ("scheduled jobs"), so its
-     column gets the spare width and the labels drop a size. */
-  @media (max-width: 639px) {
-    .stats {
-      grid-template-columns: 1fr 1fr 1.35fr;
-    }
-    .stats dt {
-      font-size: var(--text-small);
-      line-height: var(--text-small--line-height);
-      white-space: nowrap;
-    }
-  }
-  @media (min-width: 640px) {
-    .stats > div + div {
-      padding-left: var(--spacing-32);
-    }
   }
   .stage {
     display: grid;

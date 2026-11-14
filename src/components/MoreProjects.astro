@@ -3,13 +3,12 @@
  * Smaller projects, in the same editorial list as the selected work at a
  * smaller size: a picture of the real thing, a headline, one paragraph, links.
  */
-import type { ImageMetadata } from 'astro';
 import BrowserFrame from './BrowserFrame.astro';
 import SectionRail from './SectionRail.astro';
 import WorkLinks from './WorkLinks.astro';
 import { resume } from '../lib/resume';
+import { workImage, workImageMobile } from '../lib/images';
 
-const images = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.png', { eager: true });
 const projects = resume.projects.filter((p) => !p.featured);
 ---
 
@@ -17,12 +16,13 @@ const projects = resume.projects.filter((p) => !p.featured);
   <ul>
     {
       projects.map((item) => {
-        const src = item.image ? images[`../assets/work/${item.image}`]?.default : undefined;
+        const src = workImage(item.image);
         return (
           <li class="grid items-start gap-x-32 gap-y-16 border-line py-32 not-first:border-t first:pt-0 sm:grid-cols-9">
             {src && (
               <BrowserFrame
                 src={src}
+                mobile={workImageMobile(item.image)}
                 alt={item.imageAlt ?? ''}
               mat={item.imageMat}
                 sizes="(min-width: 1296px) 350px, (min-width: 640px) 40vw, 92vw"

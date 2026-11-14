@@ -35,14 +35,19 @@ const showPending = results.pending && (isApproved(results.pending.approval) || 
 // The awards photo resolves to nothing unless approvals.awardsPhoto is on (see
 // astro.config.mjs), so with the switch off it isn't built at all.
 
+// "Results" only once the launch figures are approved; until then the section
+// holds where things stand, not results.
+const resultsTitle = isApproved('bodymedMetrics') ? 'Results' : 'Where it stands';
+
+// The menu, not the page: Modules and How it shipped stay on the page but out
+// of the menu, so the rest fits on a phone.
 const sections = [
   { id: 'replaced', label: 'What it replaced' },
-  { id: 'modules', label: 'Modules' },
   { id: 'tour', label: 'Tour' },
   { id: 'architecture', label: 'Architecture' },
-  { id: 'timeline', label: 'Timeline' },
   { id: 'decisions', label: 'Deep dives' },
-  { id: 'results', label: 'Results' },
+  { id: 'built', label: 'How I built it' },
+  { id: 'results', label: resultsTitle },
   { id: 'reflection', label: 'Reflection' },
 ];
 ---
@@ -103,7 +108,7 @@ const sections = [
       </div>
     </HubSection>
 
-    <HubSection id="results" title="Results">
+    <HubSection id="results" title={resultsTitle}>
       <div class="grid max-w-prose gap-16">
         <ul class="grid gap-12">
           {results.lines.map((line) => <li set:html={inline(line)} />)}

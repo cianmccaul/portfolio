@@ -14,8 +14,18 @@ import { formatDate } from '../../lib/dates';
 import { resume } from '../../lib/resume';
 
 const item = hubProject;
-// The clinic's own award, from its experience entry in resume.json.
-const recognition = resume.work.find((role) => item.client?.startsWith(role.company))?.recognition?.text;
+// Who built it and for whom, with the clinic's own award (from its experience
+// entry in resume.json) attached to the clinic, not to the Hub.
+const clinic = resume.work.find((role) => item.client?.startsWith(role.company));
+const award = clinic?.recognition;
+const awardBody = award && /at the \d{4} (.+?)(?: \(|\.$)/.exec(award.text)?.[1];
+const credit = [
+  item.role,
+  clinic && `for ${clinic.company}`,
+  award?.cv && awardBody && `named ${award.cv} at the ${awardBody}`,
+]
+  .filter(Boolean)
+  .join(', ');
 const image = workImage(hub.hero.image);
 const small = [...hub.smallStats, `${moduleCount.live} modules live`];
 const host = (url: string) => new URL(url).host;
@@ -27,14 +37,14 @@ const host = (url: string) => new URL(url).host;
 <BackLink label="Case study" />
     <h1 class="mt-8 text-hero lg:mt-12" style={`view-transition-name: title-${item.slug}`}>{item.name}</h1>
     <p class="mt-20 max-w-prose text-h2 lg:mt-24">{item.tagline}</p>
+    {credit && <p class="mt-12 max-w-prose text-body-lg text-muted">{credit}.</p>}
     {
       item.liveSince && (
-        <p class="mt-12 text-body-lg text-muted">
+        <p class="mt-8 text-body-lg text-muted">
           Live since <time datetime={item.liveSince}>{formatDate(item.liveSince, 'long')}</time>.
         </p>
       )
     }
-    {recognition && <p class="mt-8 max-w-prose text-body-lg text-muted">{recognition}</p>}
 
     <dl class="stats mt-32 border-y border-line lg:mt-48">
       {
@@ -46,7 +56,8 @@ const host = (url: string) => new URL(url).host;
         ))
       }
     </dl>
-    <p class="mt-12 text-small text-muted">{small.join(' · ')}</p>
+    {/* Engineering detail for desktop readers; on a phone it pushes the actions below the fold. */}
+    <p class="mt-12 text-small text-muted max-sm:hidden">{small.join(' · ')}</p>
 
     <div class="mt-32 flex flex-wrap gap-12">
       {
@@ -200,6 +211,10 @@ const host = (url: string) => new URL(url).host;
     margin-top: calc(var(--nav-h) * -1);
     padding-top: var(--nav-h);
     padding-bottom: calc(var(--overlap) + var(--spacing-48));
+  }
+  /* Full-strength over the glow: the accent dropped below 4.5:1 here. */
+  .hero :global([data-back]) {
+    color: var(--color-ink);
   }
   .shot {
     position: relative;
