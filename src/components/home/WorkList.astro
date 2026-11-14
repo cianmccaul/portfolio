@@ -2,12 +2,16 @@
 /**
  * The rest of the selected work, set as a broadsheet list rather than a grid
  * of cards: a rule, a large picture, a headline and the facts. Pictures swap
- * sides from one item to the next. Jarvis runs the full width, because its
- * dashboard screenshot is shown exactly as it is, uncropped; on a phone a crop
- * of the same screenshot shows the Ask Jarvis panel instead.
+ * sides from one item to the next, and a wide screenshot (the triage pane)
+ * gets the larger share of the row.
+ *
+ * Each item fills one screen below the nav, with its content centred, and
+ * the page settles on it gently when you scroll near (scroll-snap proximity,
+ * see global.css). On a phone the secondary lines step back so an item still
+ * fits one screen: the stack, the fact under the result, and Jarvis's
+ * description and guard-rail list. The case studies have everything.
  */
 import BrowserFrame from '../BrowserFrame.astro';
-import Steps from '../Steps.astro';
 import Todo from '../Todo.astro';
 import WorkLinks from '../WorkLinks.astro';
 import { isTodo, project, resume, type Line } from '../../lib/resume';
@@ -20,6 +24,7 @@ const jarvis = project('jarvis');
 const tags = (stack: string[]) => stack.slice(0, 3).join(' · ');
 const text = (line: Line | undefined) => (typeof line === 'string' ? line : line?.text);
 const approval = (line: Line | undefined) => (typeof line === 'string' ? undefined : line?.approval);
+const jarvisShot = image(jarvis.image);
 ---
 
 <div class="mx-auto max-w-page px-gutter">
@@ -27,15 +32,20 @@ const approval = (line: Line | undefined) => (typeof line === 'string' ? undefin
     companions.map((item, i) => {
       const src = image(item.image);
       const outcome = text(item.outcome);
+      const wide = !!src && src.width / src.height > 1.7;
       return (
-        <article class:list={['item border-b border-line py-48 lg:py-80', i % 2 === 1 && 'flip']} aria-labelledby={`work-${item.slug}`}>
+        <article
+          class:list={['item screen border-b border-line', i % 2 === 1 && 'flip', wide && 'wide']}
+          aria-labelledby={`work-${item.slug}`}
+          data-snap-item
+        >
           {src && (
             <BrowserFrame
               src={src}
               alt={item.imageAlt ?? ''}
               mat={item.imageMat}
               mobile={workImageMobile(item.image)}
-              sizes="(min-width: 1296px) 620px, (min-width: 1024px) 52vw, 92vw"
+              sizes={wide ? '(min-width: 1296px) 720px, (min-width: 1024px) 60vw, 92vw' : '(min-width: 1296px) 620px, (min-width: 1024px) 52vw, 92vw'}
               transitionName={item.caseStudy ? `work-${item.slug}` : undefined}
               class="shot"
             />
@@ -44,69 +54,144 @@ const approval = (line: Line | undefined) => (typeof line === 'string' ? undefin
             <p class="text-small font-medium text-muted">{suite.name}</p>
             <h3
               id={`work-${item.slug}`}
-              class="mt-8 text-h1"
+              class="title mt-8"
               style={item.caseStudy ? `view-transition-name: title-${item.slug}` : undefined}
             >
               {item.name}
             </h3>
-            <p class="mt-12 text-body-lg text-muted">{item.tagline}</p>
-            {outcome && !isTodo(outcome) && !approval(item.outcome) && <p class="mt-16">{outcome}</p>}
-            {item.fact && <p class="mt-12 text-small text-muted">{item.fact}</p>}
+            <p class="tagline mt-8 text-muted sm:mt-12">{item.tagline}</p>
+            {outcome && !isTodo(outcome) && !approval(item.outcome) && <p class="mt-12 sm:mt-16">{outcome}</p>}
+            {item.fact && <p class="mt-12 text-small text-muted max-sm:hidden">{item.fact}</p>}
             {isTodo(outcome) && <Todo block text={outcome!} class="mt-12" />}
-            <p class="mt-16 text-caption text-muted">{tags(item.stack)}</p>
-            <WorkLinks project={item} class="mt-16" />
+            <p class="mt-16 text-caption text-muted max-sm:hidden">{tags(item.stack)}</p>
+            <WorkLinks project={item} class="mt-12 sm:mt-16" />
           </div>
         </article>
       );
     })
   }
 
-  <article class="py-48 lg:py-80" aria-labelledby="work-jarvis">
-    {
-      image(jarvis.image) && (
-        <BrowserFrame
-          src={image(jarvis.image)!}
-          mobile={workImageMobile(jarvis.image)}
-          alt={jarvis.imageAlt ?? ''}
-              mat={jarvis.imageMat}
-          maxWidth={1104}
-          transitionName="work-jarvis"
-        />
-      )
-    }
-    <div class="mt-32 grid gap-x-48 gap-y-32 lg:mt-48 lg:grid-cols-12">
-      <div class="lg:col-span-5">
-        <h3 id="work-jarvis" class="text-h1" style="view-transition-name: title-jarvis">{jarvis.name}</h3>
-        <p class="mt-12 text-body-lg text-muted">{jarvis.tagline}</p>
-        <p class="mt-16">{jarvis.description}</p>
-        {text(jarvis.outcome) && !isTodo(text(jarvis.outcome)) && <p class="mt-16">{text(jarvis.outcome)}</p>}
-        <p class="mt-16 text-caption text-muted">{tags(jarvis.stack)}</p>
-        <WorkLinks project={jarvis} class="mt-16" />
-      </div>
+  <article class="item screen jarvis" aria-labelledby="work-jarvis" data-snap-item>
+    <div class="shot">
+      {
+        jarvisShot && (
+          <BrowserFrame
+            src={jarvisShot}
+            mobile={workImageMobile(jarvis.image)}
+            alt={jarvis.imageAlt ?? ''}
+            mat={jarvis.imageMat}
+            sizes="(min-width: 1296px) 640px, (min-width: 1024px) 54vw, 92vw"
+            transitionName="work-jarvis"
+          />
+        )
+      }
       {
         jarvis.guardRails && (
-          <div class="lg:col-span-7">
+          <div class="rails mt-20 max-sm:hidden">
             <h4 class="text-small font-semibold">{jarvis.fact}</h4>
-            <Steps steps={jarvis.guardRails} class="mt-12 [&>li:last-child]:border-b" />
+            <ol class="mt-8">
+              {jarvis.guardRails.map((rail, n) => (
+                <li>
+                  <span class="n" aria-hidden="true">
+                    {n + 1}
+                  </span>
+                  <span>
+                    <span class="font-semibold">{rail.title}.</span> <span class="detail text-muted">{rail.detail}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
           </div>
         )
       }
+    </div>
+    <div>
+      <h3 id="work-jarvis" class="title" style="view-transition-name: title-jarvis">{jarvis.name}</h3>
+      <p class="tagline mt-8 text-muted sm:mt-12">{jarvis.tagline}</p>
+      <p class="mt-16 max-sm:hidden">{jarvis.description}</p>
+      {text(jarvis.outcome) && !isTodo(text(jarvis.outcome)) && <p class="mt-12 sm:mt-16">{text(jarvis.outcome)}</p>}
+      <p class="mt-16 text-caption text-muted max-sm:hidden">{tags(jarvis.stack)}</p>
+      <WorkLinks project={jarvis} class="mt-12 sm:mt-16" />
     </div>
   </article>
 </div>
 
 <style>
+  /* One screen per item, below the nav (whose height scroll-padding-top
+     reserves), with the content centred in it. */
+  .screen {
+    min-height: calc(100svh - var(--spacing-96));
+    padding-block: var(--spacing-16);
+    align-content: center;
+  }
   .item {
     display: grid;
-    gap: var(--spacing-24) var(--spacing-48);
+    gap: var(--spacing-20) var(--spacing-48);
     align-items: center;
+  }
+  .title {
+    font-size: var(--text-h2);
+    font-weight: 600;
+    line-height: var(--text-h2--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+  }
+  .tagline {
+    font-size: var(--text-body);
+  }
+
+  /* Jarvis's guard rails: a compact list under the screenshot. */
+  .rails li {
+    display: flex;
+    gap: var(--spacing-12);
+    padding-block: var(--spacing-4);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+  .rails li:last-child {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .rails .n {
+    width: 1ch;
+    flex: none;
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* On a phone, Jarvis's screenshot (the Ask Jarvis crop) is shown 16:10 from
+     the top: the panel, the incident and the two buttons. */
+  @media (max-width: 639px) {
+    .jarvis :global(picture img) {
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top;
+    }
+  }
+  @media (min-width: 640px) {
+    .title {
+      font-size: var(--text-h1);
+      line-height: var(--text-h1--line-height);
+      letter-spacing: var(--text-h1--letter-spacing);
+    }
+    .tagline {
+      font-size: var(--text-body-lg);
+    }
+    .screen {
+      padding-block: var(--spacing-48);
+    }
   }
   @media (min-width: 1024px) {
     .item {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     }
+    .item.wide {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    }
     .item.flip {
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+    .item.flip.wide {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
     }
     .item.flip > :global(.shot) {
       order: 2;

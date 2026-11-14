@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
-import ProofStrip from '../components/ProofStrip.astro';
 import SelectedWork from '../components/SelectedWork.astro';
 import MoreProjects from '../components/MoreProjects.astro';
 import Experience from '../components/Experience.astro';
@@ -16,7 +15,6 @@ const description = `${basics.name}, ${basics.label}. ${basics.summary.replace(/
 
 <Base title={`${basics.name} · ${basics.label}`} description={description} og="home" schema={[profilePage()]}>
   <Hero />
-  <ProofStrip />
   <SelectedWork />
   <MoreProjects />
   <Experience />

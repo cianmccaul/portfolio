@@ -2,30 +2,30 @@
 /**
  * First viewport, set like a broadsheet's front page: the name runs the width
  * of the column, a rule, then the line and the actions on the left and the
- * logistics as a spec sheet on the right.
+ * logistics as a spec sheet on the right, with the proof strip underneath.
  *
- * On a phone the order is name, line, actions, spec sheet, and the paragraph
- * comes last, so who this is, what they want and when all sit on the first
- * screen.
+ * Everything here fits on the first screen at 1280 × 800, 1440 × 900,
+ * 390 × 844 and 360 × 740. On a phone the order is line, actions, spec
+ * sheet, proof (as one compact row), and the paragraph comes after them.
  */
 import Icon from './Icon.astro';
 import SpecSheet from './SpecSheet.astro';
 import { resume } from '../lib/resume';
-import { logisticsSpecs } from '../lib/specs';
+import { logisticsSpecs, proof } from '../lib/specs';
 import { inline } from '../lib/site';
 
 const { basics } = resume;
 ---
 
-<section aria-labelledby="hero-title" class="hero relative isolate">
+<section aria-labelledby="hero-title" class="hero relative isolate" data-snap-hero>
   <div class="aurora" aria-hidden="true"></div>
-  <div class="mx-auto max-w-page px-gutter pt-32 lg:pt-48">
+  <div class="mx-auto max-w-page px-gutter pt-24">
     <p class="text-small font-medium text-muted lg:text-body">{basics.label}</p>
-    <div class="masthead-box mt-8 lg:mt-12">
+    <div class="masthead-box mt-8">
       <h1 id="hero-title" class="masthead">{basics.name}</h1>
     </div>
 
-    <div class="hero-grid mt-16 border-t border-ink pt-20 lg:mt-32 lg:pt-32">
+    <div class="hero-grid mt-16 border-t border-ink pt-20 lg:mt-24 lg:pt-24">
       <p class="line text-h1">{basics.headline}</p>
       <p class="lede max-w-prose text-body-lg text-muted [&_strong]:text-ink" set:html={inline(basics.summary)} />
       <div class="actions flex flex-wrap gap-12">
@@ -38,6 +38,31 @@ const { basics } = resume;
         </a>
       </div>
       <SpecSheet items={logisticsSpecs} label="At a glance" class="sheet" />
+
+      {/* Three facts, worked out from resume.json (see `proof` in src/lib/specs.ts),
+          each a link to the section that backs it up. Deliberately different
+          from the BodyMed Hub numbers in the clinic band. */}
+      {
+        proof.length > 0 && (
+          <ul class="proof" aria-label="In short">
+            {proof.map((item) => (
+              <li>
+                <a href={item.link.href} class="cell">
+                  <span class="figure">
+                    <span class="value">{item.value}</span>
+                    <span class="unit">{item.unit}</span>
+                  </span>
+                  <span class="label">
+                    {item.label}
+                    <Icon name="arrow-down" class="arrow" />
+                  </span>
+                  <span class="sr-only">: {item.link.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
     </div>
   </div>
 </section>
@@ -46,7 +71,7 @@ const { basics } = resume;
   .hero-grid {
     display: grid;
     gap: var(--spacing-20) var(--spacing-48);
-    grid-template-areas: 'line' 'actions' 'sheet' 'lede';
+    grid-template-areas: 'line' 'actions' 'sheet' 'proof' 'lede';
   }
   .line {
     grid-area: line;
@@ -62,8 +87,74 @@ const { basics } = resume;
   .hero-grid :global(.sheet) {
     grid-area: sheet;
   }
+
+  /* ── Proof ── */
+  .proof {
+    grid-area: proof;
+    display: grid;
+    /* The last figure ("First Class") is the widest. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.35fr);
+    border-block: 1px solid var(--color-line-strong);
+  }
+  .proof li + li {
+    border-left: 1px solid var(--color-line);
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    height: 100%;
+    padding: var(--spacing-12) var(--spacing-12) var(--spacing-12) 0;
+    border-radius: 0;
+    color: inherit;
+  }
+  .proof li + li .cell {
+    padding-left: var(--spacing-12);
+  }
+  .figure {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--spacing-8);
+  }
+  .value {
+    font-size: var(--text-h3);
+    font-weight: 600;
+    line-height: var(--text-h3--line-height);
+    letter-spacing: var(--text-h2--letter-spacing);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .unit {
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+  /* On a phone the row is figures only; the whole cell is the link. */
+  .label {
+    display: none;
+    color: var(--color-muted);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+  .label :global(.arrow) {
+    display: inline;
+    margin-left: var(--spacing-4);
+    vertical-align: -0.15em;
+    color: var(--color-accent);
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .cell:hover .value {
+      color: var(--color-accent);
+    }
+    .cell:hover :global(.arrow) {
+      transform: translateY(2px);
+    }
+  }
+
   /* The phone's spec sheet is the compact cut, so all five rows fit above the
-     fold with the name, the line and the actions. */
+     fold with the name, the line, the actions and the proof row. */
   @media (max-width: 1023px) {
     .hero-grid :global(.sheet > div) {
       grid-template-columns: 5.5em minmax(0, 1fr);
@@ -78,18 +169,44 @@ const { basics } = resume;
       margin-top: var(--spacing-12);
     }
   }
+  @media (min-width: 640px) {
+    .proof {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .label {
+      display: block;
+    }
+    .value {
+      font-size: var(--text-h1);
+      line-height: 1.05;
+    }
+    .unit {
+      font-size: var(--text-h3);
+      line-height: var(--text-h3--line-height);
+    }
+    .cell {
+      padding-block: var(--spacing-16);
+      padding-right: var(--spacing-24);
+    }
+    .proof li + li .cell {
+      padding-left: var(--spacing-24);
+    }
+  }
   @media (min-width: 1024px) {
     .hero-grid {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      grid-template-rows: auto auto 1fr;
-      grid-template-areas: 'line sheet' 'lede sheet' 'actions sheet';
+      grid-template-rows: auto auto 1fr auto;
+      grid-template-areas: 'line sheet' 'lede sheet' 'actions sheet' 'proof proof';
       row-gap: 0;
     }
     .lede {
-      margin-top: var(--spacing-16);
+      margin-top: var(--spacing-12);
     }
     .actions {
-      margin-top: var(--spacing-32);
+      margin-top: var(--spacing-24);
+    }
+    .proof {
+      margin-top: var(--spacing-24);
     }
   }
   /* A narrower label column while the sheet's own column is narrow, so no

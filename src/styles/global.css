@@ -48,9 +48,31 @@
   /* Section links glide; with reduced motion they jump. History (Back) is
      restored by the browser and never animates. */
   @media (prefers-reduced-motion: no-preference) {
-    html {
+    html:not([data-restoring]) {
       scroll-behavior: smooth;
     }
+  }
+
+  /* The home page settles gently on a work item when you stop scrolling near
+     one: proximity, never mandatory, and off under reduced motion. Off, too,
+     while the browser restores a position on Back (data-restoring, set in
+     Base.astro until you first scroll), so returning never nudges the page. */
+  @media (prefers-reduced-motion: no-preference) {
+    :root:has([data-snap-item]):not([data-restoring]) {
+      scroll-snap-type: y proximity;
+    }
+  }
+  [data-snap-item] {
+    scroll-snap-align: center;
+  }
+  [data-snap-hero] {
+    scroll-snap-align: start;
+  }
+  /* The clinic band is taller than a screen: settle on its top edge, right
+     under the nav, then scroll freely inside it. */
+  [data-snap-band] {
+    scroll-snap-align: start;
+    scroll-margin-top: 0;
   }
 
   body {

@@ -49,6 +49,21 @@ const image = absolute(`/og/${og}.png`);
         if (s.glass === 'off' || (s.glass !== 'on' && matchMedia('(prefers-reduced-transparency: reduce)').matches))
           d.dataset.glass = 'off';
         d.dataset.js = '';
+        // Coming back: let the browser restore the exact position before any
+        // scroll snapping applies (cleared on the first scroll or key press).
+        var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        if (nav && nav.type === 'back_forward') {
+          d.dataset.restoring = '';
+          var clear = function () {
+            delete d.dataset.restoring;
+            ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (t) {
+              removeEventListener(t, clear, true);
+            });
+          };
+          ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (t) {
+            addEventListener(t, clear, { capture: true, passive: true });
+          });
+        }
         if ((navigator.userAgentData || window.chrome) && window.CSS && CSS.supports('backdrop-filter', 'url(#a)'))
           d.dataset.lens = '';
       })(document.documentElement);
