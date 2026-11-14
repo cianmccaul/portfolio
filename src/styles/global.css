@@ -41,8 +41,16 @@
   }
 
   html {
-    /* Keeps anchored and focused content clear of the sticky nav. */
+    /* Keeps anchored and focused content clear of the floating nav pill
+       (16 px from the top, 52 px tall) with room to breathe. */
     scroll-padding-top: var(--spacing-96);
+  }
+  /* Section links glide; with reduced motion they jump. History (Back) is
+     restored by the browser and never animates. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {

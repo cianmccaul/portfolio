@@ -4,6 +4,7 @@
  * numbers, and where to try it. The Hub's home screen from the public demo
  * sits across the band's lower edge, half on the dark and half on the page.
  */
+import BackLink from '../BackLink.astro';
 import BrowserFrame from '../BrowserFrame.astro';
 import Icon from '../Icon.astro';
 import Todo from '../Todo.astro';
@@ -23,13 +24,7 @@ const host = (url: string) => new URL(url).host;
 <header class="hero night" data-night>
   <div class="night-glow" aria-hidden="true"></div>
   <div class="mx-auto max-w-page px-gutter pt-32 lg:pt-48">
-    <nav aria-label="Breadcrumb" class="text-small font-medium text-muted lg:text-body">
-      <ol class="flex items-center gap-8">
-        <li><a href="/#work" class="link">Work</a></li>
-        <li aria-hidden="true">/</li>
-        <li aria-current="page">Case study</li>
-      </ol>
-    </nav>
+<BackLink label="Case study" />
     <h1 class="mt-8 text-hero lg:mt-12" style={`view-transition-name: title-${item.slug}`}>{item.name}</h1>
     <p class="mt-20 max-w-prose text-h2 lg:mt-24">{item.tagline}</p>
     {

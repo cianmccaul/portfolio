@@ -3,18 +3,21 @@
  * The masthead shared by the inner pages: a small line above, the title at
  * hero size, a rule, then the lede. The aurora runs up behind the nav.
  */
+import BackLink from './BackLink.astro';
 interface Props {
   title: string;
   kicker?: string;
   lede?: string;
+  /** A Back link in place of the kicker, for pages reached from inside the site. */
+  back?: boolean;
 }
-const { title, kicker, lede } = Astro.props;
+const { title, kicker, lede, back = false } = Astro.props;
 ---
 
 <header class="relative isolate">
   <div class="aurora" aria-hidden="true"></div>
   <div class="mx-auto max-w-page px-gutter pt-32 lg:pt-48">
-    {kicker && <p class="text-small font-medium text-muted lg:text-body">{kicker}</p>}
+    {back ? <BackLink label={kicker} /> : kicker && <p class="text-small font-medium text-muted lg:text-body">{kicker}</p>}
     <h1 class="mt-8 text-hero lg:mt-12">{title}</h1>
     <div class="mt-24 border-t border-ink pt-20 lg:mt-32 lg:pt-32">
       {lede && <p class="max-w-prose text-h2">{lede}</p>}
